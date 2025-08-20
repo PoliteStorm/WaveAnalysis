@@ -1,0 +1,12 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-20T22-29-15",
+  "intended_for": "peer_review",
+  "git_sha": "6f57512",
+  "paths": {
+    "docs": "docs/",
+    "composites": "composites/",
+    "species": "species/",
+    "ml": "ml/"
+  }
+}
