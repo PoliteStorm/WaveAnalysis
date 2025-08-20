@@ -272,6 +272,7 @@ def main():
     parser.add_argument("--out_dir", type=str, default="", help="If set and --json_out empty, write results to timestamped subfolder here")
     parser.add_argument("--progress", action="store_true", help="Print progress status messages")
     parser.add_argument("--only_file", type=str, default="", help="Process only this filename (exact match within data_dir)")
+    parser.add_argument("--plot_ml", action="store_true", help="Save ML diagnostics plots (feature importance, confusion matrix, calibration)")
     args = parser.parse_args()
 
     tau_values = [float(x) for x in args.taus.split(",") if x.strip()]
@@ -351,6 +352,9 @@ def main():
 
     # Training/evaluation
     results = {}
+    y_true_all = []
+    y_pred_all = []
+    proba_all = []
     if args.lofo:
         # Leave-one-file-out CV
         uniq_files = np.unique(groups)
@@ -369,9 +373,18 @@ def main():
             else:
                 model_name = 'LogisticRegression'
             y_pred = predict_with_model(clf, X_test)
+            # probabilities if available
+            try:
+                proba = clf.predict_proba(X_test)
+            except Exception:
+                proba = None
             acc_f = float(np.mean(y_pred == y_test))
             fold_acc.append(acc_f)
             log(f"  Fold accuracy: {acc_f:.3f}")
+            y_true_all.append(y_test)
+            y_pred_all.append(y_pred)
+            if proba is not None:
+                proba_all.append(proba)
         acc = float(np.mean(fold_acc)) if fold_acc else 0.0
         results['cv'] = 'leave_one_file_out'
         results['fold_accuracies'] = [float(a) for a in fold_acc]
@@ -386,8 +399,16 @@ def main():
         else:
             model_name = 'LogisticRegression'
         y_pred = predict_with_model(clf, X_test)
+        try:
+            proba = clf.predict_proba(X_test)
+        except Exception:
+            proba = None
         acc = float(np.mean(y_pred == y_test))
         results['cv'] = 'random_split_70_30'
+        y_true_all.append(y_test)
+        y_pred_all.append(y_pred)
+        if proba is not None:
+            proba_all.append(proba)
 
     timestamp = _dt.datetime.now().isoformat(timespec='seconds')
     result = {
@@ -434,6 +455,100 @@ def main():
         f.write("- Electrical response of fungi to changing moisture content (Fungal Biol Biotech 2023): https://fungalbiolbiotech.biomedcentral.com/articles/10.1186/s40694-023-00155-0?utm_source=chatgpt.com\n")
         f.write("- Electrical activity of fungi: Spikes detection and complexity analysis (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
     print(json.dumps({'json': target_json, 'bib': bib}))
+
+    # Optional ML diagnostics plots
+    if args.plot_ml:
+        # Prepare output dir for figures
+        figs_dir = os.path.join(out_dir, 'figs')
+        os.makedirs(figs_dir, exist_ok=True)
+        # Feature importance / coefficients
+        try:
+            import matplotlib
+            matplotlib.use("Agg")
+            import matplotlib.pyplot as plt
+        except Exception:
+            plt = None
+        if plt is not None:
+            try:
+                if hasattr(clf, 'feature_importances_'):
+                    imp = np.asarray(clf.feature_importances_, dtype=float)
+                elif hasattr(clf, 'coef_'):
+                    coef = np.asarray(clf.coef_, dtype=float)
+                    imp = np.mean(np.abs(coef), axis=0)
+                else:
+                    imp = None
+                if imp is not None:
+                    idx = np.argsort(imp)[::-1][:50]
+                    fig, ax = plt.subplots(figsize=(8, 6), dpi=140)
+                    ax.barh(range(len(idx)), imp[idx][::-1], color='slateblue')
+                    ax.set_yticks(range(len(idx)))
+                    ax.set_yticklabels([f'f{j}' for j in idx[::-1]], fontsize=7)
+                    ax.set_xlabel('importance')
+                    ax.set_title('Feature importance (top 50)')
+                    fig.tight_layout()
+                    fig.savefig(os.path.join(figs_dir, 'feature_importance.png'))
+                    plt.close(fig)
+            except Exception:
+                pass
+            # Confusion matrix
+            try:
+                from sklearn.metrics import confusion_matrix
+                y_true_c = np.concatenate(y_true_all) if y_true_all else np.array([])
+                y_pred_c = np.concatenate(y_pred_all) if y_pred_all else np.array([])
+                if y_true_c.size and y_pred_c.size:
+                    labels = np.unique(np.concatenate([y_true_c, y_pred_c]))
+                    cm = confusion_matrix(y_true_c, y_pred_c, labels=labels)
+                    fig, ax = plt.subplots(figsize=(5.5, 5.0), dpi=140)
+                    im = ax.imshow(cm, cmap='Blues')
+                    ax.set_xticks(range(len(labels)))
+                    ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=7)
+                    ax.set_yticks(range(len(labels)))
+                    ax.set_yticklabels(labels, fontsize=7)
+                    for i in range(cm.shape[0]):
+                        for j in range(cm.shape[1]):
+                            ax.text(j, i, str(cm[i, j]), ha='center', va='center', fontsize=7)
+                    ax.set_title('Confusion matrix')
+                    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+                    fig.tight_layout()
+                    fig.savefig(os.path.join(figs_dir, 'confusion_matrix.png'))
+                    plt.close(fig)
+            except Exception:
+                pass
+            # Calibration curve (max prob vs correctness)
+            try:
+                if proba_all:
+                    P = np.vstack(proba_all)
+                    y_true_c = np.concatenate(y_true_all)
+                    # correctness of predicted class
+                    y_pred_idx = np.argmax(P, axis=1)
+                    classes_list = result['classes']
+                    # map y_true to indices
+                    class_to_idx = {c: i for i, c in enumerate(classes_list)}
+                    y_true_idx = np.array([class_to_idx.get(str(c), -1) for c in y_true_c])
+                    correct = (y_pred_idx == y_true_idx)
+                    maxp = np.max(P, axis=1)
+                    # bin into 10 bins
+                    bins = np.linspace(0.0, 1.0, 11)
+                    inds = np.digitize(maxp, bins) - 1
+                    xs = []
+                    ys = []
+                    for b in range(10):
+                        mask = inds == b
+                        if np.any(mask):
+                            xs.append(np.mean(maxp[mask]))
+                            ys.append(np.mean(correct[mask].astype(float)))
+                    fig, ax = plt.subplots(figsize=(5.0, 4.0), dpi=140)
+                    ax.plot([0, 1], [0, 1], 'k--', lw=1, label='ideal')
+                    ax.plot(xs, ys, marker='o', color='darkorange', label='model')
+                    ax.set_xlabel('predicted probability (max class)')
+                    ax.set_ylabel('empirical accuracy')
+                    ax.set_title('Calibration')
+                    ax.legend()
+                    fig.tight_layout()
+                    fig.savefig(os.path.join(figs_dir, 'calibration.png'))
+                    plt.close(fig)
+            except Exception:
+                pass
 
 
 if __name__ == '__main__':
