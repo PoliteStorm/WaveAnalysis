@@ -8,6 +8,7 @@ from typing import Dict, Tuple, List
 
 import prove_transform as pt
 from viz import plot_heatmap, plot_surface3d, plot_time_series_with_spikes
+from viz.plotting import plot_linepair, assemble_summary_panel
 
 
 def moving_average(x: np.ndarray, w: int) -> np.ndarray:
@@ -223,7 +224,7 @@ def main():
         # Spike overlay
         t = np.arange(len(V)) / args.fs
         spikes_t = np.array([s['t_s'] for s in spikes], dtype=float) if spikes else np.array([], dtype=float)
-        plot_time_series_with_spikes(
+        p_spikes = plot_time_series_with_spikes(
             t,
             V,
             spikes_t,
@@ -247,8 +248,10 @@ def main():
             xlabel='τ',
             ylabel='time (s)',
             out_path=hm_path,
+            dpi=160,
         )
         # 3D surface of the same
+        surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
         surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
         plot_surface3d(
             Z=powers,
@@ -259,6 +262,35 @@ def main():
             ylabel='time (s)',
             zlabel='power',
             out_path=surf_path,
+            dpi=160,
+        )
+        # Simple STFT vs √t line comparison for one window (middle u0)
+        mid = len(u0_grid) // 2
+        u0_mid = float(u0_grid[mid])
+        def V_func2(t_vals):
+            return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
+        u_grid = np.linspace(0, u0_grid[-1] if len(u0_grid) else 1.0, 512, endpoint=False)
+        k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid)
+        Pk = np.abs(W) ** 2
+        t_grid = np.arange(len(V)) / args.fs
+        t0 = u0_mid ** 2
+        sigma_t = max(1e-6, 2.0 * u0_mid * float(tau_values[0]))
+        omega_fft, G = pt.stft_fft(V_func2, t0, sigma_t, t_grid)
+        Pw = np.abs(G) ** 2
+        comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
+        plot_linepair(
+            x1=k_fft, y1=Pk, label1='√t | P(k)',
+            x2=omega_fft, y2=Pw, label2='STFT | P(ω)',
+            title=f"{base} | {pick} | mid-window spectral comparison",
+            xlabel1='k', xlabel2='ω', ylabel='power',
+            out_path=comp_path,
+        )
+        # Assemble a summary panel
+        panel_path = os.path.join(target_dir, 'summary_panel.png')
+        assemble_summary_panel(
+            [p_spikes, hm_path, surf_path, comp_path],
+            ["Spikes", "τ-band heatmap", "τ-band 3D", "STFT vs √t"],
+            out_path=panel_path,
         )
 
 
