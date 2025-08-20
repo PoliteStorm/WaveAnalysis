@@ -18,6 +18,14 @@ def latest_run(dir_glob: str) -> str | None:
     runs = sorted(glob.glob(dir_glob))
     return runs[-1] if runs else None
 
+def latest_with(sp_dir: str, filename: str) -> str | None:
+    runs = sorted(glob.glob(os.path.join(sp_dir, '*')))
+    for rd in reversed(runs):
+        p = os.path.join(rd, filename)
+        if os.path.isfile(p):
+            return rd
+    return None
+
 
 def main():
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -29,15 +37,22 @@ def main():
     for sp_dir in sorted(glob.glob(os.path.join(zroot, '*'))):
         if not os.path.isdir(sp_dir) or os.path.basename(sp_dir) == '_composites':
             continue
+        # prefer runs that include the needed image; fallback to latest
         latest = latest_run(os.path.join(sp_dir, '*'))
         if not latest:
             continue
         sp = os.path.basename(sp_dir)
-        copy_if_exists(os.path.join(latest, 'summary_panel.png'), os.path.join(figs_dir, f'{sp}_summary.png'))
-        copy_if_exists(os.path.join(latest, 'tau_band_power_heatmap.png'), os.path.join(figs_dir, f'{sp}_heatmap.png'))
-        copy_if_exists(os.path.join(latest, 'tau_band_power_surface.png'), os.path.join(figs_dir, f'{sp}_surface.png'))
-        copy_if_exists(os.path.join(latest, 'hist_isi.png'), os.path.join(figs_dir, f'{sp}_hist_isi.png'))
-        copy_if_exists(os.path.join(latest, 'hist_amp.png'), os.path.join(figs_dir, f'{sp}_hist_amp.png'))
+        for name, out in [
+            ('summary_panel.png', f'{sp}_summary.png'),
+            ('tau_band_power_heatmap.png', f'{sp}_heatmap.png'),
+            ('tau_band_power_surface.png', f'{sp}_surface.png'),
+            ('spikes_overlay.png', f'{sp}_spikes.png'),
+            ('stft_vs_sqrt_line.png', f'{sp}_stft_vs_sqrt.png'),
+            ('hist_isi.png', f'{sp}_hist_isi.png'),
+            ('hist_amp.png', f'{sp}_hist_amp.png'),
+        ]:
+            rd = latest_with(sp_dir, name) or latest
+            copy_if_exists(os.path.join(rd, name), os.path.join(figs_dir, out))
 
     # ML figures
     ml_root = os.path.join(root, 'results', 'ml')
