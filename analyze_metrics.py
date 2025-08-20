@@ -159,6 +159,7 @@ def main():
     ap.add_argument('--json_out', default='')
     ap.add_argument('--out_dir', default='/home/kronos/mushroooom/results')
     ap.add_argument('--plot', action='store_true', help='Save visuals (heatmaps, 3D, spikes)')
+    ap.add_argument('--export_csv', action='store_true', help='Export tau-band time series and spike times as CSV')
     args = ap.parse_args()
 
     tau_values = [float(x) for x in args.taus.split(',') if x.strip()]
@@ -219,79 +220,102 @@ def main():
         f.write("- Electrical activity of fungi: Spikes detection and complexity analysis (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
     print(json.dumps({'json': json_path, 'dir': target_dir}))
 
-    # Optional visuals
-    if args.plot:
+    # Optional visuals and CSV exports
+    if args.plot or args.export_csv:
         # Spike overlay
         t = np.arange(len(V)) / args.fs
         spikes_t = np.array([s['t_s'] for s in spikes], dtype=float) if spikes else np.array([], dtype=float)
-        p_spikes = plot_time_series_with_spikes(
-            t,
-            V,
-            spikes_t,
-            title=f"{base} | {pick} | spikes",
-            out_path=os.path.join(target_dir, 'spikes_overlay.png'),
-        )
-        # Heatmap of τ-band powers over windows (u0)
-        # Recompute powers with the same settings to ensure alignment
+        p_spikes = os.path.join(target_dir, 'spikes_overlay.png')
+        if args.plot:
+            p_spikes = plot_time_series_with_spikes(
+                t,
+                V,
+                spikes_t,
+                title=f"{base} | {pick} | spikes",
+                out_path=p_spikes,
+            )
+        # τ-band powers over windows (u0)
         U_max = np.sqrt(len(V) / args.fs) if len(V) > 1 else 1.0
         u0_grid = np.linspace(0.0, U_max, args.nu0, endpoint=False)
         def V_func(t_vals):
             return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
         powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values))
-        # Heatmap: rows=u0 (time), cols=tau
+        # Heatmap
         hm_path = os.path.join(target_dir, 'tau_band_power_heatmap.png')
-        plot_heatmap(
-            Z=powers,
-            x=np.array(tau_values),
-            y=u0_grid ** 2,
-            title=f"{base} | {pick} | τ-band power vs time",
-            xlabel='τ',
-            ylabel='time (s)',
-            out_path=hm_path,
-            dpi=160,
-        )
-        # 3D surface of the same
+        if args.plot:
+            plot_heatmap(
+                Z=powers,
+                x=np.array(tau_values),
+                y=u0_grid ** 2,
+                title=f"{base} | {pick} | τ-band power vs time",
+                xlabel='τ',
+                ylabel='time (s)',
+                out_path=hm_path,
+                dpi=160,
+            )
+        # 3D surface
         surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
-        surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
-        plot_surface3d(
-            Z=powers,
-            x=np.array(tau_values),
-            y=u0_grid ** 2,
-            title=f"{base} | {pick} | τ-band power (3D)",
-            xlabel='τ',
-            ylabel='time (s)',
-            zlabel='power',
-            out_path=surf_path,
-            dpi=160,
-        )
-        # Simple STFT vs √t line comparison for one window (middle u0)
-        mid = len(u0_grid) // 2
-        u0_mid = float(u0_grid[mid])
-        def V_func2(t_vals):
-            return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
-        u_grid = np.linspace(0, u0_grid[-1] if len(u0_grid) else 1.0, 512, endpoint=False)
-        k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid)
-        Pk = np.abs(W) ** 2
-        t_grid = np.arange(len(V)) / args.fs
-        t0 = u0_mid ** 2
-        sigma_t = max(1e-6, 2.0 * u0_mid * float(tau_values[0]))
-        omega_fft, G = pt.stft_fft(V_func2, t0, sigma_t, t_grid)
-        Pw = np.abs(G) ** 2
+        if args.plot:
+            plot_surface3d(
+                Z=powers,
+                x=np.array(tau_values),
+                y=u0_grid ** 2,
+                title=f"{base} | {pick} | τ-band power (3D)",
+                xlabel='τ',
+                ylabel='time (s)',
+                zlabel='power',
+                out_path=surf_path,
+                dpi=160,
+            )
+        # STFT vs √t comparison for a mid window
         comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
-        plot_linepair(
-            x1=k_fft, y1=Pk, label1='√t | P(k)',
-            x2=omega_fft, y2=Pw, label2='STFT | P(ω)',
-            title=f"{base} | {pick} | mid-window spectral comparison",
-            xlabel1='k', xlabel2='ω', ylabel='power',
-            out_path=comp_path,
-        )
-        # Assemble a summary panel
-        panel_path = os.path.join(target_dir, 'summary_panel.png')
-        assemble_summary_panel(
-            [p_spikes, hm_path, surf_path, comp_path],
-            ["Spikes", "τ-band heatmap", "τ-band 3D", "STFT vs √t"],
-            out_path=panel_path,
-        )
+        if args.plot:
+            mid = len(u0_grid) // 2
+            u0_mid = float(u0_grid[mid])
+            def V_func2(t_vals):
+                return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
+            u_grid = np.linspace(0, u0_grid[-1] if len(u0_grid) else 1.0, 512, endpoint=False)
+            k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid)
+            Pk = np.abs(W) ** 2
+            t_grid = np.arange(len(V)) / args.fs
+            t0 = u0_mid ** 2
+            sigma_t = max(1e-6, 2.0 * u0_mid * float(tau_values[0]))
+            omega_fft, G = pt.stft_fft(V_func2, t0, sigma_t, t_grid)
+            Pw = np.abs(G) ** 2
+            plot_linepair(
+                x1=k_fft, y1=Pk, label1='√t | P(k)',
+                x2=omega_fft, y2=Pw, label2='STFT | P(ω)',
+                title=f"{base} | {pick} | mid-window spectral comparison",
+                xlabel1='k', xlabel2='ω', ylabel='power',
+                out_path=comp_path,
+            )
+            # Summary panel
+            panel_path = os.path.join(target_dir, 'summary_panel.png')
+            assemble_summary_panel(
+                [p_spikes, hm_path, surf_path, comp_path],
+                ["Spikes", "τ-band heatmap", "τ-band 3D", "STFT vs √t"],
+                out_path=panel_path,
+            )
+        # CSV exports
+        if args.export_csv:
+            import csv
+            times = (u0_grid ** 2).astype(float)
+            tau_arr = np.array(tau_values, dtype=float)
+            with open(os.path.join(target_dir, 'tau_band_timeseries.csv'), 'w', newline='') as f:
+                w = csv.writer(f)
+                cols = ['time_s'] + [f'tau_{t:g}' for t in tau_arr] + [f'tau_{t:g}_norm' for t in tau_arr]
+                w.writerow(cols)
+                for i, tm in enumerate(times):
+                    row_p = powers[i, :].astype(float)
+                    norm = float(np.sum(row_p) + 1e-12)
+                    row_n = (row_p / norm).tolist()
+                    w.writerow([float(tm)] + [float(x) for x in row_p.tolist()] + [float(x) for x in row_n])
+            if spikes_t.size > 0:
+                with open(os.path.join(target_dir, 'spike_times_s.csv'), 'w', newline='') as f:
+                    w = csv.writer(f)
+                    w.writerow(['t_s'])
+                    for s in spikes_t.tolist():
+                        w.writerow([float(s)])
 
 
 if __name__ == '__main__':
