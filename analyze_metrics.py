@@ -153,14 +153,37 @@ def main():
     ap.add_argument('--min_amp_mV', type=float, default=0.2)
     ap.add_argument('--max_amp_mV', type=float, default=50.0)
     ap.add_argument('--min_isi_s', type=float, default=30.0)
-    ap.add_argument('--baseline_win_s', type=float, default=300.0)
+    ap.add_argument('--baseline_win_s', type=float, default=600.0)
     ap.add_argument('--taus', default='5.5,24.5,104')
     ap.add_argument('--nu0', type=int, default=128)
     ap.add_argument('--json_out', default='')
     ap.add_argument('--out_dir', default='/home/kronos/mushroooom/results')
     ap.add_argument('--plot', action='store_true', help='Save visuals (heatmaps, 3D, spikes)')
     ap.add_argument('--export_csv', action='store_true', help='Export tau-band time series and spike times as CSV')
+    ap.add_argument('--quicklook', action='store_true', help='Faster plotting: fewer windows, skip heavy plots')
+    ap.add_argument('--config', type=str, default='', help='Path to species config JSON (overrides args if present)')
     args = ap.parse_args()
+
+    # Optional species config overrides
+    base_name = os.path.splitext(os.path.basename(args.file))[0].replace(' ', '_')
+    cfg_path = args.config
+    auto_cfg = os.path.join(os.path.dirname(__file__), 'configs', f'{base_name}.json')
+    if (not cfg_path) and os.path.isfile(auto_cfg):
+        cfg_path = auto_cfg
+    if cfg_path and os.path.isfile(cfg_path):
+        with open(cfg_path) as f:
+            cfg = json.load(f)
+        args.fs = float(cfg.get('fs_hz', args.fs))
+        args.min_amp_mV = float(cfg.get('min_amp_mV', args.min_amp_mV))
+        args.min_isi_s = float(cfg.get('min_isi_s', args.min_isi_s))
+        args.baseline_win_s = float(cfg.get('baseline_win_s', args.baseline_win_s))
+        taus_cfg = cfg.get('taus')
+        if taus_cfg:
+            args.taus = ','.join(str(x) for x in taus_cfg)
+        if args.quicklook:
+            args.nu0 = int(cfg.get('nu0_quicklook', max(8, args.nu0 // 4)))
+        else:
+            args.nu0 = int(cfg.get('nu0_plot', args.nu0))
 
     tau_values = [float(x) for x in args.taus.split(',') if x.strip()]
     t, channels = pt.load_zenodo_timeseries(args.file)
