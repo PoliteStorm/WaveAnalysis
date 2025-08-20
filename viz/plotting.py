@@ -85,7 +85,8 @@ def plot_time_series_with_spikes(t: np.ndarray,
                                  title: str,
                                  out_path: str,
                                  dpi: int = 140,
-                                 figsize: tuple | None = None) -> str:
+                                 figsize: tuple | None = None,
+                                 stim_times_s: np.ndarray | None = None) -> str:
     if plt is None:
         raise RuntimeError("matplotlib is not available; cannot create time-series plot")
     _ensure_parent_dir(out_path)
@@ -93,6 +94,10 @@ def plot_time_series_with_spikes(t: np.ndarray,
         figsize = (11, 3.8)
     fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
     ax.plot(t, v, lw=0.8, color='#444444')
+    # optional stimuli markers
+    if stim_times_s is not None and getattr(stim_times_s, 'size', 0) > 0:
+        for s in stim_times_s:
+            ax.axvline(float(s), color='gold', alpha=0.5, lw=1.0)
     if spike_times_s is not None and getattr(spike_times_s, 'size', 0) > 0:
         y0 = np.interp(spike_times_s, t, v)
         ax.scatter(spike_times_s, y0, s=16, color='crimson', label='spikes', zorder=3)
@@ -100,6 +105,29 @@ def plot_time_series_with_spikes(t: np.ndarray,
     ax.set_title(title)
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Voltage (mV)')
+    fig.tight_layout()
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+
+def plot_histogram(data: np.ndarray,
+                   bins: int,
+                   title: str,
+                   xlabel: str,
+                   out_path: str,
+                   dpi: int = 140,
+                   figsize: tuple | None = None) -> str:
+    if plt is None:
+        raise RuntimeError("matplotlib is not available; cannot create histogram")
+    _ensure_parent_dir(out_path)
+    if figsize is None:
+        figsize = (6.5, 3.6)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+    ax.hist(data, bins=bins, color='steelblue', alpha=0.8)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel('count')
     fig.tight_layout()
     fig.savefig(out_path)
     plt.close(fig)

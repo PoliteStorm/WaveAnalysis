@@ -8,7 +8,7 @@ from typing import Dict, Tuple, List
 
 import prove_transform as pt
 from viz import plot_heatmap, plot_surface3d, plot_time_series_with_spikes
-from viz.plotting import plot_linepair, assemble_summary_panel
+from viz.plotting import plot_linepair, assemble_summary_panel, plot_histogram
 
 
 def moving_average(x: np.ndarray, w: int) -> np.ndarray:
@@ -163,6 +163,8 @@ def main():
     ap.add_argument('--quicklook', action='store_true', help='Faster plotting: fewer windows, skip heavy plots')
     ap.add_argument('--config', type=str, default='', help='Path to species config JSON (overrides args if present)')
     args = ap.parse_args()
+    # optional stimulus CSV
+    ap_stim = args
 
     # Optional species config overrides
     base_name = os.path.splitext(os.path.basename(args.file))[0].replace(' ', '_')
@@ -250,12 +252,28 @@ def main():
         spikes_t = np.array([s['t_s'] for s in spikes], dtype=float) if spikes else np.array([], dtype=float)
         p_spikes = os.path.join(target_dir, 'spikes_overlay.png')
         if args.plot:
+            # optional stimulus CSV overlay if present
+            stim_times = None
+            if hasattr(args, 'stim_csv') and args.stim_csv and os.path.isfile(args.stim_csv):
+                try:
+                    import csv
+                    tt = []
+                    with open(args.stim_csv) as f:
+                        r = csv.DictReader(f)
+                        for row in r:
+                            if 't_s' in row and row['t_s']:
+                                tt.append(float(row['t_s']))
+                    if tt:
+                        stim_times = np.array(tt, dtype=float)
+                except Exception:
+                    stim_times = None
             p_spikes = plot_time_series_with_spikes(
                 t,
                 V,
                 spikes_t,
                 title=f"{base} | {pick} | spikes",
                 out_path=p_spikes,
+                stim_times_s=stim_times,
             )
         # τ-band powers over windows (u0)
         U_max = np.sqrt(len(V) / args.fs) if len(V) > 1 else 1.0
@@ -319,6 +337,12 @@ def main():
                 ["Spikes", "τ-band heatmap", "τ-band 3D", "STFT vs √t"],
                 out_path=panel_path,
             )
+            # Spike histograms
+            if spike_times.size > 1:
+                isi = np.diff(spike_times)
+                plot_histogram(isi, bins=30, title=f"{base} | {pick} | ISI", xlabel='seconds', out_path=os.path.join(target_dir,'hist_isi.png'))
+            if spike_amps.size > 0:
+                plot_histogram(spike_amps, bins=30, title=f"{base} | {pick} | amplitude (mV)", xlabel='mV', out_path=os.path.join(target_dir,'hist_amp.png'))
         # CSV exports
         if args.export_csv:
             import csv
