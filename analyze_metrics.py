@@ -7,6 +7,7 @@ import datetime as _dt
 from typing import Dict, Tuple, List
 
 import prove_transform as pt
+from viz import plot_heatmap, plot_surface3d, plot_time_series_with_spikes
 
 
 def moving_average(x: np.ndarray, w: int) -> np.ndarray:
@@ -156,6 +157,7 @@ def main():
     ap.add_argument('--nu0', type=int, default=128)
     ap.add_argument('--json_out', default='')
     ap.add_argument('--out_dir', default='/home/kronos/mushroooom/results')
+    ap.add_argument('--plot', action='store_true', help='Save visuals (heatmaps, 3D, spikes)')
     args = ap.parse_args()
 
     tau_values = [float(x) for x in args.taus.split(',') if x.strip()]
@@ -215,6 +217,49 @@ def main():
         f.write("- Electrical response of fungi to changing moisture content (Fungal Biol Biotech 2023): https://fungalbiolbiotech.biomedcentral.com/articles/10.1186/s40694-023-00155-0?utm_source=chatgpt.com\n")
         f.write("- Electrical activity of fungi: Spikes detection and complexity analysis (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
     print(json.dumps({'json': json_path, 'dir': target_dir}))
+
+    # Optional visuals
+    if args.plot:
+        # Spike overlay
+        t = np.arange(len(V)) / args.fs
+        spikes_t = np.array([s['t_s'] for s in spikes], dtype=float) if spikes else np.array([], dtype=float)
+        plot_time_series_with_spikes(
+            t,
+            V,
+            spikes_t,
+            title=f"{base} | {pick} | spikes",
+            out_path=os.path.join(target_dir, 'spikes_overlay.png'),
+        )
+        # Heatmap of τ-band powers over windows (u0)
+        # Recompute powers with the same settings to ensure alignment
+        U_max = np.sqrt(len(V) / args.fs) if len(V) > 1 else 1.0
+        u0_grid = np.linspace(0.0, U_max, args.nu0, endpoint=False)
+        def V_func(t_vals):
+            return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
+        powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values))
+        # Heatmap: rows=u0 (time), cols=tau
+        hm_path = os.path.join(target_dir, 'tau_band_power_heatmap.png')
+        plot_heatmap(
+            Z=powers,
+            x=np.array(tau_values),
+            y=u0_grid ** 2,
+            title=f"{base} | {pick} | τ-band power vs time",
+            xlabel='τ',
+            ylabel='time (s)',
+            out_path=hm_path,
+        )
+        # 3D surface of the same
+        surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
+        plot_surface3d(
+            Z=powers,
+            x=np.array(tau_values),
+            y=u0_grid ** 2,
+            title=f"{base} | {pick} | τ-band power (3D)",
+            xlabel='τ',
+            ylabel='time (s)',
+            zlabel='power',
+            out_path=surf_path,
+        )
 
 
 if __name__ == '__main__':
