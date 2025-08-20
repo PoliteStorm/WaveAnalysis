@@ -301,7 +301,17 @@ def main():
             import csv
             times = (u0_grid ** 2).astype(float)
             tau_arr = np.array(tau_values, dtype=float)
-            with open(os.path.join(target_dir, 'tau_band_timeseries.csv'), 'w', newline='') as f:
+            tau_path = os.path.join(target_dir, 'tau_band_timeseries.csv')
+            with open(tau_path, 'w', newline='') as f:
+                meta = [
+                    f"# file: {args.file}",
+                    f"# species: {base}",
+                    f"# channel: {pick}",
+                    f"# timestamp: {timestamp}",
+                    f"# fs_hz: {args.fs}",
+                    f"# taus: {','.join([str(t) for t in tau_arr])}",
+                ]
+                f.write("\n".join(meta) + "\n")
                 w = csv.writer(f)
                 cols = ['time_s'] + [f'tau_{t:g}' for t in tau_arr] + [f'tau_{t:g}_norm' for t in tau_arr]
                 w.writerow(cols)
@@ -311,7 +321,9 @@ def main():
                     row_n = (row_p / norm).tolist()
                     w.writerow([float(tm)] + [float(x) for x in row_p.tolist()] + [float(x) for x in row_n])
             if spikes_t.size > 0:
-                with open(os.path.join(target_dir, 'spike_times_s.csv'), 'w', newline='') as f:
+                spike_csv = os.path.join(target_dir, 'spike_times_s.csv')
+                with open(spike_csv, 'w', newline='') as f:
+                    f.write(f"# file: {args.file}\n# species: {base}\n# channel: {pick}\n# timestamp: {timestamp}\n")
                     w = csv.writer(f)
                     w.writerow(['t_s'])
                     for s in spikes_t.tolist():
