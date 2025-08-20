@@ -1,0 +1,32 @@
+{
+  "species": "Schizophyllum_commune",
+  "run_dir": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-20T21:58:16",
+  "timestamp": "2025-08-20T21:58:16",
+  "channel": "diff_1",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review",
+  "parameters": {
+    "fs_hz": 1.0,
+    "min_amp_mV": 0.1,
+    "min_isi_s": 120.0,
+    "baseline_win_s": 600.0,
+    "taus": [],
+    "nu0": 33
+  },
+  "config_path": "/home/kronos/mushroooom/configs/Schizophyllum_commune.json",
+  "assets": {
+    "spikes_overlay.png": 61525,
+    "tau_band_power_heatmap.png": 42851,
+    "tau_band_power_surface.png": 185201,
+    "stft_vs_sqrt_line.png": 44895,
+    "summary_panel.png": 206869,
+    "tau_band_timeseries.csv": 4226,
+    "spike_times_s.csv": 86
+  },
+  "git_sha": "c00248af7c8399dee5ec8d8b580fc56f31b742ed",
+  "versions": {
+    "python": "3.11.2"
+  },
+  "compliance_ok": true,
+  "notes": []
+}

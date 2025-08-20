@@ -1,0 +1,32 @@
+{
+  "species": "Enoki_fungi_Flammulina_velutipes",
+  "run_dir": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T21:58:47",
+  "timestamp": "2025-08-20T21:58:47",
+  "channel": "diff_1",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review",
+  "parameters": {
+    "fs_hz": 1.0,
+    "min_amp_mV": 0.1,
+    "min_isi_s": 120.0,
+    "baseline_win_s": 600.0,
+    "taus": [],
+    "nu0": 33
+  },
+  "config_path": "/home/kronos/mushroooom/configs/Enoki_fungi_Flammulina_velutipes.json",
+  "assets": {
+    "spikes_overlay.png": 81068,
+    "tau_band_power_heatmap.png": 44254,
+    "tau_band_power_surface.png": 178916,
+    "stft_vs_sqrt_line.png": 50943,
+    "summary_panel.png": 224560,
+    "tau_band_timeseries.csv": 4319,
+    "spike_times_s.csv": 13021
+  },
+  "git_sha": "c00248af7c8399dee5ec8d8b580fc56f31b742ed",
+  "versions": {
+    "python": "3.11.2"
+  },
+  "compliance_ok": true,
+  "notes": []
+}
