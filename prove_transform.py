@@ -312,7 +312,8 @@ def main():
             print(f"  corr(band_power[{label}], d(moisture)/dt) = {r:.3f}")
 
 
-def compute_tau_band_powers(V_func, u0_grid: np.ndarray, tau_values: np.ndarray) -> np.ndarray:
+def compute_tau_band_powers(V_func, u0_grid: np.ndarray, tau_values: np.ndarray,
+                            window: str = "gaussian", detrend_u: bool = False) -> np.ndarray:
     # For each (u0, tau), compute ∑_k |W(k; u0, tau)|^2
     # Using FFT spectrum magnitudes
     # Return array shape (len(u0_grid), len(tau_values))
@@ -324,7 +325,8 @@ def compute_tau_band_powers(V_func, u0_grid: np.ndarray, tau_values: np.ndarray)
     powers = np.zeros((len(u0_grid), len(tau_values)), dtype=float)
     for iu, u0 in enumerate(u0_grid):
         for it, tau in enumerate(tau_values):
-            _, W = sqrt_time_transform_fft(V_func, tau, u_grid, u0=u0)
+            _, W = sqrt_time_transform_fft(V_func, tau, u_grid, u0=u0,
+                                           window=window, detrend_u=detrend_u)
             powers[iu, it] = float(np.sum(np.abs(W) ** 2))
     return powers
 

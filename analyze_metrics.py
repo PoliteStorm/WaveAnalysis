@@ -162,6 +162,8 @@ def main():
     ap.add_argument('--export_csv', action='store_true', help='Export tau-band time series and spike times as CSV')
     ap.add_argument('--quicklook', action='store_true', help='Faster plotting: fewer windows, skip heavy plots')
     ap.add_argument('--config', type=str, default='', help='Path to species config JSON (overrides args if present)')
+    ap.add_argument('--window', type=str, default='gaussian', choices=['gaussian','morlet'], help='Window for √t transform')
+    ap.add_argument('--detrend_u', action='store_true', help='Apply linear detrend in u-domain before FFT')
     args = ap.parse_args()
     # optional stimulus CSV
     ap_stim = args
@@ -280,7 +282,7 @@ def main():
         u0_grid = np.linspace(0.0, U_max, args.nu0, endpoint=False)
         def V_func(t_vals):
             return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
-        powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values))
+        powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values), window=args.window, detrend_u=args.detrend_u)
         # Heatmap
         hm_path = os.path.join(target_dir, 'tau_band_power_heatmap.png')
         if args.plot:
