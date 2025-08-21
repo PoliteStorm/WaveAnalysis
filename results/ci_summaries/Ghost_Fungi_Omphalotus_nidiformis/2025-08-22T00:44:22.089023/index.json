@@ -1,0 +1,12 @@
+{
+  "species": "Ghost_Fungi_Omphalotus_nidiformis",
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-22T00:44:22.089023",
+  "sources": {
+    "run_dir": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33",
+    "tau_csv": null,
+    "spike_csv": null
+  },
+  "tau_power_ci": null,
+  "spike_rate_ci": null
+}

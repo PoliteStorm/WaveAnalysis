@@ -24,19 +24,46 @@ def latest_run_dir(species_dir: str) -> str | None:
 
 def load_csv_matrix(path: str) -> tuple[np.ndarray, list[str]]:
     import csv
-    times = []
-    rows = []
+    times: list[float] = []
+    rows: list[list[float]] = []
     with open(path, 'r') as f:
+        # Read first non-comment header
+        while True:
+            pos = f.tell()
+            line = f.readline()
+            if line == '':
+                raise ValueError(f"empty CSV: {path}")
+            if not line.lstrip().startswith('#'):
+                f.seek(pos)
+                break
         reader = csv.reader(f)
         header = next(reader)
+        # Drop comment-like header cells
+        header = [h.strip() for h in header]
         keys = [k for k in header if k.lower() != 'time_s']
         time_idx = header.index('time_s') if 'time_s' in header else None
         for r in reader:
-            if time_idx is not None:
-                times.append(float(r[time_idx]))
-                vals = [float(r[i]) for i, k in enumerate(header) if k != 'time_s']
+            if len(r) == 0 or (r[0].lstrip().startswith('#')):
+                continue
+            r = [c.strip() for c in r]
+            if time_idx is not None and time_idx < len(r):
+                try:
+                    times.append(float(r[time_idx]))
+                except Exception:
+                    continue
+                vals: list[float] = []
+                for i, k in enumerate(header):
+                    if k == 'time_s':
+                        continue
+                    try:
+                        vals.append(float(r[i]))
+                    except Exception:
+                        vals.append(np.nan)
             else:
-                vals = [float(x) for x in r]
+                try:
+                    vals = [float(x) for x in r]
+                except Exception:
+                    vals = [np.nan for _ in r]
             rows.append(vals)
     arr = np.array(rows, dtype=float)
     time = np.array(times, dtype=float) if times else np.arange(arr.shape[0], dtype=float)
