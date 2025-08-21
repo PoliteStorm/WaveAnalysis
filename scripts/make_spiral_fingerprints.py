@@ -71,10 +71,46 @@ def main():
                 snr_sqrt=snr_sqrt,
                 snr_stft=snr_stft,
                 concentration_sqrt=concentration_sqrt,
+                amplitude_entropy_bits=float(metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', 0.0)),
                 title=title,
                 out_path=out_path,
             )
             print(f"[OK] {out_path}")
+            # Also emit a JSON spec documenting mapping
+            mapping = {
+                "title": title,
+                "created_by": metrics.get('created_by', 'unknown'),
+                "timestamp": ts,
+                "species": sp,
+                "band_fractions": band_fracs,
+                "spike_count": spike_count,
+                "snr": {"sqrt": snr_sqrt, "stft": snr_stft},
+                "concentration": {"sqrt": concentration_sqrt},
+                "amplitude_entropy_bits": metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', None),
+                "encodings": {
+                    "rings": {
+                        "order": "increasing τ",
+                        "colors": ["red", "#1f77b4", "#4fa3ff"],
+                        "radius": "proportional to band fraction",
+                        "labels": "τ and fraction annotated per ring"
+                    },
+                    "triangles": {
+                        "count": "= spike_count (capped 48)",
+                        "size": "∝ amplitude_entropy_bits",
+                    },
+                    "spiral": {
+                        "z_height": "∝ concentration_sqrt with SNR contrast",
+                        "color": "#808080"
+                    },
+                    "center": {
+                        "color": "gold"
+                    }
+                }
+            }
+            json_path = os.path.splitext(out_path)[0] + '.json'
+            with open(json_path, 'w') as jf:
+                json.dump(mapping, jf, indent=2)
+            print(f"[OK] {json_path}")
         except Exception as e:
             print(f"[ERR] {sp}: {e}")
 

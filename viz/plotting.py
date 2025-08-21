@@ -227,6 +227,7 @@ def plot_spiral_fingerprint(
     snr_sqrt: float,
     snr_stft: float,
     concentration_sqrt: float,
+    amplitude_entropy_bits: float | None,
     title: str,
     out_path: str,
     dpi: int = 160,
@@ -300,6 +301,13 @@ def plot_spiral_fingerprint(
 
     # Draw circles and triangles
     tri_cap = min(48, max(3, int(spike_count)))
+    # triangle size encodes amplitude entropy (bounded for readability)
+    if amplitude_entropy_bits is None:
+        tri_size = 24
+    else:
+        # Map entropy in [0, ~6] → size [18, 60]
+        e = float(np.clip(amplitude_entropy_bits, 0.0, 6.0))
+        tri_size = 18 + (60 - 18) * (e / 6.0)
     for idx, (re, color) in enumerate(zip(ring_effective, ring_colors)):
         ang = np.linspace(0, 2 * np.pi, 512)
         cx = re * np.cos(ang)
@@ -311,7 +319,16 @@ def plot_spiral_fingerprint(
         tx = re * np.cos(tri_angles)
         ty = re * np.sin(tri_angles)
         tz = np.full_like(tx, 0.15 + 0.3 * idx)
-        ax.scatter(tx, ty, tz, marker='^', s=24, color=color, edgecolors='black', linewidths=0.3, alpha=0.9)
+        ax.scatter(tx, ty, tz, marker='^', s=tri_size, color=color, edgecolors='black', linewidths=0.3, alpha=0.9)
+        # Annotate ring with τ and fraction
+        try:
+            tau_val = float(taus_sorted[idx])
+            frac_val = float(fracs[idx])
+            ax.text(re * 1.05, 0.0, 0.15 + 0.3 * idx,
+                    f"τ={tau_val:g}, f={frac_val:.2f}",
+                    color=color, fontsize=8)
+        except Exception:
+            pass
 
     ax.set_title(title)
     ax.set_xlabel('x')
