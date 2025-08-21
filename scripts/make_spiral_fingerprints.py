@@ -99,11 +99,11 @@ def main():
                 snr_sqrt=snr_sqrt,
                 snr_stft=snr_stft,
                 concentration_sqrt=concentration_sqrt,
+                title=title,
+                out_path=out_path,
                 amplitude_entropy_bits=float(metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', 0.0)),
                 taus_for_labels=taus_for_labels,
                 ci_halfwidths=ci_halfwidths,
-                title=title,
-                out_path=out_path,
             )
             print(f"[OK] {out_path}")
             # Also emit a JSON spec documenting mapping
