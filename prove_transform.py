@@ -9,6 +9,11 @@ def gaussian(x, sigma):
     return np.exp(-0.5 * (x / sigma) ** 2)
 
 
+def morlet_real(x, sigma=1.0, omega0=5.0):
+    # Real Morlet (no correction term); sigma controls envelope width
+    return np.exp(-0.5 * (x / sigma) ** 2) * np.cos(omega0 * x)
+
+
 def synthesize_signal(
     t: np.ndarray,
     u_center: float,
@@ -57,9 +62,13 @@ def synthesize_signal(
     }
 
 
-def sqrt_time_transform_fft(V_func, tau, u_grid, u0=0.0):
-    # f_tau(u) = 2u V(u^2) psi((u - u0)/tau), psi = Gaussian
-    psi = gaussian((u_grid - u0) / tau, 1.0)
+def sqrt_time_transform_fft(V_func, tau, u_grid, u0=0.0, window: str = "gaussian", detrend_u: bool = False):
+    # f_tau(u) = 2u V(u^2) psi((u - u0)/tau)
+    x = (u_grid - u0) / tau
+    if window == "morlet":
+        psi = morlet_real(x, sigma=1.0, omega0=5.0)
+    else:
+        psi = gaussian(x, 1.0)
     t_vals = u_grid ** 2
     V_vals = V_func(t_vals)
     f_u = 2.0 * u_grid * V_vals * psi
@@ -69,6 +78,18 @@ def sqrt_time_transform_fft(V_func, tau, u_grid, u0=0.0):
     win_energy = np.sqrt(np.sum(psi ** 2) * du)
     if win_energy > 0:
         f_u = f_u / win_energy
+    # Optional linear detrend in u-domain to reduce low-k leakage
+    if detrend_u:
+        # Fit a line a*u + b over support where psi has non-negligible weight
+        w = (np.abs(psi) > (0.05 * np.max(np.abs(psi))))
+        if np.any(w):
+            ug = u_grid[w]
+            fg = f_u[w]
+            try:
+                a, b = np.polyfit(ug, fg, 1)
+                f_u = f_u - (a * u_grid + b)
+            except Exception:
+                pass
     # Zero-pad to next power of two for efficient FFT
     N = len(f_u)
     N_fft = 1 << (N - 1).bit_length()

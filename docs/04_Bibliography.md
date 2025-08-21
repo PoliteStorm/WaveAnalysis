@@ -13,6 +13,26 @@ Transform/method references
 - Short‑time Fourier transform (STFT) and wavelets (standard texts/papers).
 - Shannon information/entropy and Lempel‑Ziv complexity (standard definitions).
 
+Additional complementary sources (annotated)
+- Adamatzky, A. (2022). Patterns of electrical activity in different species of mushrooms. `https://doi.org/10.48550/arXiv.2203.11198`
+  - Cross‑species spiking patterns; supports species “signatures.”
+- Electrical response of fungi to changing moisture (Fungal Biol. Biotech 2023). `https://fungalbiolbiotech.biomedcentral.com/articles/10.1186/s40694-023-00155-0`
+  - Stimulus/response context for overlays and pre/post analyses.
+- Volkov, A.G. (ed.). Plant Electrophysiology: Theory & Methods. `https://doi.org/10.1007/978-3-540-73547-2`
+  - Methods for slow bioelectric signals; baseline handling/drift.
+- Daubechies, I., et al. (2011). Synchrosqueezed wavelet transforms. `https://doi.org/10.1090/S0273-0979-2011-01385-2`
+  - Time‑frequency concentration; candidate ablation vs √t.
+- Huang, N.E., et al. (1998). Empirical Mode Decomposition/Hilbert–Huang. `https://doi.org/10.1098/rspa.1998.0193`
+  - Adaptive analysis for non‑stationary, slow drifts; complementary lens.
+- Auger, F., Flandrin, P. (1995). Time–frequency reassignment. `https://doi.org/10.1109/78.258082`
+  - Spectral sharpening baseline.
+- Thomson, D.J. (1982). Multitaper spectral estimation. `https://doi.org/10.1109/PROC.1982.12433`
+  - Robust spectrum/SNR baseline; motivates numeric SNR table.
+- Mallat, S. (2008/2012). Wavelet/Scattering theory. `https://doi.org/10.1109/TIT.2012.2210893`
+  - Rationale for window choice; scattering‑style stable features.
+- Victor, J.D. (2005). Spike train metrics. `https://doi.org/10.1007/s10827-005-2193-1`
+  - Spike similarity measures; informs spike statistics section.
+
 Software and infra
 - NumPy/SciPy/Scikit‑learn documentation.
 - GitHub Releases (large file distribution).

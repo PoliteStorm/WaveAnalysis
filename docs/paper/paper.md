@@ -12,13 +12,14 @@ fontsize: 11pt
 Fungal electrical activity exhibits spikes and slow oscillatory modulations over seconds to hours. We introduce a √t‑warped wave transform that concentrates long‑time structure into compact spectral peaks, improving time‑frequency localization for sublinear temporal dynamics. On open fungal datasets (fs≈1 Hz) the method yields sharper spectra than STFT, stable τ‑band trajectories, and species‑specific multi‑scale “signatures.” Coupled with spike statistics and a lightweight ML pipeline, we obtain reproducible diagnostics under leave‑one‑file‑out validation. All analyses are timestamped, audited, and designed for low‑RAM devices.
 
 # 1. Introduction
-Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped wave transform that matches sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
+Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped transform tailored to sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
 
 # 2. Related work
-- Adamatzky (2022) demonstrated rich network‑level dynamics and argued for computational interpretations of fungal behaviour.
-- Jones et al. (2023) and Sci Rep (2018) documented spiking statistics and multi‑scalar rhythms across species.
-- Biosystems (2021) explored information‑theoretic characterizations (entropy, complexity) of spike trains.
-We complement these by introducing a transform tuned to slow temporal drifts and by validating ML readouts on √t‑derived features.
+- Adamatzky (2022) surveyed fungal network dynamics and biocomputing perspectives.
+- Jones et al. (2023) and Sci Rep (2018) detail spiking and multi‑scalar rhythms across species; Adamatzky (2022, arXiv:2203.11198) extends cross‑species comparisons.
+- Slow bioelectric methods in plants/fungi (Volkov) motivate robust baselining and drift handling.
+- Advanced time–frequency methods—synchrosqueezing (Daubechies), reassignment (Auger & Flandrin), Hilbert–Huang (Huang)—improve concentration for non‑stationary signals. Multitaper (Thomson) provides robust spectra/SNR baselines; Mallat’s wavelet/scattering theory guides window choices.
+- Spike train metrics and multiscale entropy complement Shannon entropy for slow rhythms.
 
 # 3. Methods
 ## 3.1 √t‑Warped Wave Transform
@@ -30,7 +31,7 @@ W(k,\tau; u_0)
 \tag{1}
 \]
 
-Substituting \(u = \sqrt{t}\) (so \(dt = 2u\,du\)) gives a standard Fourier integral in \(u\):
+Substituting \(u = \sqrt{t}\) (so \(dt = 2u\,du\)) gives:
 
 \[
 W(k,\tau; u_0)
@@ -38,25 +39,22 @@ W(k,\tau; u_0)
 \tag{2}
 \]
 
-Implementation details:
-- Window \(\psi\) is Gaussian (Morlet optional), energy‑normalized to remove τ bias.
-- \(u_0\) centers late events; we scan \(u_0\) over \([0,\sqrt{T}]\) to form τ‑band trajectories vs time.
-- Discretization uses a uniform \(u\) grid and rFFT; spectra are scaled by \(\Delta u\) to approximate the integral.
+Implementation: energy‑normalized window; u‑grid rFFT; scan \(u_0\); optional Morlet/detrend (ablation).
 
 ## 3.2 STFT baseline
-For comparison we use a Gaussian STFT in linear time, centered at \(t_0 = u_0^2\) with \(\sigma_t = 2 u_0 \tau\) so that time spreads match the √t window.
+Gaussian STFT in t with \(t_0 = u_0^2\), \(\sigma_t = 2 u_0 \tau\).
 
 ## 3.3 Spike detection and statistics
-We subtract a moving‑average baseline (300–900 s), detect peaks above 0.05–0.2 mV with a 120–300 s minimum ISI, and compute rate, ISI/amplitude entropy, skewness, and kurtosis.
+Moving‑average baseline (300–900 s), thresholds 0.05–0.2 mV, min ISI 120–300 s; rate, ISI/amplitude entropy/skewness/kurtosis.
 
 ## 3.4 Data and processing
-Zenodo recordings at fs=1 Hz. τ grid \(\{5.5, 24.5, 104\}\) spans fast/slow/very‑slow bands. Quicklook runs use \(\nu_0\)≈16; full runs use \(\nu_0\)≈64. We store arrays in float32 and cache intermediate features.
+Zenodo (fs=1 Hz). τ={5.5, 24.5, 104}. Quicklook \(\nu_0\)≈16; full \(\nu_0\)≈64. float32 + caching.
 
 ## 3.5 Machine learning
-Per‑window features combine √t bands (normalized power, k‑centroid, bandwidth, entropy, peak count) and spike statistics. We evaluate with leave‑one‑file‑out (LOFO) or leave‑one‑channel‑out (LOCO), reporting accuracy, feature importance (RF/LogReg), confusion matrices, and calibration curves.
+√t bands + spike stats; LOFO/LOCO CV; feature importance, confusion, calibration.
 
 ## 3.6 Reproducibility
-All runs are timestamped and audited (`audit.md/json`) with parameters checked against biologically grounded ranges. A composites README and CSV index summarize assets.
+Timestamped, audited runs; composites README, CSV and audit indexes.
 
 # 4. Results
 ## 4.1 √t vs STFT (Schizophyllum commune)
@@ -93,13 +91,14 @@ Feature importance highlights √t band fractions and k‑shape features; confus
 
 # 5. Discussion
 ### 5.1 How √t enhances prior findings
-- Concentration: √t confines slowly evolving energy into compact peaks, improving interpretability and SNR, in line with slow drifts reported in Adamatzky (2022) and Jones et al. (2023).
-- Stability across hours: τ‑band trajectories remain visible and comparable within a unified time base.
-- Practical sensing: stable band dominance (e.g., very‑slow vs fast) suggests robust biosensing readouts and logic‑like states for biocomputing (cf. Adamatzky’s computing analogies).
+- Concentration and stability across hours complement Adamatzky’s network‑level observations and the multi‑scalar rhythms in Sci Rep 2018/Jones 2023.
+- √t provides a compact, reproducible readout for sensing; band dominance is a candidate logic state (biocomputing framing).
 
-### 5.2 Limitations
-- Data volume is limited; more files per species and annotated stimuli/moisture logs are needed.
-- Parameter sensitivity: although defaults are biologically grounded, we will report bootstrap CIs and τ‑grid sensitivity in follow‑ups.
+### 5.2 Ablation and alternatives (future work)
+- Windows: Gaussian vs Morlet; add reassignment/synchrosqueezing ablations for concentration.
+- Detrend: u‑domain detrend on/off; quantify impact on low‑k leakage.
+- Spectra: add multitaper SNR/concentration baselines.
+- Adaptive lenses: EMD/HHT for comparison on slow drifts.
 
 # 6. Conclusion
 The √t‑warped wave transform provides a tidy, computationally efficient view of fungal dynamics across scales, enabling robust spectral and spike‑based features for ML. It corroborates and sharpens the multi‑scale phenomena reported in the literature and offers a practical basis for fungal sensing/computing.

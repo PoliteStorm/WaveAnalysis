@@ -336,7 +336,7 @@ def main():
                 out_path=surf_path,
                 dpi=160,
             )
-        # STFT vs √t comparison for a mid window
+        # STFT vs √t comparison for a mid window + numeric SNR/concentration
         comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
         if args.plot:
             mid = len(u0_grid) // 2
@@ -358,6 +358,30 @@ def main():
                 xlabel1='k', xlabel2='ω', ylabel='power',
                 out_path=comp_path,
             )
+            # Numeric SNR and concentration
+            # target index: max peak
+            ti_sqrt = int(np.argmax(Pk))
+            ti_stft = int(np.argmax(Pw))
+            def conc(arr):
+                s = float(np.sum(arr) + 1e-12)
+                return float(np.max(arr) / s)
+            def snr(arr, idx, excl=3):
+                n = len(arr)
+                m = np.ones(n, dtype=bool)
+                lo = max(0, idx - excl)
+                hi = min(n, idx + excl + 1)
+                m[lo:hi] = False
+                bg = float(np.median(arr[m]) + 1e-12) if np.any(m) else 1e-12
+                return float(arr[idx] / bg)
+            snr_sqrt = snr(Pk, ti_sqrt)
+            snr_stft = snr(Pw, ti_stft)
+            conc_sqrt = conc(Pk)
+            conc_stft = conc(Pw)
+            with open(os.path.join(target_dir, 'snr_concentration.json'), 'w') as f:
+                json.dump({
+                    'snr': {'sqrt': snr_sqrt, 'stft': snr_stft},
+                    'concentration': {'sqrt': conc_sqrt, 'stft': conc_stft}
+                }, f)
             # Summary panel
             panel_path = os.path.join(target_dir, 'summary_panel.png')
             assemble_summary_panel(
