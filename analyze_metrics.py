@@ -346,7 +346,8 @@ def main():
             def V_func2(t_vals):
                 return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
             u_grid = np.linspace(0, u0_grid[-1] if len(u0_grid) else 1.0, 512, endpoint=False)
-            k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid)
+            k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid,
+                                                  window=args.window, detrend_u=args.detrend_u)
             Pk = np.abs(W) ** 2
             t_grid = np.arange(len(V)) / args.fs
             t0 = u0_mid ** 2
@@ -384,6 +385,44 @@ def main():
                     'snr': {'sqrt': snr_sqrt, 'stft': snr_stft},
                     'concentration': {'sqrt': conc_sqrt, 'stft': conc_stft}
                 }, f)
+
+            # Ablation: Gaussian/Morlet × detrend on/off, plus STFT baseline
+            configs = [
+                ('gaussian', False),
+                ('gaussian', True),
+                ('morlet', False),
+                ('morlet', True),
+            ]
+            ab = []
+            for win, detr in configs:
+                kf, Wv = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid,
+                                                    window=win, detrend_u=detr)
+                Pv = np.abs(Wv) ** 2
+                ti = int(np.argmax(Pv))
+                ab.append({
+                    'window': win,
+                    'detrend_u': bool(detr),
+                    'snr': snr(Pv, ti),
+                    'concentration': conc(Pv)
+                })
+            ab_out = {
+                'u0': float(u0_mid),
+                'tau': float(tau_values[0]),
+                'sqrt_ablation': ab,
+                'stft': {'snr': snr_stft, 'concentration': conc_stft}
+            }
+            with open(os.path.join(target_dir, 'snr_ablation.json'), 'w') as f:
+                json.dump(ab_out, f, indent=2)
+            # Lightweight markdown table
+            md = [
+                '| Setting | SNR | Concentration |',
+                '|---|---:|---:|'
+            ]
+            for row in ab:
+                md.append(f"| √t {row['window']} detrend={row['detrend_u']} | {row['snr']:.2f} | {row['concentration']:.4f} |")
+            md.append(f"| STFT | {snr_stft:.2f} | {conc_stft:.4f} |")
+            with open(os.path.join(target_dir, 'snr_ablation.md'), 'w') as f:
+                f.write('\n'.join(md))
             # Summary panel
             panel_path = os.path.join(target_dir, 'summary_panel.png')
             assemble_summary_panel(
