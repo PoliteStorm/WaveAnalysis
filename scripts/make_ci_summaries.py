@@ -3,9 +3,16 @@ import argparse
 import glob
 import json
 import os
+import sys
 from datetime import datetime
 
 import numpy as np
+
+# Ensure local viz module is importable when run as a script
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
 
 from viz.plotting import plot_tau_trends_ci, plot_ci_1d
 
