@@ -89,6 +89,12 @@ These align with multi‑scalar rhythms described by Jones et al. (2023) and Sci
 ## 4.3 ML diagnostics
 Feature importance highlights √t band fractions and k‑shape features; confusion matrices show strong separability on current data; calibration curves are near‑diagonal. (Figures in the ML folder accompany the peer‑review package.)
 
+## 4.4 Cross‑species SNR and spectral concentration
+We summarize √t versus STFT performance across species using a numeric table built from the latest runs. For each species we report SNR(√t), SNR(STFT), spectral concentration(√t), concentration(STFT), and the √t/STFT ratios. The table is exported in CSV/JSON/Markdown under `results/summaries/<timestamp>/snr_concentration_table.*` and is included in the peer‑review package. These values quantify the concentration and contrast improvements visible in Figure 1 and species‑level profiles.
+
+## 4.5 Spiral fingerprint supplements (exploratory)
+To aid fast between‑species comparison, we provide a supplementary “spiral fingerprint” per species that encodes: ring radius ∝ mean τ‑band fraction (fast→slow from inner→outer), ring thickness ∝ 95% CI half‑width, triangle size ∝ spike amplitude entropy, and spiral height ∝ √t concentration with SNR contrast. Each figure is accompanied by a JSON spec and a numeric feature CSV at `results/fingerprints/<species>/<timestamp>/`. This schematic is reproducible and documented, and is presented alongside the standard quantitative plots (τ‑heatmaps, CI bands, STFT vs √t lines) for scientific interpretation.
+
 # 5. Discussion
 ### 5.1 How √t enhances prior findings
 - Concentration and stability across hours complement Adamatzky’s network‑level observations and the multi‑scalar rhythms in Sci Rep 2018/Jones 2023.
