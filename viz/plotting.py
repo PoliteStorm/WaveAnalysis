@@ -220,6 +220,36 @@ def plot_tau_trends_ci(
     return out_path
 
 
+def plot_ci_1d(
+    time_s: np.ndarray,
+    mean: np.ndarray,
+    lo: np.ndarray,
+    hi: np.ndarray,
+    title: str,
+    ylabel: str,
+    out_path: str,
+    dpi: int = 140,
+    figsize: tuple | None = None,
+) -> str:
+    """
+    Plot a single time series with 95% confidence band.
+    """
+    if plt is None:
+        raise RuntimeError("matplotlib is not available; cannot create CI plot")
+    _ensure_parent_dir(out_path)
+    if figsize is None:
+        figsize = (10.5, 3.6)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+    ax.plot(time_s, mean, lw=1.2, color='black', label='mean')
+    ax.fill_between(time_s, lo, hi, color='skyblue', alpha=0.35, linewidth=0)
+    ax.set_title(title)
+    ax.set_xlabel('time (s)')
+    ax.set_ylabel(ylabel)
+    fig.tight_layout()
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
 
 def plot_spiral_fingerprint(
     band_fractions: dict,
