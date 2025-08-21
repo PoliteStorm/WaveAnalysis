@@ -1,0 +1,34 @@
+{
+  "u0": 905.4617606503325,
+  "tau": 5.5,
+  "sqrt_ablation": [
+    {
+      "window": "gaussian",
+      "detrend_u": false,
+      "snr": 300.69332357759185,
+      "concentration": 0.02124162862273799
+    },
+    {
+      "window": "gaussian",
+      "detrend_u": true,
+      "snr": 286088.52097262617,
+      "concentration": 0.9344900658205787
+    },
+    {
+      "window": "morlet",
+      "detrend_u": false,
+      "snr": 291.34895700943946,
+      "concentration": 0.021217702967095613
+    },
+    {
+      "window": "morlet",
+      "detrend_u": true,
+      "snr": 5344.56547550458,
+      "concentration": 0.6007922573808671
+    }
+  ],
+  "stft": {
+    "snr": 10873317.475290664,
+    "concentration": 0.016478744916032965
+  }
+}
