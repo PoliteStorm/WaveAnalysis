@@ -62,6 +62,34 @@ def main():
         snr_stft = float(conc.get('snr', {}).get('stft', 1.0))
         concentration_sqrt = float(conc.get('concentration', {}).get('sqrt', 0.0))
 
+        # Try to load CI/means per tau from tau_band_timeseries.csv if present
+        taus_for_labels = None
+        ci_halfwidths = None
+        csv_path = os.path.join(run_dir, 'tau_band_timeseries.csv')
+        if os.path.isfile(csv_path):
+            try:
+                import csv
+                import numpy as np
+                rows = []
+                with open(csv_path, 'r') as cf:
+                    reader = csv.DictReader(cf)
+                    for row in reader:
+                        rows.append(row)
+                if rows:
+                    keys = [k for k in rows[0].keys() if k.lower() != 'time_s']
+                    taus_for_labels = [float(k) for k in keys]
+                    arr = np.array([[float(r[k]) for k in keys] for r in rows], dtype=float)
+                    means = np.nanmean(arr, axis=0)
+                    # naive bootstrap CI from time windows
+                    lo = np.nanpercentile(arr, 2.5, axis=0)
+                    hi = np.nanpercentile(arr, 97.5, axis=0)
+                    ci_halfwidths = ((hi - lo) / 2.0).tolist()
+                    # Override band_fracs with means normalized
+                    total = float(np.nansum(means)) or 1.0
+                    band_fracs = {str(t): float(m) / total for t, m in zip(taus_for_labels, means)}
+            except Exception:
+                pass
+
         title = f"{sp.replace('_', ' ')} — spiral fingerprint"
         out_path = os.path.join(args.out_root, f"{sp}_{ts}.png")
         try:
@@ -72,6 +100,8 @@ def main():
                 snr_stft=snr_stft,
                 concentration_sqrt=concentration_sqrt,
                 amplitude_entropy_bits=float(metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', 0.0)),
+                taus_for_labels=taus_for_labels,
+                ci_halfwidths=ci_halfwidths,
                 title=title,
                 out_path=out_path,
             )
@@ -87,11 +117,14 @@ def main():
                 "snr": {"sqrt": snr_sqrt, "stft": snr_stft},
                 "concentration": {"sqrt": concentration_sqrt},
                 "amplitude_entropy_bits": metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', None),
+                "taus_for_labels": taus_for_labels,
+                "ci_halfwidths": ci_halfwidths,
                 "encodings": {
                     "rings": {
                         "order": "increasing τ",
                         "colors": ["red", "#1f77b4", "#4fa3ff"],
-                        "radius": "proportional to band fraction",
+                        "radius": "proportional to mean band fraction",
+                        "thickness": "proportional to 95% CI half-width",
                         "labels": "τ and fraction annotated per ring"
                     },
                     "triangles": {

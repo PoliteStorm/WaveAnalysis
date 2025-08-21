@@ -228,6 +228,8 @@ def plot_spiral_fingerprint(
     snr_stft: float,
     concentration_sqrt: float,
     amplitude_entropy_bits: float | None,
+    taus_for_labels: list[float] | None = None,
+    ci_halfwidths: list[float] | None = None,
     title: str,
     out_path: str,
     dpi: int = 160,
@@ -256,6 +258,8 @@ def plot_spiral_fingerprint(
         raise ValueError("band_fractions is empty")
     # Map smallest τ → fast (inner, red), largest τ → very slow (outer, blue)
     taus_sorted = tau_keys
+    if taus_for_labels is not None and len(taus_for_labels) == len(taus_sorted):
+        taus_sorted = list(taus_for_labels)
     fracs = [max(0.0, float(band_fractions[str(t)])) for t in taus_sorted]
     total = sum(fracs) if sum(fracs) > 0 else 1.0
     fracs = [f / total for f in fracs]
@@ -313,7 +317,14 @@ def plot_spiral_fingerprint(
         cx = re * np.cos(ang)
         cy = re * np.sin(ang)
         cz = np.full_like(cx, 0.15 + 0.3 * idx)
-        ax.plot3D(cx, cy, cz, color=color, lw=2.0, alpha=0.9)
+        # ring thickness encodes uncertainty (CI half-width relative to mean frac)
+        lw = 2.0
+        if ci_halfwidths is not None and idx < len(ci_halfwidths):
+            ci_hw = max(0.0, float(ci_halfwidths[idx]))
+            base = max(1e-6, fracs[idx])
+            rel = np.clip(ci_hw / base, 0.0, 1.0)
+            lw = 2.0 + 6.0 * rel
+        ax.plot3D(cx, cy, cz, color=color, lw=lw, alpha=0.9)
         # Triangles along circle
         tri_angles = np.linspace(0, 2 * np.pi, tri_cap, endpoint=False)
         tx = re * np.cos(tri_angles)
@@ -334,6 +345,13 @@ def plot_spiral_fingerprint(
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z (schematic power/SNR)')
+    # Legend/encoding key
+    enc = (
+        "Rings: τ bands; radius ∝ mean fraction; thickness ∝ 95% CI half-width\n"
+        "Triangles: spike markers; size ∝ amplitude entropy\n"
+        "Spiral z: √t concentration + SNR contrast"
+    )
+    ax.text2D(0.02, 0.02, enc, transform=ax.transAxes, fontsize=8, color='#333333')
     ax.view_init(elev=24, azim=45)
     fig.tight_layout()
     fig.savefig(out_path)
