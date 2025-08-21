@@ -3,7 +3,14 @@ import argparse
 import glob
 import json
 import os
+import sys
 from datetime import datetime
+
+# Ensure project root is on sys.path for local imports (viz.plotting)
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ROOT = os.path.dirname(_HERE)
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
 
 from viz.plotting import plot_spiral_fingerprint
 
