@@ -1,0 +1,46 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-22T00:47:18",
+  "rows": [
+    {
+      "species": "Schizophyllum_commune",
+      "run_dir": "results/zenodo/Schizophyllum_commune/2025-08-22T00:38:41",
+      "snr_sqrt": 689.4899348357262,
+      "snr_stft": 22019410.73239449,
+      "conc_sqrt": 0.05665017161739626,
+      "conc_stft": 0.02725746239415899,
+      "snr_ratio_sqrt_over_stft": 3.131282409030884e-05,
+      "conc_ratio_sqrt_over_stft": 2.0783362294377596
+    },
+    {
+      "species": "Enoki_fungi_Flammulina_velutipes",
+      "run_dir": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11",
+      "snr_sqrt": 18.71384768668309,
+      "snr_stft": 56971757.623350255,
+      "conc_sqrt": 0.025987286949525023,
+      "conc_stft": 0.013842836515039543,
+      "snr_ratio_sqrt_over_stft": 3.2847587063057525e-07,
+      "conc_ratio_sqrt_over_stft": 1.877309388174442
+    },
+    {
+      "species": "Ghost_Fungi_Omphalotus_nidiformis",
+      "run_dir": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33",
+      "snr_sqrt": 315.76667441633157,
+      "snr_stft": 10873317.475290664,
+      "conc_sqrt": 0.022571242652503203,
+      "conc_stft": 0.016478744916032965,
+      "snr_ratio_sqrt_over_stft": 2.904050903819412e-05,
+      "conc_ratio_sqrt_over_stft": 1.369718553636499
+    },
+    {
+      "species": "Cordyceps_militari",
+      "run_dir": "results/zenodo/Cordyceps_militari/2025-08-22T00:41:09",
+      "snr_sqrt": 364.2788205400272,
+      "snr_stft": 38772791.529270336,
+      "conc_sqrt": 0.02872225050442339,
+      "conc_stft": 0.025170658466669698,
+      "snr_ratio_sqrt_over_stft": 9.395217784745445e-06,
+      "conc_ratio_sqrt_over_stft": 1.1411004818294885
+    }
+  ]
+}
