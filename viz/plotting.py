@@ -185,3 +185,38 @@ def assemble_summary_panel(image_paths: list[str], titles: list[str], out_path: 
     return out_path
 
 
+def plot_tau_trends_ci(
+    time_s: np.ndarray,
+    taus: np.ndarray,
+    means: np.ndarray,
+    lo: np.ndarray,
+    hi: np.ndarray,
+    title: str,
+    out_path: str,
+    dpi: int = 140,
+    figsize: tuple | None = None,
+) -> str:
+    """
+    Plot τ-normalized power trends with 95% CI shading.
+    means/lo/hi are shape (n_time, n_tau).
+    """
+    if plt is None:
+        raise RuntimeError("matplotlib is not available; cannot create tau trends plot")
+    _ensure_parent_dir(out_path)
+    if figsize is None:
+        figsize = (10.5, 4.0)
+    fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
+    colors = plt.cm.tab10(np.linspace(0, 1, len(taus)))
+    for j, tau in enumerate(taus):
+        ax.plot(time_s, means[:, j], lw=1.2, color=colors[j], label=f"τ={float(tau):g}")
+        ax.fill_between(time_s, lo[:, j], hi[:, j], color=colors[j], alpha=0.2, linewidth=0)
+    ax.set_title(title)
+    ax.set_xlabel('time (s)')
+    ax.set_ylabel('normalized τ-power')
+    ax.legend(loc='upper right', ncols=min(len(taus), 3), fontsize=8)
+    fig.tight_layout()
+    fig.savefig(out_path)
+    plt.close(fig)
+    return out_path
+
+

@@ -8,7 +8,7 @@ from typing import Dict, Tuple, List
 
 import prove_transform as pt
 from viz import plot_heatmap, plot_surface3d, plot_time_series_with_spikes
-from viz.plotting import plot_linepair, assemble_summary_panel, plot_histogram
+from viz.plotting import plot_linepair, assemble_summary_panel, plot_histogram, plot_tau_trends_ci
 
 
 def moving_average(x: np.ndarray, w: int) -> np.ndarray:
@@ -293,6 +293,34 @@ def main():
                 ylabel='time (s)',
                 out_path=hm_path,
                 dpi=160,
+            )
+        # Bootstrap CIs for normalized τ-power trends
+        if args.plot:
+            # Normalize per-row
+            P = powers.astype(float)
+            row_sum = np.sum(P, axis=1, keepdims=True) + 1e-12
+            Pn = P / row_sum
+            # Simple bootstrap over windows (resample rows with replacement)
+            rng = np.random.default_rng(0)
+            B = 256
+            acc = []
+            for _ in range(B):
+                idx = rng.integers(0, Pn.shape[0], size=Pn.shape[0])
+                acc.append(Pn[idx].mean(axis=0))
+            acc = np.asarray(acc)  # (B, n_tau)
+            mean = Pn  # per-window series
+            # For plotting CI as bands across time, compute a rolling mean per τ to stabilize
+            means_ts = Pn  # shape (n_time, n_tau)
+            lo = np.tile(np.percentile(acc, 2.5, axis=0), (Pn.shape[0], 1))
+            hi = np.tile(np.percentile(acc, 97.5, axis=0), (Pn.shape[0], 1))
+            plot_tau_trends_ci(
+                time_s=u0_grid ** 2,
+                taus=np.array(tau_values),
+                means=means_ts,
+                lo=lo,
+                hi=hi,
+                title=f"{base} | {pick} | τ-power trends with 95% CI",
+                out_path=os.path.join(target_dir, 'tau_trends_ci.png'),
             )
         # 3D surface
         surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
