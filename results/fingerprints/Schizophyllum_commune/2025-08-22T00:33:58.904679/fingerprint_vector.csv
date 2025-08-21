@@ -1,0 +1,2 @@
+species,timestamp,snr_sqrt,snr_stft,concentration_sqrt,spike_count,ampl_entropy_bits,frac_tau_5.5,frac_tau_24.5,frac_tau_104.0
+Schizophyllum_commune,2025-08-22T00:33:58.904679,689.4899348357262,22019410.73239449,0.05665017161739626,10,3.121928094887194,0.1875,0.375,0.4375

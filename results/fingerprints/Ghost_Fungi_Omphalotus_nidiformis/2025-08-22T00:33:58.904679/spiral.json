@@ -1,0 +1,48 @@
+{
+  "title": "Ghost Fungi Omphalotus nidiformis \u2014 spiral fingerprint",
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-22T00:33:58.904679",
+  "species": "Ghost_Fungi_Omphalotus_nidiformis",
+  "band_fractions": {
+    "5.5": 0.0625,
+    "24.5": 0.125,
+    "104.0": 0.8125
+  },
+  "spike_count": 6,
+  "snr": {
+    "sqrt": 315.76667441633157,
+    "stft": 10873317.475290664
+  },
+  "concentration": {
+    "sqrt": 0.022571242652503203
+  },
+  "amplitude_entropy_bits": 2.5849625007209656,
+  "taus_for_labels": null,
+  "ci_halfwidths": null,
+  "n_windows": null,
+  "channel": "diff_1",
+  "encodings": {
+    "rings": {
+      "order": "increasing \u03c4",
+      "colors": [
+        "red",
+        "#1f77b4",
+        "#4fa3ff"
+      ],
+      "radius": "proportional to mean band fraction",
+      "thickness": "proportional to 95% CI half-width",
+      "labels": "\u03c4 and fraction annotated per ring"
+    },
+    "triangles": {
+      "count": "= spike_count (capped 48)",
+      "size": "\u221d amplitude_entropy_bits"
+    },
+    "spiral": {
+      "z_height": "\u221d concentration_sqrt with SNR contrast",
+      "color": "#808080"
+    },
+    "center": {
+      "color": "gold"
+    }
+  }
+}

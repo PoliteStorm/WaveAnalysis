@@ -232,6 +232,9 @@ def plot_spiral_fingerprint(
     amplitude_entropy_bits: float | None = None,
     taus_for_labels: list[float] | None = None,
     ci_halfwidths: list[float] | None = None,
+    n_windows: int | None = None,
+    channel_label: str | None = None,
+    created_by: str | None = None,
     dpi: int = 160,
     figsize: tuple | None = None,
 ) -> str:
@@ -352,6 +355,17 @@ def plot_spiral_fingerprint(
         "Spiral z: √t concentration + SNR contrast"
     )
     ax.text2D(0.02, 0.02, enc, transform=ax.transAxes, fontsize=8, color='#333333')
+    # Footer with sample size/context
+    footer = []
+    if n_windows is not None:
+        footer.append(f"windows={int(n_windows)}")
+    if channel_label:
+        footer.append(f"channel={channel_label}")
+    if created_by:
+        footer.append(f"by {created_by}")
+    if footer:
+        ax.text2D(0.98, 0.02, " · ".join(footer), transform=ax.transAxes,
+                  fontsize=8, color='#444', ha='right')
     ax.view_init(elev=24, azim=45)
     fig.tight_layout()
     fig.savefig(out_path)

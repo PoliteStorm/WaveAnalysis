@@ -1,0 +1,2 @@
+species,timestamp,snr_sqrt,snr_stft,concentration_sqrt,spike_count,ampl_entropy_bits,frac_tau_5.5,frac_tau_24.5,frac_tau_104.0
+Enoki_fungi_Flammulina_velutipes,2025-08-22T00:33:58.904679,18.71384768668309,56971757.623350255,0.025987286949525023,1297,2.289839686777215,0.0625,0.1875,0.75

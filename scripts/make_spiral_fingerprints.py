@@ -32,6 +32,7 @@ def main():
     p = argparse.ArgumentParser(description="Generate spiral fingerprint figures per species")
     p.add_argument('--results_root', default='results/zenodo', help='Root results directory')
     p.add_argument('--out_root', default='results/fingerprints', help='Output directory root')
+    p.add_argument('--channel', default=None, help='Optional channel label to annotate')
     args = p.parse_args()
 
     species = [
@@ -91,7 +92,10 @@ def main():
                 pass
 
         title = f"{sp.replace('_', ' ')} — spiral fingerprint"
-        out_path = os.path.join(args.out_root, f"{sp}_{ts}.png")
+        # Structured output: results/fingerprints/<species>/<timestamp>/
+        out_dir = os.path.join(args.out_root, sp, ts)
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, f"spiral.png")
         try:
             plot_spiral_fingerprint(
                 band_fractions=band_fracs,
@@ -104,12 +108,15 @@ def main():
                 amplitude_entropy_bits=float(metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', 0.0)),
                 taus_for_labels=taus_for_labels,
                 ci_halfwidths=ci_halfwidths,
+                n_windows=len(open(csv_path).read().splitlines()) - 1 if os.path.isfile(csv_path) else None,
+                channel_label=args.channel or metrics.get('channel'),
+                created_by=metrics.get('created_by', 'joe knowles'),
             )
             print(f"[OK] {out_path}")
             # Also emit a JSON spec documenting mapping
             mapping = {
                 "title": title,
-                "created_by": metrics.get('created_by', 'unknown'),
+                "created_by": metrics.get('created_by', 'joe knowles'),
                 "timestamp": ts,
                 "species": sp,
                 "band_fractions": band_fracs,
@@ -119,6 +126,8 @@ def main():
                 "amplitude_entropy_bits": metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', None),
                 "taus_for_labels": taus_for_labels,
                 "ci_halfwidths": ci_halfwidths,
+                "n_windows": len(open(csv_path).read().splitlines()) - 1 if os.path.isfile(csv_path) else None,
+                "channel": args.channel or metrics.get('channel'),
                 "encodings": {
                     "rings": {
                         "order": "increasing τ",
@@ -140,10 +149,41 @@ def main():
                     }
                 }
             }
-            json_path = os.path.splitext(out_path)[0] + '.json'
+            json_path = os.path.join(out_dir, 'spiral.json')
             with open(json_path, 'w') as jf:
                 json.dump(mapping, jf, indent=2)
             print(f"[OK] {json_path}")
+            # Export numeric fingerprint vector for ML/repro
+            import csv as _csv
+            csv_vec = os.path.join(out_dir, 'fingerprint_vector.csv')
+            keys = [
+                'species','timestamp','snr_sqrt','snr_stft','concentration_sqrt','spike_count','ampl_entropy_bits'
+            ]
+            # flatten band fractions in sorted τ order
+            tau_keys = sorted([float(k) for k in band_fracs.keys()])
+            tau_strs = [str(t) for t in tau_keys]
+            frac_keys = [f"frac_tau_{t}" for t in tau_strs]
+            ci_keys = [f"ci_tau_{t}" for t in tau_strs] if ci_halfwidths and taus_for_labels else []
+            header = keys + frac_keys + ci_keys
+            with open(csv_vec, 'w', newline='') as cf:
+                w = _csv.DictWriter(cf, fieldnames=header)
+                w.writeheader()
+                row = {
+                    'species': sp,
+                    'timestamp': ts,
+                    'snr_sqrt': snr_sqrt,
+                    'snr_stft': snr_stft,
+                    'concentration_sqrt': concentration_sqrt,
+                    'spike_count': spike_count,
+                    'ampl_entropy_bits': metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', None),
+                }
+                for t in tau_strs:
+                    row[f"frac_tau_{t}"] = band_fracs.get(t, band_fracs.get(str(t)))
+                if ci_halfwidths and taus_for_labels:
+                    for t, ci in zip(taus_for_labels, ci_halfwidths):
+                        row[f"ci_tau_{t}"] = ci
+                w.writerow(row)
+            print(f"[OK] {csv_vec}")
         except Exception as e:
             print(f"[ERR] {sp}: {e}")
 
