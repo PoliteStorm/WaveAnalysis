@@ -16,9 +16,17 @@ if _ROOT not in sys.path:
 from viz.plotting import plot_heatmap, plot_surface3d
 
 
-def latest_run_dir(species_dir: str) -> str | None:
+def latest_run_dir(species_dir: str, require_csv: bool = False) -> str | None:
     runs = sorted(glob.glob(os.path.join(species_dir, '*')))
-    return runs[-1] if runs else None
+    if not runs:
+        return None
+    if not require_csv:
+        return runs[-1]
+    # Find latest run that contains the CSV
+    for rd in reversed(runs):
+        if os.path.isfile(os.path.join(rd, 'tau_band_timeseries.csv')):
+            return rd
+    return runs[-1]
 
 
 def read_tau_csv(path: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -40,17 +48,27 @@ def read_tau_csv(path: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
                 break
         f.seek(pos)
         reader = csv.reader(f)
+        import re
         header = next(reader)
         header = [h.strip() for h in header]
+        def parse_tau_label(label: str) -> float:
+            # accept patterns like '5.5', 'tau_5.5', 'tau5', etc.
+            m = re.search(r"[-+]?[0-9]*\.?[0-9]+", label)
+            if not m:
+                return float('nan')
+            try:
+                return float(m.group(0))
+            except Exception:
+                return float('nan')
         if 'time_s' in header:
             t_idx = header.index('time_s')
             tau_cols: List[int] = [i for i, k in enumerate(header) if k != 'time_s']
-            tau_vals: List[float] = [float(header[i]) for i in tau_cols]
+            tau_vals: List[float] = [parse_tau_label(header[i]) for i in tau_cols]
         else:
             # assume all columns are taus, generate time index
             t_idx = None
             tau_cols = list(range(len(header)))
-            tau_vals = [float(h) for h in header]
+            tau_vals = [parse_tau_label(h) for h in header]
         times: List[float] = []
         rows: List[List[float]] = []
         for r in reader:
@@ -90,7 +108,7 @@ def main():
 
     for sp in args.species:
         sp_dir = os.path.join(args.results_root, sp)
-        run_dir = latest_run_dir(sp_dir)
+        run_dir = latest_run_dir(sp_dir, require_csv=True)
         if not run_dir:
             print(f"[SKIP] No runs: {sp}")
             continue
