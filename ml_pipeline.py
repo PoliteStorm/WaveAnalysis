@@ -274,6 +274,7 @@ def main():
     parser.add_argument("--progress", action="store_true", help="Print progress status messages")
     parser.add_argument("--only_file", type=str, default="", help="Process only this filename (exact match within data_dir)")
     parser.add_argument("--plot_ml", action="store_true", help="Save ML diagnostics plots (feature importance, confusion matrix, calibration)")
+    parser.add_argument("--perm_importance", action="store_true", help="Compute permutation importance (accuracy drop)")
     args = parser.parse_args()
 
     tau_values = [float(x) for x in args.taus.split(",") if x.strip()]
@@ -361,6 +362,7 @@ def main():
     proba_all = []
     brier_sum = 0.0
     brier_n = 0
+    perm_scores = []  # list of arrays per fold
     if args.lofo or args.loco:
         # Leave-one-group-out CV (file or channel)
         if args.lofo:
@@ -414,6 +416,16 @@ def main():
                     brier_n += len(y_test)
                 except Exception:
                     pass
+            # Permutation importance on the held-out fold
+            if args.perm_importance:
+                try:
+                    from sklearn.inspection import permutation_importance
+                    import numpy as _np
+                    scorer_kwargs = {}
+                    pi = permutation_importance(clf, X_test, y_test, scoring='accuracy', n_repeats=5, random_state=0, n_jobs=-1)
+                    perm_scores.append(_np.asarray(pi.importances_mean, dtype=float))
+                except Exception:
+                    pass
         acc = float(np.mean(fold_acc)) if fold_acc else 0.0
         results['fold_accuracies'] = [float(a) for a in fold_acc]
     else:
@@ -452,6 +464,14 @@ def main():
                 brier_n += len(y_test)
             except Exception:
                 pass
+        if args.perm_importance:
+            try:
+                from sklearn.inspection import permutation_importance
+                import numpy as _np
+                pi = permutation_importance(clf, X_test, y_test, scoring='accuracy', n_repeats=5, random_state=0, n_jobs=-1)
+                perm_scores.append(_np.asarray(pi.importances_mean, dtype=float))
+            except Exception:
+                pass
 
     timestamp = _dt.datetime.now().isoformat(timespec='seconds')
     result = {
@@ -471,6 +491,11 @@ def main():
     }
     if brier_n > 0:
         result['brier_score'] = float(brier_sum / brier_n)
+    if perm_scores:
+        import numpy as _np
+        M = _np.vstack(perm_scores)
+        result['perm_importance_mean'] = _np.mean(M, axis=0).tolist()
+        result['perm_importance_std'] = _np.std(M, axis=0).tolist()
     # Determine target output paths
     target_json = args.json_out
     if (not target_json) and args.out_dir:
@@ -591,6 +616,23 @@ def main():
                     ax.legend()
                     fig.tight_layout()
                     fig.savefig(os.path.join(figs_dir, 'calibration.png'))
+                    plt.close(fig)
+            except Exception:
+                pass
+            # Permutation importance plot (top 30)
+            try:
+                pim = result.get('perm_importance_mean')
+                if pim is not None:
+                    pim = np.asarray(pim, dtype=float)
+                    idx = np.argsort(pim)[::-1][:30]
+                    fig, ax = plt.subplots(figsize=(8, 6), dpi=140)
+                    ax.barh(range(len(idx)), pim[idx][::-1], color='teal')
+                    ax.set_yticks(range(len(idx)))
+                    ax.set_yticklabels([f'f{j}' for j in idx[::-1]], fontsize=7)
+                    ax.set_xlabel('accuracy drop (perm importance)')
+                    ax.set_title('Permutation importance (top 30)')
+                    fig.tight_layout()
+                    fig.savefig(os.path.join(figs_dir, 'perm_importance.png'))
                     plt.close(fig)
             except Exception:
                 pass
