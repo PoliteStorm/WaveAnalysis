@@ -269,6 +269,7 @@ def main():
     parser.add_argument("--cache_dir", type=str, default="/home/kronos/mushroooom/cache/features")
     parser.add_argument("--force_recompute", action="store_true")
     parser.add_argument("--lofo", action="store_true", help="Leave-one-file-out CV")
+    parser.add_argument("--loco", action="store_true", help="Leave-one-channel-out CV")
     parser.add_argument("--out_dir", type=str, default="", help="If set and --json_out empty, write results to timestamped subfolder here")
     parser.add_argument("--progress", action="store_true", help="Print progress status messages")
     parser.add_argument("--only_file", type=str, default="", help="Process only this filename (exact match within data_dir)")
@@ -284,7 +285,8 @@ def main():
     species_map = {}
     X_list = []
     y_list = []
-    groups = []  # file index per row for LOFO
+    groups_file = []     # file index per row for LOFO
+    groups_channel = []  # channel index per row for LOCO
     file_summaries = []
     os.makedirs(args.cache_dir, exist_ok=True)
 
@@ -334,7 +336,8 @@ def main():
 
             X_list.append(feats)
             y_list.append(np.full((feats.shape[0],), label, dtype='<U64'))
-            groups.append(np.full((feats.shape[0],), sample_idx, dtype=int))
+            groups_file.append(np.full((feats.shape[0],), file_idx, dtype=int))
+            groups_channel.append(np.full((feats.shape[0],), sample_idx, dtype=int))
             file_summaries.append({
                 'file': path,
                 'label': label,
@@ -348,20 +351,29 @@ def main():
 
     X = np.vstack(X_list)
     y = np.concatenate(y_list)
-    groups = np.concatenate(groups)
+    groups_file = np.concatenate(groups_file)
+    groups_channel = np.concatenate(groups_channel)
 
     # Training/evaluation
     results = {}
     y_true_all = []
     y_pred_all = []
     proba_all = []
-    if args.lofo:
-        # Leave-one-file-out CV
-        uniq_files = np.unique(groups)
+    brier_sum = 0.0
+    brier_n = 0
+    if args.lofo or args.loco:
+        # Leave-one-group-out CV (file or channel)
+        if args.lofo:
+            group_vec = groups_file
+            results['cv'] = 'leave_one_file_out'
+        else:
+            group_vec = groups_channel
+            results['cv'] = 'leave_one_channel_out'
+        uniq_groups = np.unique(group_vec)
         fold_acc = []
-        for fid in uniq_files:
-            log(f"Training fold (leave sample {int(fid)} out)…")
-            test_mask = (groups == fid)
+        for gid in uniq_groups:
+            log(f"Training fold (leave group {int(gid)} out)…")
+            test_mask = (group_vec == gid)
             train_mask = ~test_mask
             X_train, y_train = X[train_mask], y[train_mask]
             X_test, y_test = X[test_mask], y[test_mask]
@@ -385,8 +397,24 @@ def main():
             y_pred_all.append(y_pred)
             if proba is not None:
                 proba_all.append(proba)
+                # per-fold Brier score (one-vs-rest multi-class)
+                try:
+                    import numpy as _np
+                    classes_fold = getattr(clf, 'classes_', _np.unique(y_train))
+                    class_to_idx = {str(c): i for i, c in enumerate(classes_fold)}
+                    y_idx = _np.array([class_to_idx.get(str(c), -1) for c in y_test])
+                    # build one-hot
+                    Y = _np.zeros_like(proba)
+                    for i in range(len(y_idx)):
+                        j = y_idx[i]
+                        if 0 <= j < Y.shape[1]:
+                            Y[i, j] = 1.0
+                    brier_fold = float(_np.mean(_np.sum((proba - Y) ** 2, axis=1)))
+                    brier_sum += brier_fold * len(y_test)
+                    brier_n += len(y_test)
+                except Exception:
+                    pass
         acc = float(np.mean(fold_acc)) if fold_acc else 0.0
-        results['cv'] = 'leave_one_file_out'
         results['fold_accuracies'] = [float(a) for a in fold_acc]
     else:
         # Simple split
@@ -409,6 +437,21 @@ def main():
         y_pred_all.append(y_pred)
         if proba is not None:
             proba_all.append(proba)
+            try:
+                import numpy as _np
+                classes_fold = getattr(clf, 'classes_', _np.unique(y_train))
+                class_to_idx = {str(c): i for i, c in enumerate(classes_fold)}
+                y_idx = _np.array([class_to_idx.get(str(c), -1) for c in y_test])
+                Y = _np.zeros_like(proba)
+                for i in range(len(y_idx)):
+                    j = y_idx[i]
+                    if 0 <= j < Y.shape[1]:
+                        Y[i, j] = 1.0
+                brier_fold = float(_np.mean(_np.sum((proba - Y) ** 2, axis=1)))
+                brier_sum += brier_fold * len(y_test)
+                brier_n += len(y_test)
+            except Exception:
+                pass
 
     timestamp = _dt.datetime.now().isoformat(timespec='seconds')
     result = {
@@ -426,6 +469,8 @@ def main():
         'intended_for': 'peer_review',
         **results,
     }
+    if brier_n > 0:
+        result['brier_score'] = float(brier_sum / brier_n)
     # Determine target output paths
     target_json = args.json_out
     if (not target_json) and args.out_dir:
