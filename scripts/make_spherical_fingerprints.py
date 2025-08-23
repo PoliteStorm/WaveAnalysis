@@ -137,7 +137,7 @@ def main():
             # center ring
             xring = np.sin(lat) * np.cos(long)
             yring = np.sin(lat) * np.sin(long)
-            zring = np.cos(lat) + 0.001
+            zring = np.full_like(long, float(np.cos(lat) + 0.001))
             rings.append(go.Scatter3d(x=xring, y=yring, z=zring, mode='lines',
                                       line=dict(color='white', width=2), opacity=1.0,
                                       name=f"τ={taus_sorted[i]:g}", showlegend=False))
@@ -148,7 +148,7 @@ def main():
                     lat_use = lat + sign * offset
                     xri = np.sin(lat_use) * np.cos(long)
                     yri = np.sin(lat_use) * np.sin(long)
-                    zri = np.cos(lat_use) + 0.001
+                    zri = np.full_like(long, float(np.cos(lat_use) + 0.001))
                     rings.append(go.Scatter3d(x=xri, y=yri, z=zri, mode='lines',
                                               line=dict(color='white', width=1), opacity=0.5,
                                               showlegend=False))
