@@ -1,0 +1,4 @@
+- Spiking in Pleurotus djamor (Sci Rep 2018): https://www.nature.com/articles/s41598-018-26007-1
+- Multiscalar electrical spiking in Schizophyllum commune (Sci Rep 2023): https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/
+- Language of fungi derived from electrical spiking (R. Soc. Open Sci. 2022): https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/
+- Electrical activity of fungi: Spikes detection and complexity (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307

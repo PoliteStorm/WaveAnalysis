@@ -117,18 +117,18 @@ def main():
         X, Y, Z, C, lats, fracs, ci = build_sphere(band_fracs, taus_sorted, ci_halfwidths, spike_count, ampl_entropy, conc_sqrt, snr_ratio)
 
         fig = go.Figure(data=[go.Surface(x=X, y=Y, z=Z, surfacecolor=C, colorscale='Viridis', showscale=True)])
-        # Annotate latitude rings with τ and fraction
-        ann = []
+        # Add 3D text labels at each latitude band using a Scatter3d trace
+        xs, ys, zs, texts = [], [], [], []
         for i, lat in enumerate(lats):
-            # pick longitude=0 meridian
-            x = float(np.sin(lat))
-            y = 0.0
-            z = float(np.cos(lat)) + 0.02
-            ann.append(dict(showarrow=False, x=x, y=y, z=z, text=f"τ={taus_sorted[i]:g}, f={fracs[i]:.2f}", xanchor='left'))
+            xs.append(float(np.sin(lat)))
+            ys.append(0.0)
+            zs.append(float(np.cos(lat)) + 0.02)
+            texts.append(f"τ={taus_sorted[i]:g}, f={fracs[i]:.2f}")
+        if xs:
+            fig.add_trace(go.Scatter3d(x=xs, y=ys, z=zs, mode='text', text=texts, textposition='top center', name='τ bands', showlegend=False))
         fig.update_layout(
             title=f"{sp.replace('_',' ')} — spherical fingerprint",
             scene=dict(xaxis=dict(visible=False), yaxis=dict(visible=False), zaxis=dict(visible=False)),
-            annotations=ann,
         )
 
         out_dir = os.path.join(args.out_root, sp, ts)
