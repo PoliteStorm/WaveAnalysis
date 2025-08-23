@@ -1,3 +1,17 @@
+## Visual summaries and how to read them
+- Spiral fingerprints: inner→outer rings are fast→slow τ; radius ∝ mean τ‑fraction; ring thickness ∝ CI; triangle size ∝ spike amplitude entropy; spiral bump encodes √t concentration and SNR contrast. See per‑species folders under `results/fingerprints/<species>/<timestamp>/` with `spiral.json` for exact encodings.
+- Spherical fingerprints (interactive): hover to read τ and fraction anywhere on the surface; CI thickness drawn as ring bands; bump height shows √t concentration + SNR contrast. Open `sphere.html` under the fingerprint folders; mapping in `sphere.json`.
+- STFT vs √t lines: compare peak sharpness and background leakage.
+- τ‑band trends with CIs: check whether dominance changes across time and how wide the uncertainty is.
+
+## Cross‑species comparisons
+Use `results/summaries/<timestamp>/snr_concentration_table.md` to compare SNR and concentration across species. Spiral/sphere visuals should qualitatively match the numeric fractions and CIs.
+
+## References used when interpreting results
+- Sci Rep (2018): spiking structure and rhythms in Pleurotus djamor.
+- Jones et al. (2023): multiscalar spiking in Schizophyllum commune.
+- Adamatzky (2022): network‑level and “language” framing.
+- Biosystems (2021): spike detection and complexity metrics.
 ## Results interpretation (√t transform, spikes, and ML diagnostics)
 
 ### Overview

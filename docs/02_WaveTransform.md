@@ -31,6 +31,13 @@ Improvements next
 Reproducibility
 - All outputs timestamped; include created_by and intended_for; organized under results/ with references.
 
+Visual readouts (where to look)
+- τ‑band heatmaps and surfaces (√t domain): `results/zenodo/<species>/<timestamp>/tau_band_power_heatmap.png`, `tau_band_power_surface.png` (and `_replot.png` regenerated from CSV).
+- STFT vs √t spectral line (matched window): `stft_vs_sqrt_line.png` per run.
+- Spiral fingerprint (static): `results/fingerprints/<species>/<timestamp>/spiral.png` with explicit mapping in `spiral.json` and numeric `fingerprint_vector.csv`.
+- Spherical fingerprint (interactive): `results/fingerprints/<species>/<timestamp>/sphere.html` with mapping in `sphere.json` and `references.md`.
+- Cross‑species SNR and spectral concentration table: `results/summaries/<timestamp>/snr_concentration_table.{csv,json,md}`.
+
 Select references (see also results/*/references.md)
 - Adamatzky (2022) Fungal networks. `https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/`
 - Jones et al. (2023) Electrophysiology of fungi. `https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/`
