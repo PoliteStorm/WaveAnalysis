@@ -42,6 +42,41 @@
     "ok": true
   },
   {
+    "species": "Cordyceps_militari",
+    "run": "2025-08-20T22:37:28",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-20T22:37:28/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-20T22:37:28/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Cordyceps_militari",
+    "run": "2025-08-22T00:08:57",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:08:57/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:08:57/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Cordyceps_militari",
+    "run": "2025-08-22T00:17:41",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:17:41/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:17:41/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Cordyceps_militari",
+    "run": "2025-08-22T00:18:40",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:18:40/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:18:40/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Cordyceps_militari",
+    "run": "2025-08-22T00:41:09",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:41:09/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:41:09/audit.md",
+    "ok": true
+  },
+  {
     "species": "Enoki_fungi_Flammulina_velutipes",
     "run": "2025-08-19T00:18:48",
     "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-19T00:18:48/audit.json",
@@ -84,6 +119,41 @@
     "ok": true
   },
   {
+    "species": "Enoki_fungi_Flammulina_velutipes",
+    "run": "2025-08-20T22:35:28",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T22:35:28/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T22:35:28/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Enoki_fungi_Flammulina_velutipes",
+    "run": "2025-08-22T00:04:10",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:04:10/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:04:10/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Enoki_fungi_Flammulina_velutipes",
+    "run": "2025-08-22T00:13:47",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:13:47/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:13:47/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Enoki_fungi_Flammulina_velutipes",
+    "run": "2025-08-22T00:14:16",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:14:16/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:14:16/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Enoki_fungi_Flammulina_velutipes",
+    "run": "2025-08-22T00:39:11",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/audit.md",
+    "ok": true
+  },
+  {
     "species": "Ghost_Fungi_Omphalotus_nidiformis",
     "run": "2025-08-19T00:26:58",
     "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-19T00:26:58/audit.json",
@@ -102,6 +172,34 @@
     "run": "2025-08-20T21:36:22",
     "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-20T21:36:22/audit.json",
     "audit_md": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-20T21:36:22/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Ghost_Fungi_Omphalotus_nidiformis",
+    "run": "2025-08-22T00:07:25",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:07:25/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:07:25/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Ghost_Fungi_Omphalotus_nidiformis",
+    "run": "2025-08-22T00:15:17",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:15:17/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:15:17/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Ghost_Fungi_Omphalotus_nidiformis",
+    "run": "2025-08-22T00:16:33",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Ghost_Fungi_Omphalotus_nidiformis",
+    "run": "2025-08-22T00:59:11",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:59:11/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:59:11/audit.md",
     "ok": true
   },
   {
@@ -158,6 +256,76 @@
     "run": "2025-08-20T21:58:16",
     "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-20T21:58:16/audit.json",
     "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-20T21:58:16/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-20T22:34:59",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-20T22:34:59/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-20T22:34:59/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-21T23:10:14",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:10:14/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:10:14/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-21T23:12:27",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:12:27/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:12:27/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-21T23:22:14",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:22:14/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:22:14/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-21T23:57:05",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:57:05/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-21T23:57:05/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-22T00:01:39",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:01:39/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:01:39/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-22T00:03:13",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:03:13/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:03:13/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-22T00:13:04",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:13:04/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:13:04/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-22T00:13:19",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:13:19/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:13:19/audit.md",
+    "ok": true
+  },
+  {
+    "species": "Schizophyllum_commune",
+    "run": "2025-08-22T00:38:41",
+    "audit_json": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:38:41/audit.json",
+    "audit_md": "/home/kronos/mushroooom/results/zenodo/Schizophyllum_commune/2025-08-22T00:38:41/audit.md",
     "ok": true
   }
 ]

@@ -1,0 +1,36 @@
+{
+  "species": "Cordyceps_militari",
+  "run_dir": "/home/kronos/mushroooom/results/zenodo/Cordyceps_militari/2025-08-22T00:41:09",
+  "timestamp": "2025-08-22T00:41:09",
+  "channel": "diff_1",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review",
+  "parameters": {
+    "fs_hz": 1.0,
+    "min_amp_mV": 0.1,
+    "min_isi_s": 120.0,
+    "baseline_win_s": 600.0,
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 17
+  },
+  "config_path": "/home/kronos/mushroooom/configs/Cordyceps_militari.json",
+  "assets": {
+    "spikes_overlay.png": 64871,
+    "tau_band_power_heatmap.png": 43722,
+    "tau_band_power_surface.png": 170116,
+    "stft_vs_sqrt_line.png": 46845,
+    "summary_panel.png": 201156,
+    "tau_band_timeseries.csv": 2355,
+    "spike_times_s.csv": 12366
+  },
+  "git_sha": "957ed7079b62f798597e084f7e02c8c80a7651bb",
+  "versions": {
+    "python": "3.11.2"
+  },
+  "compliance_ok": true,
+  "notes": []
+}

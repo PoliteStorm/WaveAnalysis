@@ -27,7 +27,7 @@
     "tau_band_timeseries.csv": 0,
     "spike_times_s.csv": 0
   },
-  "git_sha": "c00248af7c8399dee5ec8d8b580fc56f31b742ed",
+  "git_sha": "957ed7079b62f798597e084f7e02c8c80a7651bb",
   "versions": {
     "python": "3.11.2"
   },
