@@ -93,8 +93,15 @@ def main():
             ci_json = os.path.join(ci_runs[-1], 'tau_power_ci.json')
             ci_data = load_json(ci_json)
             if ci_data and ci_data.get('taus'):
-                # align order to taus_sorted
-                tau_to_idx = {float(t): i for i, t in enumerate([float(x) for x in ci_data['taus']])}
+                # align order to taus_sorted; tolerate labels like 'tau_5.5'
+                import re
+                def parse_tau(v):
+                    if isinstance(v, (int, float)):
+                        return float(v)
+                    m = re.search(r"[-+]?[0-9]*\.?[0-9]+", str(v))
+                    return float(m.group(0)) if m else float('nan')
+                taus_ci = [parse_tau(x) for x in ci_data['taus']]
+                tau_to_idx = {float(t): i for i, t in enumerate(taus_ci)}
                 lo = np.array(ci_data['lo'], dtype=float)
                 hi = np.array(ci_data['hi'], dtype=float)
                 hw = (hi - lo) / 2.0
@@ -153,6 +160,13 @@ def main():
         }
         with open(os.path.join(out_dir, 'sphere.json'), 'w') as f:
             json.dump(mapping, f, indent=2)
+        # write references.md for consistency
+        refs_md = os.path.join(out_dir, 'references.md')
+        with open(refs_md, 'w') as rf:
+            rf.write("- Spiking in Pleurotus djamor (Sci Rep 2018): https://www.nature.com/articles/s41598-018-26007-1\n")
+            rf.write("- Multiscalar electrical spiking in Schizophyllum commune (Sci Rep 2023): https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/\n")
+            rf.write("- Language of fungi derived from electrical spiking (R. Soc. Open Sci. 2022): https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/\n")
+            rf.write("- Electrical activity of fungi: Spikes detection and complexity (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
         print(f"[OK] {out_html}")
 
 
