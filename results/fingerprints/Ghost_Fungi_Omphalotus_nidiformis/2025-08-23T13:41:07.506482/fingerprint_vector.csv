@@ -1,0 +1,2 @@
+species,timestamp,snr_sqrt,snr_stft,concentration_sqrt,spike_count,ampl_entropy_bits,frac_tau_5.5,frac_tau_24.5,frac_tau_104.0
+Ghost_Fungi_Omphalotus_nidiformis,2025-08-23T13:41:07.506482,315.76667441633157,10873317.475290664,0.022571242652503203,6,2.5849625007209656,0.0625,0.125,0.8125

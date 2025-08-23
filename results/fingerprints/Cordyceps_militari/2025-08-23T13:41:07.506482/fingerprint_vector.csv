@@ -1,0 +1,2 @@
+species,timestamp,snr_sqrt,snr_stft,concentration_sqrt,spike_count,ampl_entropy_bits,frac_tau_5.5,frac_tau_24.5,frac_tau_104.0
+Cordyceps_militari,2025-08-23T13:41:07.506482,364.2788205400272,38772791.529270336,0.02872225050442339,1114,1.3194576413379429,0.0,0.125,0.875

@@ -13,6 +13,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
 from viz.plotting import plot_spiral_fingerprint
+import subprocess
 
 
 def latest_run_dir(species_dir: str) -> str | None:
@@ -114,7 +115,12 @@ def main():
             )
             print(f"[OK] {out_path}")
             # Also emit a JSON spec documenting mapping
+            try:
+                git_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+            except Exception:
+                git_sha = None
             mapping = {
+                "schema_version": "1.0",
                 "title": title,
                 "created_by": metrics.get('created_by', 'joe knowles'),
                 "timestamp": ts,
@@ -126,8 +132,27 @@ def main():
                 "amplitude_entropy_bits": metrics.get('amplitude_stats', {}).get('shannon_entropy_bits', None),
                 "taus_for_labels": taus_for_labels,
                 "ci_halfwidths": ci_halfwidths,
+                "units": {
+                    "tau": "sqrt(seconds)",
+                    "spike_rate": "spikes/hour",
+                    "amplitude": "mV",
+                    "snr": "unitless (power ratio)",
+                    "concentration": "unitless (0-1)",
+                    "fractions": "unitless; sum≈1.0"
+                },
+                "normalization": {
+                    "band_fraction_method": "csv_mean_normalized" if os.path.isfile(csv_path) else "metrics_json",
+                    "description": "If CSV available, fractions are mean τ-power normalized across τ; else uses metrics.band_fractions and are renormalized to sum 1.",
+                },
                 "n_windows": len(open(csv_path).read().splitlines()) - 1 if os.path.isfile(csv_path) else None,
                 "channel": args.channel or metrics.get('channel'),
+                "provenance": {
+                    "git_sha": git_sha,
+                    "source_metrics": os.path.join(run_dir, 'metrics.json'),
+                    "source_concentration": os.path.join(run_dir, 'snr_concentration.json'),
+                    "source_tau_csv": csv_path if os.path.isfile(csv_path) else None,
+                    "intended_for": "peer_review"
+                },
                 "encodings": {
                     "rings": {
                         "order": "increasing τ",
@@ -147,12 +172,42 @@ def main():
                     "center": {
                         "color": "gold"
                     }
-                }
+                },
+                "references": [
+                    {
+                        "label": "Sci Rep 2018",
+                        "title": "Spiking in Pleurotus djamor",
+                        "url": "https://www.nature.com/articles/s41598-018-26007-1"
+                    },
+                    {
+                        "label": "Jones 2023",
+                        "title": "Multiscalar electrical spiking in Schizophyllum commune",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/"
+                    },
+                    {
+                        "label": "Adamatzky 2022",
+                        "title": "Language of fungi from electrical spiking activity",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/"
+                    },
+                    {
+                        "label": "Biosystems 2021",
+                        "title": "Electrical activity of fungi: spikes detection and complexity",
+                        "url": "https://www.sciencedirect.com/science/article/pii/S0303264721000307"
+                    }
+                ]
             }
             json_path = os.path.join(out_dir, 'spiral.json')
             with open(json_path, 'w') as jf:
                 json.dump(mapping, jf, indent=2)
             print(f"[OK] {json_path}")
+            # Write references.md for human-readable context
+            refs_md = os.path.join(out_dir, 'references.md')
+            with open(refs_md, 'w') as rf:
+                rf.write("- Spiking in Pleurotus djamor (Sci Rep 2018): https://www.nature.com/articles/s41598-018-26007-1\n")
+                rf.write("- Multiscalar electrical spiking in Schizophyllum commune (Sci Rep 2023): https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/\n")
+                rf.write("- Language of fungi derived from electrical spiking (R. Soc. Open Sci. 2022): https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/\n")
+                rf.write("- Electrical activity of fungi: Spikes detection and complexity (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
+            print(f"[OK] {refs_md}")
             # Export numeric fingerprint vector for ML/repro
             import csv as _csv
             csv_vec = os.path.join(out_dir, 'fingerprint_vector.csv')
