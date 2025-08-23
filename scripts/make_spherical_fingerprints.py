@@ -25,9 +25,9 @@ def load_json(path: str) -> dict | None:
 def build_sphere(band_fracs: dict, taus_sorted: list[float], ci_halfwidths: list[float] | None,
                  spike_count: int, ampl_entropy_bits: float | None,
                  conc_sqrt: float, snr_ratio: float):
-    # Sphere mesh
-    phi = np.linspace(0, np.pi, 60)   # latitude (0..pi)
-    theta = np.linspace(0, 2*np.pi, 120)  # longitude
+    # Sphere mesh (higher resolution for clarity)
+    phi = np.linspace(0, np.pi, 120)   # latitude (0..pi)
+    theta = np.linspace(0, 2*np.pi, 240)  # longitude
     PHI, THETA = np.meshgrid(phi, theta)
     r_base = 1.0
     X = r_base * np.sin(PHI) * np.cos(THETA)
@@ -41,20 +41,19 @@ def build_sphere(band_fracs: dict, taus_sorted: list[float], ci_halfwidths: list
         fracs = fracs / np.sum(fracs)
     ci = np.array(ci_halfwidths, dtype=float) if ci_halfwidths is not None else np.zeros_like(fracs)
 
-    # Color bands by fraction; thickness by CI
+    # Color bands by fraction; for each grid row choose nearest τ-band
     C = np.zeros_like(X)
-    for i, lat in enumerate(latitudes):
-        # Find nearest latitude indices
-        idx = np.argmin(np.abs(PHI - lat), axis=0)
-        # For each longitude column, set color row at idx
-        for j in range(C.shape[1]):
-            C[idx[j], j] = fracs[i]
+    tau_idx_grid = np.zeros_like(X, dtype=int)
+    for j in range(C.shape[1]):
+        nearest = np.argmin(np.abs(PHI[:, j][:, None] - latitudes[None, :]), axis=1)
+        C[:, j] = fracs[nearest]
+        tau_idx_grid[:, j] = nearest
 
     # Add a scalar bump from conc+snr toward +Z
     bump = 0.15 * (np.clip(conc_sqrt, 0.0, 1.0) + 0.5 * np.clip(snr_ratio, 0.0, 2.0))
     Zb = Z + bump * (Z / (np.max(np.abs(Z)) + 1e-9))
 
-    return X, Y, Zb, C, latitudes, fracs, ci
+    return X, Y, Z, Zb, C, latitudes, fracs, ci, tau_idx_grid
 
 
 def main():
@@ -114,9 +113,48 @@ def main():
         conc_sqrt = float(conc.get('concentration', {}).get('sqrt', 0.0))
         snr_ratio = (snr_sqrt + 1e-12) / (snr_stft + 1e-12)
 
-        X, Y, Z, C, lats, fracs, ci = build_sphere(band_fracs, taus_sorted, ci_halfwidths, spike_count, ampl_entropy, conc_sqrt, snr_ratio)
+        X, Y, Z0, Zb, C, lats, fracs, ci, tau_idx_grid = build_sphere(band_fracs, taus_sorted, ci_halfwidths, spike_count, ampl_entropy, conc_sqrt, snr_ratio)
 
-        fig = go.Figure(data=[go.Surface(x=X, y=Y, z=Z, surfacecolor=C, colorscale='Viridis', showscale=True)])
+        # Build customdata for hover: tau, fraction
+        tau_vals_grid = np.vectorize(lambda idx: taus_sorted[int(idx)])(tau_idx_grid)
+        custom = np.dstack((tau_vals_grid, C))
+
+        # Bumped surface with lighting and informative hover
+        fig = go.Figure(data=[go.Surface(
+            x=X, y=Y, z=Zb, surfacecolor=C, colorscale='Viridis', showscale=True,
+            cmin=0.0, cmax=1.0, colorbar=dict(title='τ fraction'),
+            customdata=custom,
+            hovertemplate='τ=%{customdata[0]:.3g}<br>fraction=%{customdata[1]:.3f}<extra></extra>',
+            lighting=dict(ambient=0.55, diffuse=0.7, specular=0.3, roughness=0.45),
+            lightposition=dict(x=100, y=200, z=300),
+        )])
+
+        # Add latitude rings (center; CI as thickness via inner/outer rings if available)
+        rings = []
+        max_ci = float(np.max(ci)) if ci.size > 0 else 0.0
+        for i, lat in enumerate(lats):
+            long = np.linspace(0, 2*np.pi, 360)
+            # center ring
+            xring = np.sin(lat) * np.cos(long)
+            yring = np.sin(lat) * np.sin(long)
+            zring = np.cos(lat) + 0.001
+            rings.append(go.Scatter3d(x=xring, y=yring, z=zring, mode='lines',
+                                      line=dict(color='white', width=2), opacity=1.0,
+                                      name=f"τ={taus_sorted[i]:g}", showlegend=False))
+            # CI thickness rings
+            if max_ci > 0 and i < len(ci):
+                offset = 0.2 * (ci[i] / (max_ci + 1e-9))
+                for sign in (+1, -1):
+                    lat_use = lat + sign * offset
+                    xri = np.sin(lat_use) * np.cos(long)
+                    yri = np.sin(lat_use) * np.sin(long)
+                    zri = np.cos(lat_use) + 0.001
+                    rings.append(go.Scatter3d(x=xri, y=yri, z=zri, mode='lines',
+                                              line=dict(color='white', width=1), opacity=0.5,
+                                              showlegend=False))
+        for tr in rings:
+            fig.add_trace(tr)
+
         # Add 3D text labels at each latitude band using a Scatter3d trace
         xs, ys, zs, texts = [], [], [], []
         for i, lat in enumerate(lats):
@@ -134,7 +172,7 @@ def main():
         out_dir = os.path.join(args.out_root, sp, ts)
         os.makedirs(out_dir, exist_ok=True)
         out_html = os.path.join(out_dir, 'sphere.html')
-        fig.write_html(out_html, include_plotlyjs='cdn', full_html=True)
+        fig.write_html(out_html, include_plotlyjs='cdn', full_html=True, config={'responsive': True, 'displaylogo': False})
         # write a mapping JSON
         mapping = {
             'created_by': 'joe knowles',
