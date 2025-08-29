@@ -25,6 +25,10 @@ Links (workspace)
 - Results index: results/index.html
 - Per-run artifacts: results/zenodo/<species>/<timestamp>/
 
+Reproducibility highlights
+- Each run includes `audit.json` (parameters, versions, assets) and CSV exports for replotting (no recompute required).
+- CI summaries under `results/ci_summaries/...` visualize uncertainty bands.
+
 Next steps
 - Strong baselines (multitaper/synchrosqueezing), bootstrap CIs, stimuli overlays.
 - Lightweight classifiers for species/state detection; expand dataset and metadata.

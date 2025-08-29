@@ -28,6 +28,14 @@ We detrend with a long moving baseline (e.g., 600 s), detect thresholded events 
 3.3 Machine learning (optional)
 We treat channels as samples, aggregate per-window √t features and spike statistics, and evaluate simple classifiers with cross-validation (leave-one-file-out for small-N). Diagnostics include feature importance and calibration.
 
+3.4 Implementation specifics (reproducibility)
+- Transform core: `prove_transform.py` (`sqrt_time_transform_fft`) uses energy-normalized Gaussian (or optional Morlet) windows in u with zero-padding to next power of two and rFFT; continuous integral scaling via `du`.
+- STFT baseline: `stft_fft` applies Gaussian window in t with same FFT conventions.
+- Concentration and SNR: `spectral_concentration = max(power)/sum(power)`; `snr_vs_background` compares target bin vs median background excluding a neighborhood.
+- Feature extraction: `ml_pipeline.py` computes τ-normalized power per window, k-centroid/bandwidth/peaks, entropy of k, plus power ratios, and spike features (rate per hour; entropy/skew/kurtosis of amplitudes and ISIs).
+- Defaults (docs/06_Validation_and_Settings.md): fs≈1 Hz; thresholds 0.05–0.2 mV; min_isi 120–300 s; baseline 300–900 s; τ={5.5, 24.5, 104}; ν0≈5–16; n_u≈160–512.
+- Plots: heatmaps/surfaces, STFT vs √t lines, spikes overlay, histograms, τ‑trend CIs, and spiral/spherical fingerprints (viz/plotting.py).
+
 4. Results
 Per-species representative runs (metrics.json):
 - Schizophyllum commune (diff_1): τ-band fractions 5.5→0.1875, 24.5→0.375, 104→0.4375; spike_count=10 (sparse).
@@ -52,6 +60,16 @@ All outputs are timestamped under results/. Key entry points: results/index.html
 
 8. Acknowledgments
 Author thanks open-source communities and AI assistants (Claude 4 for initial transform ideation; and other AI tools for drafting) for research support.
+
+9. Reproducibility, validation, and compliance (expanded)
+- Parameter reporting: Each run emits `audit.json` with fs, thresholds, τ, ν0, versions, git SHA, created_by, intended_for, and asset sizes.
+- Confidence intervals: `results/ci_summaries/<species>/<timestamp>/index.json` and plots (`spike_rate_ci.png`, `tau_trends_ci.png`) summarize uncertainty across windows/channels.
+- CSV-first reproducibility: `tau_band_timeseries.csv` and `spike_times_s.csv` allow figure regeneration (`scripts/replot_from_csv.py`) without re-running transforms.
+- Cross-species table: `snr_concentration_table.*` provides numeric √t vs STFT comparisons.
+- Anti-leakage safeguards: fixed defaults, timestamped outputs, per-channel CV, cached features only for speed, no label reuse across folds.
+
+10. AI assistance disclosure
+This project’s methodology (√t transform usage and analysis plan) emerged through iterative conversations with AI assistants (notably Anthropic Claude 4) and was implemented by Joe Knowles. Drafting and packaging also used AI tooling. All numerical results are computed from public data and are reproducible from the provided scripts and configs.
 
 References (selection)
 - Adamatzky (2022) Fungal networks. https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/
