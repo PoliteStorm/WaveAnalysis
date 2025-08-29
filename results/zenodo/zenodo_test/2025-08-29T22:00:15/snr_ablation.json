@@ -1,0 +1,53 @@
+{
+  "u0": 30.0,
+  "tau": 5.5,
+  "sqrt_ablation": [
+    {
+      "window": "gaussian",
+      "detrend_u": false,
+      "snr": 682.5753434616769,
+      "concentration": 0.18419085582252892
+    },
+    {
+      "window": "gaussian",
+      "detrend_u": true,
+      "snr": 684.2613010927233,
+      "concentration": 0.1839372463043254
+    },
+    {
+      "window": "morlet",
+      "detrend_u": false,
+      "snr": 350.40557744907863,
+      "concentration": 0.09868199998775476
+    },
+    {
+      "window": "morlet",
+      "detrend_u": true,
+      "snr": 352.8600751511424,
+      "concentration": 0.0986195987314088
+    }
+  ],
+  "stft": {
+    "snr": 830.0400390733653,
+    "concentration": 0.04704124388025195
+  },
+  "stft_multitaper": {
+    "snr": 789.696074746899,
+    "concentration": 0.04897637432585823
+  },
+  "ssq": {
+    "snr": null,
+    "concentration": null
+  },
+  "reassigned": {
+    "snr": 4.0165882112231905,
+    "concentration": 0.0014637554517171025
+  },
+  "controls": [
+    {
+      "control": "phase_randomized",
+      "snr": 88.40785370300505,
+      "concentration": 0.06909139908693097
+    }
+  ]
+}

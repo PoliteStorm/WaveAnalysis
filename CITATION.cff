@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "√t Transform for Fungal Bioelectric Analysis"
+authors:
+  - family-names: Knowles
+    given-names: Joe
+date-released: 2025-08-22
+version: 0.1.0
+doi: 10.5281/zenodo.0000000
+license: MIT
+repository-code: https://github.com/PoliteStorm/WaveAnalysis

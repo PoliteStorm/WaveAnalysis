@@ -3,6 +3,23 @@ import numpy as np
 import argparse
 import re
 from typing import Dict, Tuple, Optional, List
+import warnings
+
+# Optional dependencies for advanced baselines
+try:
+    from scipy.signal.windows import dpss as _dpss
+except Exception:
+    _dpss = None
+
+try:
+    import ssqueezepy as _ssq
+except Exception:
+    _ssq = None
+
+try:
+    import librosa as _librosa
+except Exception:
+    _librosa = None
 
 
 def gaussian(x, sigma):
@@ -117,6 +134,121 @@ def stft_fft(V_func, t0, sigma_t, t_grid):
     # Continuous integral approximation scaling
     G = G * dt
     return omega_fft, G
+
+
+def stft_multitaper_fft(V_func,
+                        t0: float,
+                        sigma_t: float,
+                        t_grid: np.ndarray,
+                        time_halfwidth_factor: float = 1.0,
+                        NW: float = 2.5,
+                        Kmax: int = 3) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Multitaper STFT using DPSS tapers applied on the same Gaussian-windowed segment as stft_fft.
+
+    Returns (omega_fft, G_mt) where G_mt is the complex spectrum averaged over tapers.
+    """
+    if _dpss is None:
+        warnings.warn("scipy not available; stft_multitaper_fft falling back to single-taper STFT")
+        return stft_fft(V_func, t0, sigma_t, t_grid)
+
+    # Build Gaussian window around t0 with same sigma_t
+    win = gaussian(t_grid - t0, sigma_t)
+    V_vals = V_func(t_grid)
+    x = V_vals * win
+    dt = t_grid[1] - t_grid[0]
+    N = len(x)
+    # Effective segment length: use full length; DPSS defined over N samples
+    K = max(1, int(Kmax))
+    tapers = _dpss(N, NW=NW, Kmax=K, sym=False)  # shape (K, N)
+    # Zero-pad to next power of two
+    N_fft = 1 << (N - 1).bit_length()
+    X_mt = np.zeros((K, N_fft//2 + 1), dtype=complex)
+    for i in range(K):
+        gk = x * tapers[i]
+        gk_pad = np.zeros(N_fft, dtype=float)
+        gk_pad[:N] = gk
+        Gk = np.fft.rfft(gk_pad)
+        X_mt[i] = Gk
+    # Average complex spectra, then apply continuous integral scaling
+    G_mt = X_mt.mean(axis=0) * dt
+    omega_fft = 2.0 * np.pi * np.fft.rfftfreq(N_fft, d=dt)
+    return omega_fft, G_mt
+
+
+def phase_randomize(x: np.ndarray, rng: Optional[np.random.Generator] = None) -> np.ndarray:
+    """
+    Create a phase-randomized surrogate preserving the magnitude spectrum and autocovariance.
+    """
+    if rng is None:
+        rng = np.random.default_rng(0)
+    N = len(x)
+    X = np.fft.rfft(x)
+    # Random phases for bins 1..end-1 (exclude DC and Nyquist)
+    if X.size <= 2:
+        return x.copy()
+    phases = rng.uniform(0.0, 2.0 * np.pi, size=X.size)
+    phases[0] = 0.0
+    # If even N, Nyquist is last bin with purely real coef; keep its phase 0
+    # Compose new spectrum with same magnitudes
+    X_new = np.abs(X) * np.exp(1j * phases)
+    xr = np.fft.irfft(X_new, n=N)
+    return np.asarray(xr, dtype=float)
+
+
+def ssq_time_frequency_spectrum(x: np.ndarray,
+                                dt: float,
+                                wavelet: str = 'morlet') -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Compute a time–frequency spectrum via synchrosqueezed CWT and reduce over time to a 1D frequency power.
+
+    Returns (omega_like, P_freq) where omega_like is an angular-frequency-like axis (rad/s).
+    """
+    if _ssq is None:
+        warnings.warn("ssqueezepy not available; skipping ssq_time_frequency_spectrum")
+        return np.array([]), np.array([])
+
+
+def reassigned_spectrum(x: np.ndarray,
+                        dt: float,
+                        n_fft: int | None = None,
+                        hop_length: int | None = None,
+                        window: str = 'hann') -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Compute a reassigned spectrogram power reduced over time using librosa.
+
+    Returns (omega, P_freq). If librosa is unavailable, returns empty arrays.
+    """
+    if _librosa is None:
+        warnings.warn("librosa not available; skipping reassigned_spectrum")
+        return np.array([]), np.array([])
+    try:
+        sr = 1.0 / dt
+        if n_fft is None:
+            # Choose power-of-two near len(x)
+            N = len(x)
+            n_fft = 1 << (N - 1).bit_length()
+        if hop_length is None:
+            hop_length = max(1, n_fft // 4)
+        S, freqs, times = _librosa.reassigned_spectrogram(y=x, sr=sr, n_fft=n_fft, hop_length=hop_length, window=window)
+        # S has shape (n_freqs, n_frames). Reduce power over time
+        P = np.sum(np.abs(S) ** 2, axis=1)
+        omega = 2.0 * np.pi * np.asarray(freqs, dtype=float)
+        return omega, np.asarray(P, dtype=float)
+    except Exception:
+        warnings.warn("reassigned spectrogram failed; returning empty arrays")
+        return np.array([]), np.array([])
+    try:
+        # Continuous wavelet transform and synchrosqueezing
+        Tx, fs, _ = _ssq.ssq_cwt(x, fs=1.0/dt, wavelet=wavelet)
+        # fs are frequencies in Hz; convert to angular frequency (rad/s)
+        omega = 2.0 * np.pi * np.asarray(fs, dtype=float)
+        # Power reduced over time
+        P = np.sum(np.abs(Tx) ** 2, axis=1)
+        return omega, np.asarray(P, dtype=float)
+    except Exception:
+        warnings.warn("ssq transform failed; returning empty arrays")
+        return np.array([]), np.array([])
 
 
 def spectral_concentration(power_arr: np.ndarray):

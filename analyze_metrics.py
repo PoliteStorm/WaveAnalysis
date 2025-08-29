@@ -164,6 +164,8 @@ def main():
     ap.add_argument('--config', type=str, default='', help='Path to species config JSON (overrides args if present)')
     ap.add_argument('--window', type=str, default='gaussian', choices=['gaussian','morlet'], help='Window for √t transform')
     ap.add_argument('--detrend_u', action='store_true', help='Apply linear detrend in u-domain before FFT')
+    ap.add_argument('--baselines', action='store_true', help='Compute extra baselines (multitaper STFT, synchrosqueezing) and controls')
+    ap.add_argument('--bootstrap_conc', action='store_true', help='Bootstrap CI for √t and STFT concentration across windows')
     args = ap.parse_args()
     # optional stimulus CSV
     ap_stim = args
@@ -338,7 +340,7 @@ def main():
                 out_path=surf_path,
                 dpi=160,
             )
-        # STFT vs √t comparison for a mid window + numeric SNR/concentration
+        # STFT vs √t comparison for a mid window + numeric SNR/concentration (and optional baselines)
         comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
         if args.plot:
             mid = len(u0_grid) // 2
@@ -380,13 +382,64 @@ def main():
             snr_stft = snr(Pw, ti_stft)
             conc_sqrt = conc(Pk)
             conc_stft = conc(Pw)
+            # Optional baselines (multitaper STFT and synchrosqueezed CWT)
+            snr_mt = None
+            conc_mt = None
+            snr_ssq = None
+            conc_ssq = None
+            if args.baselines:
+                try:
+                    omega_mt, Gmt = pt.stft_multitaper_fft(V_func2, t0, sigma_t, t_grid)
+                    Pmt = np.abs(Gmt) ** 2
+                    ti_mt = int(np.argmax(Pmt))
+                    snr_mt = snr(Pmt, ti_mt)
+                    conc_mt = conc(Pmt)
+                except Exception:
+                    snr_mt = None
+                    conc_mt = None
+                # synchrosqueezed spectrum on the same Gaussian-windowed segment
+                try:
+                    # Build the same windowed segment x as STFT
+                    win = np.exp(-0.5 * ((t_grid - t0) / sigma_t) ** 2)
+                    x_seg = np.interp(t_grid, np.arange(len(V)) / args.fs, V) * win
+                    omega_s, Pssq = pt.ssq_time_frequency_spectrum(x_seg, dt=1.0/args.fs, wavelet='morlet')
+                    if Pssq.size > 0:
+                        ti_ssq = int(np.argmax(Pssq))
+                        snr_ssq = snr(Pssq, ti_ssq)
+                        conc_ssq = conc(Pssq)
+                except Exception:
+                    snr_ssq = None
+                    conc_ssq = None
+                # reassigned spectrogram baseline on the same segment
+                try:
+                    win = np.exp(-0.5 * ((t_grid - t0) / sigma_t) ** 2)
+                    x_seg = np.interp(t_grid, np.arange(len(V)) / args.fs, V) * win
+                    omega_r, Pr = pt.reassigned_spectrum(x_seg, dt=1.0/args.fs)
+                    if Pr.size > 0:
+                        ti_r = int(np.argmax(Pr))
+                        snr_r = snr(Pr, ti_r)
+                        conc_r = conc(Pr)
+                    else:
+                        snr_r = None
+                        conc_r = None
+                except Exception:
+                    snr_r = None
+                    conc_r = None
+            payload = {
+                'snr': {'sqrt': snr_sqrt, 'stft': snr_stft},
+                'concentration': {'sqrt': conc_sqrt, 'stft': conc_stft}
+            }
+            if args.baselines:
+                payload['snr']['stft_mt'] = snr_mt
+                payload['snr']['ssq'] = snr_ssq
+                payload['concentration']['stft_mt'] = conc_mt
+                payload['concentration']['ssq'] = conc_ssq
+                payload['snr']['reassigned'] = snr_r
+                payload['concentration']['reassigned'] = conc_r
             with open(os.path.join(target_dir, 'snr_concentration.json'), 'w') as f:
-                json.dump({
-                    'snr': {'sqrt': snr_sqrt, 'stft': snr_stft},
-                    'concentration': {'sqrt': conc_sqrt, 'stft': conc_stft}
-                }, f)
+                json.dump(payload, f, indent=2)
 
-            # Ablation: Gaussian/Morlet × detrend on/off, plus STFT baseline
+            # Ablation: Gaussian/Morlet × detrend on/off, plus STFT baseline and randomized-phase control
             configs = [
                 ('gaussian', False),
                 ('gaussian', True),
@@ -405,12 +458,31 @@ def main():
                     'snr': snr(Pv, ti),
                     'concentration': conc(Pv)
                 })
+            # Phase-randomized control (√t on surrogate)
+            try:
+                x_full = np.interp(t_grid, np.arange(len(V)) / args.fs, V)
+                xr = pt.phase_randomize(x_full)
+                def Vr_func(t_vals):
+                    return np.interp(t_vals, t_grid, xr)
+                kr, Wr = pt.sqrt_time_transform_fft(Vr_func, float(tau_values[0]), u_grid, u0=u0_mid,
+                                                    window=args.window, detrend_u=args.detrend_u)
+                Pr = np.abs(Wr) ** 2
+                ti_r = int(np.argmax(Pr))
+                ab_phase = {'control': 'phase_randomized', 'snr': snr(Pr, ti_r), 'concentration': conc(Pr)}
+            except Exception:
+                ab_phase = None
             ab_out = {
                 'u0': float(u0_mid),
                 'tau': float(tau_values[0]),
                 'sqrt_ablation': ab,
                 'stft': {'snr': snr_stft, 'concentration': conc_stft}
             }
+            if args.baselines:
+                ab_out['stft_multitaper'] = {'snr': snr_mt, 'concentration': conc_mt}
+                ab_out['ssq'] = {'snr': snr_ssq, 'concentration': conc_ssq}
+                ab_out['reassigned'] = {'snr': snr_r, 'concentration': conc_r}
+            if ab_phase is not None:
+                ab_out['controls'] = [ab_phase]
             with open(os.path.join(target_dir, 'snr_ablation.json'), 'w') as f:
                 json.dump(ab_out, f, indent=2)
             # Lightweight markdown table
@@ -423,6 +495,49 @@ def main():
             md.append(f"| STFT | {snr_stft:.2f} | {conc_stft:.4f} |")
             with open(os.path.join(target_dir, 'snr_ablation.md'), 'w') as f:
                 f.write('\n'.join(md))
+            # Optional bootstrap over windows for concentration and effect sizes
+            if args.bootstrap_conc:
+                try:
+                    # For each window, compute conc for √t and STFT
+                    conc_s_list = []
+                    conc_w_list = []
+                    for u0 in u0_grid:
+                        kf, Wv = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=float(u0),
+                                                            window=args.window, detrend_u=args.detrend_u)
+                        Pv = np.abs(Wv) ** 2
+                        conc_s_list.append(conc(Pv))
+                        t0_i = float(u0 ** 2)
+                        omega_i, Gi = pt.stft_fft(V_func2, t0_i, sigma_t, t_grid)
+                        Pw_i = np.abs(Gi) ** 2
+                        conc_w_list.append(conc(Pw_i))
+                    conc_s_arr = np.asarray(conc_s_list, dtype=float)
+                    conc_w_arr = np.asarray(conc_w_list, dtype=float)
+                    # Bootstrap means and difference/ratio
+                    rng = np.random.default_rng(0)
+                    B = 1000
+                    def boot_ci(vals):
+                        if vals.size == 0:
+                            return (None, None, None)
+                        idx = rng.integers(0, vals.size, size=(B, vals.size))
+                        means = np.mean(vals[idx], axis=1)
+                        return float(np.mean(vals)), float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))
+                    mean_s, lo_s, hi_s = boot_ci(conc_s_arr)
+                    mean_w, lo_w, hi_w = boot_ci(conc_w_arr)
+                    # Effect sizes
+                    diff = conc_s_arr - conc_w_arr
+                    ratio = (conc_s_arr + 1e-12) / (conc_w_arr + 1e-12)
+                    mean_d, lo_d, hi_d = boot_ci(diff)
+                    mean_r, lo_r, hi_r = boot_ci(ratio)
+                    with open(os.path.join(target_dir, 'concentration_bootstrap_ci.json'), 'w') as f:
+                        json.dump({
+                            'sqrt_mean': mean_s, 'sqrt_ci95': [lo_s, hi_s],
+                            'stft_mean': mean_w, 'stft_ci95': [lo_w, hi_w],
+                            'diff_mean': mean_d, 'diff_ci95': [lo_d, hi_d],
+                            'ratio_mean': mean_r, 'ratio_ci95': [lo_r, hi_r],
+                            'n_windows': int(len(u0_grid))
+                        }, f, indent=2)
+                except Exception:
+                    pass
             # Summary panel
             panel_path = os.path.join(target_dir, 'summary_panel.png')
             assemble_summary_panel(
