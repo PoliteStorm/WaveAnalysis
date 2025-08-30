@@ -1,0 +1,15 @@
+{
+  "species": [
+    "Schizophyllum_commune"
+  ],
+  "entries": [
+    {
+      "species": "Schizophyllum_commune",
+      "date": "2025-08-22T00:13:04",
+      "files": [
+        "metrics.json",
+        "snr_ablation.json"
+      ]
+    }
+  ]
+}
