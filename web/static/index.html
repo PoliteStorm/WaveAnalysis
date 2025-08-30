@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tau Machine</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 20px; }
+    .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    label { font-weight: 600; }
+    input[type="text"], input[type="number"], textarea, select { width: 100%; max-width: 480px; padding: 8px; }
+    textarea { height: 110px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .btn { background: #0d6efd; color: #fff; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+    .muted { color: #666; font-size: .9em; }
+    pre { background: #f6f8fa; padding: 12px; border-radius: 6px; overflow: auto; }
+    .hidden { display: none; }
+  </style>
+  <script>
+    function onSourceChange(radio) {
+      const uploadSec = document.getElementById('upload-section');
+      uploadSec.classList.toggle('hidden', radio.value !== 'file');
+    }
+
+    async function playGame(ev) {
+      ev.preventDefault();
+      const form = document.getElementById('form');
+      const fd = new FormData(form);
+      const btn = document.getElementById('playBtn');
+      const out = document.getElementById('output');
+      out.textContent = '';
+      btn.disabled = true; btn.textContent = 'Running…';
+      try {
+        const resp = await fetch('/api/play', { method: 'POST', body: fd });
+        const data = await resp.json();
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        out.textContent = JSON.stringify({ error: String(e) }, null, 2);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Play';
+      }
+    }
+  </script>
+  </head>
+  <body>
+    <h1>Tau Machine</h1>
+    <p class="muted">Compose simple gates over τ-band features and evaluate your design.</p>
+
+    <form id="form" onsubmit="playGame(event)">
+      <div class="card">
+        <div class="row">
+          <label>Source</label>
+          <label><input type="radio" name="source" value="demo" checked onchange="onSourceChange(this)"> Demo (synthetic)</label>
+          <label><input type="radio" name="source" value="file" onchange="onSourceChange(this)"> Upload file</label>
+        </div>
+
+        <div id="upload-section" class="row hidden" style="margin-top: 12px; align-items: flex-start;">
+          <div>
+            <label>File (.txt or .csv)</label>
+            <input type="file" name="file" accept=".txt,.csv" />
+          </div>
+          <div>
+            <label>Channel (optional)</label>
+            <input type="text" name="channel" placeholder="e.g. V1" />
+          </div>
+          <div style="flex-basis: 100%;"></div>
+          <div>
+            <label>Label windows (seconds)</label>
+            <input type="text" name="label_windows" placeholder="start:end,start:end" />
+            <div class="muted">Marks 1 inside any window; else 0. Requires duration hint.</div>
+          </div>
+          <div>
+            <label>Duration hint (s)</label>
+            <input type="number" name="duration_hint" value="3600" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div>
+            <label>τ values</label>
+            <input type="text" name="taus" value="5.5,24.5,104" />
+          </div>
+          <div>
+            <label>u0 windows (nu0)</label>
+            <input type="number" name="nu0" value="64" min="4" max="4096" />
+          </div>
+        </div>
+        <div style="margin-top: 8px;">
+          <label>Gates (one per line)</label>
+          <textarea name="gates_text" placeholder="Example:\n0 >= 0.33\n5 <= 0.50\n10 <= 0.30 1.5"></textarea>
+          <div class="muted">Format: &lt;idx&gt; &lt;op&gt; &lt;thr&gt; [weight]. Ops: &gt;, &gt;=, &lt;, &lt;=</div>
+        </div>
+        <div class="row" style="margin-top: 8px;">
+          <div>
+            <label>Mode</label>
+            <select name="mode">
+              <option>AND</option>
+              <option>OR</option>
+              <option>MEAN</option>
+              <option>WEIGHTED</option>
+            </select>
+          </div>
+          <div>
+            <label>Threshold</label>
+            <input type="number" name="threshold" value="0.5" step="0.01" />
+          </div>
+          <div>
+            <label>CV folds (k)</label>
+            <input type="number" name="cv" value="5" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <button id="playBtn" class="btn" type="submit">Play</button>
+    </form>
+
+    <h3>Output</h3>
+    <pre id="output"></pre>
+
+    <p class="muted">Tip: Feature indices 0,5,10 are τ power fractions for fast/medium/slow bands when using three τ values.</p>
+  </body>
+</html>
+
