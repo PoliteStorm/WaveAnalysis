@@ -8,5 +8,6 @@
     "spike_csv": null
   },
   "tau_power_ci": null,
-  "spike_rate_ci": null
+  "spike_rate_ci": null,
+  "intended_for": "peer_review"
 }

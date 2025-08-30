@@ -1,0 +1,932 @@
+{
+  "timestamp": "2025-08-30T13:25:50.481973",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review",
+  "audit_summary": {
+    "total_files_audited": 91,
+    "valid_files": 91,
+    "invalid_files": 0,
+    "validity_rate": "100.0%"
+  },
+  "directory_structure": {
+    "base_path": "results",
+    "total_directories": 133,
+    "timestamp_directories": 97,
+    "issues": []
+  },
+  "file_audits": [
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-20T21:36:22/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:36:22",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:07:25/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:07:25",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-30T13:20:31/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-30T13:20:31",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/quick/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T10:42:19",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:04:10/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:04:10",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-19T00:14:15/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:14:15",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:39:11",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:14:16/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:14:16",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:15:17/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:15:17",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:01:39/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:01:39",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:13:19/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:19",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-30T13:20:06/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-30T13:20:06",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T21:41:36/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:41:36",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:16:33",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:16:33/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:16:33",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Cordyceps_militari/2025-08-22T00:44:22.089023/spike_rate_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-19T00:30:11/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:30:11",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:44:22.089023/index.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T22:34:59/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T22:34:59",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:17:41/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:17:41",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:59:11/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:59:11",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-19T11:38:33/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:38:33",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:44:22.089023/index.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-20T22:00:48/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T22:00:48",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:41:09/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:41:09",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:13:04/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:04",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:13:19/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:19",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/peer_review/2025-08-20T22-29-15/ml/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T10:42:19",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:39:11",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:03:13/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:03:13",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/lofo_spike/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:20:38",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/summaries/2025-08-30T13:14:26/multi_species_tau_trends.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-30T13:14:26",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Schizophyllum_commune/2025-08-22T00:44:22.089023/spike_rate_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T14-42-54_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T14:42:54",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-20T21:37:21/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:37:21",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:15:17/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:15:17",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T21:41:09/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:41:09",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:13:04/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:04",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:38:41/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:38:41",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-19T00:26:58/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:26:58",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T21:58:47/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:58:47",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T14-31-03_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T14:31:03",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:01:39/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:01:39",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:41:09/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:41:09",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:04:10/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:04:10",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/lofo/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T10:48:56",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-20T21:43:19/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:43:19",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:08:57/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:08:57",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:44:22.089023/spike_rate_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T14-19-02_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T14:19:02",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:08:57/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:08:57",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Schizophyllum_commune/2025-08-22T00:44:22.089023/index.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:03:13/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:03:13",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:13:47/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:47",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Cordyceps_militari/2025-08-22T00:44:22.089023/tau_power_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-30T13:20:31/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-30T13:20:31",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-19T00:18:48/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:18:48",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T14-39-36_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T14:39:36",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T21:35:18/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:35:18",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T21:39:49/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:39:49",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-21T23:57:05/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-21T23:57:05",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-19T11:39:15/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:39:15",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Cordyceps_militari/2025-08-22T00:44:22.089023/index.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:14:16/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:14:16",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T21:34:50/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:34:50",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:44:22.089023/tau_power_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ci_summaries/Schizophyllum_commune/2025-08-22T00:44:22.089023/tau_power_ci.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:44:22.089023",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-30T13:20:06/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-30T13:20:06",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-19T00:28:04/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:28:04",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:18:40/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:18:40",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T14-12-57_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T14:12:57",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:07:25/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:07:25",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-21T23:22:14/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-21T23:22:14",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-20T22:35:28/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T22:35:28",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-19T11:40:12/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:40:12",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Ghost_Fungi_Omphalotus_nidiformis/2025-08-22T00:59:11/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:59:11",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-22T00:38:41/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:38:41",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:17:41/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:17:41",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/lofo_plus/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:10:02",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-22T00:18:40/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:18:40",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-19T10-53-49/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T10:55:39",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T21:33:51/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:33:51",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-20T22:37:28/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T22:37:28",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-19T11:38:02/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T11:38:02",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-21T23:12:27/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-21T23:12:27",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/ml/2025-08-20T22-19-14_leave_one_file_out_nu05_nu160/results.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T22:19:14",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-21T23:10:14/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-21T23:10:14",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-19T00:28:25/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:28:25",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:13:47/snr_ablation.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-22T00:13:47",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Schizophyllum_commune/2025-08-20T21:58:16/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-20T21:58:16",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    },
+    {
+      "filepath": "results/zenodo/Cordyceps_militari/2025-08-19T00:20:53/metrics.json",
+      "valid": true,
+      "issues": [],
+      "metadata": {
+        "timestamp": "2025-08-19T00:20:53",
+        "created_by": "joe knowles",
+        "intended_for": "peer_review"
+      }
+    }
+  ],
+  "recommendations": [
+    "All files appear consistent! \u2705"
+  ]
+}
