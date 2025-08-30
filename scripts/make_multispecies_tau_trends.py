@@ -3,10 +3,12 @@ import argparse
 import glob
 import json
 import os
+import sys
 from datetime import datetime
 
 import numpy as np
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from viz.plotting import plot_tau_trends_ci
 
 
@@ -29,19 +31,31 @@ def load_tau_ci(path: str):
 
 
 def unify_taus(ci_dicts):
-    # Collect all taus
+    # Collect all taus (focus on raw values, not _norm)
     all_taus = set()
     for d in ci_dicts:
         for t in d['taus']:
-            try:
-                all_taus.add(float(str(t).replace('tau_', '')))
-            except Exception:
-                pass
+            t_str = str(t)
+            if '_norm' not in t_str:
+                try:
+                    all_taus.add(float(t_str.replace('tau_', '')))
+                except Exception:
+                    pass
     taus_sorted = sorted(all_taus)
-    # Reindex each dict to unified tau order
+
+    # Reindex each dict to unified tau order (raw values only)
     out = []
     for d in ci_dicts:
-        tau_to_idx = {float(str(t).replace('tau_', '')): i for i, t in enumerate(d['taus'])}
+        tau_to_idx = {}
+        for i, t in enumerate(d['taus']):
+            t_str = str(t)
+            if '_norm' not in t_str:
+                try:
+                    tau_val = float(t_str.replace('tau_', ''))
+                    tau_to_idx[tau_val] = i
+                except Exception:
+                    pass
+
         mean = np.zeros(len(taus_sorted), dtype=float)
         lo = np.zeros(len(taus_sorted), dtype=float)
         hi = np.zeros(len(taus_sorted), dtype=float)
@@ -119,5 +133,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
