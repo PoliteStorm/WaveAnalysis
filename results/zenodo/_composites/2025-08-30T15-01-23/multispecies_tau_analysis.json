@@ -1,0 +1,174 @@
+{
+  "species": {
+    "Schizophyllum_commune": {
+      "n_samples": 64,
+      "time_range": [
+        0.0,
+        255322.20410156253
+      ],
+      "tau_columns": [
+        "tau_5.5",
+        "tau_24.5",
+        "tau_104"
+      ]
+    },
+    "Enoki_fungi_Flammulina_velutipes": {
+      "n_samples": 16,
+      "time_range": [
+        0.0,
+        947712.3046875002
+      ],
+      "tau_columns": [
+        "tau_5.5",
+        "tau_24.5",
+        "tau_104"
+      ]
+    },
+    "Cordyceps_militari": {
+      "n_samples": 16,
+      "time_range": [
+        0.0,
+        1668911.1328125002
+      ],
+      "tau_columns": [
+        "tau_5.5",
+        "tau_24.5",
+        "tau_104"
+      ]
+    },
+    "Ghost_Fungi_Omphalotus_nidiformis": {
+      "n_samples": 16,
+      "time_range": [
+        0.0,
+        2882323.828125
+      ],
+      "tau_columns": [
+        "tau_5.5",
+        "tau_24.5",
+        "tau_104"
+      ]
+    }
+  },
+  "tau_analysis": {
+    "tau_5.5": {
+      "species_means": {
+        "Schizophyllum_commune": 0.2614039771678849,
+        "Enoki_fungi_Flammulina_velutipes": 0.2156865974570017,
+        "Cordyceps_militari": 0.2335497257738521,
+        "Ghost_Fungi_Omphalotus_nidiformis": 0.26279969504180173
+      },
+      "species_cis": {
+        "Schizophyllum_commune": {
+          "lower": 0.23053413195817218,
+          "upper": 0.29240346576904036,
+          "mean": 0.2614039771678849
+        },
+        "Enoki_fungi_Flammulina_velutipes": {
+          "lower": 0.16719925536539085,
+          "upper": 0.2634316074597984,
+          "mean": 0.2156865974570017
+        },
+        "Cordyceps_militari": {
+          "lower": 0.18490514763622817,
+          "upper": 0.27751799154017703,
+          "mean": 0.2335497257738521
+        },
+        "Ghost_Fungi_Omphalotus_nidiformis": {
+          "lower": 0.20782633921091287,
+          "upper": 0.3034942625348941,
+          "mean": 0.26279969504180173
+        }
+      },
+      "comparative_stats": {
+        "anova_f": 0.9042211299463828,
+        "anova_p": 0.44167606360280454,
+        "significant": "False",
+        "n_species_compared": 4
+      }
+    },
+    "tau_24.5": {
+      "species_means": {
+        "Schizophyllum_commune": 0.31372974500386863,
+        "Enoki_fungi_Flammulina_velutipes": 0.2634397978763806,
+        "Cordyceps_militari": 0.28576274689645564,
+        "Ghost_Fungi_Omphalotus_nidiformis": 0.281434097228235
+      },
+      "species_cis": {
+        "Schizophyllum_commune": {
+          "lower": 0.2965073906712895,
+          "upper": 0.3305134674727866,
+          "mean": 0.31372974500386863
+        },
+        "Enoki_fungi_Flammulina_velutipes": {
+          "lower": 0.21689759455614482,
+          "upper": 0.3078243167861701,
+          "mean": 0.2634397978763806
+        },
+        "Cordyceps_militari": {
+          "lower": 0.2397715303256442,
+          "upper": 0.32315824381372504,
+          "mean": 0.28576274689645564
+        },
+        "Ghost_Fungi_Omphalotus_nidiformis": {
+          "lower": 0.2360853599699206,
+          "upper": 0.31799970006017014,
+          "mean": 0.281434097228235
+        }
+      },
+      "comparative_stats": {
+        "anova_f": 2.1666294347097708,
+        "anova_p": 0.09615816532698446,
+        "significant": "False",
+        "n_species_compared": 4
+      }
+    },
+    "tau_104": {
+      "species_means": {
+        "Schizophyllum_commune": 0.42486627782824643,
+        "Enoki_fungi_Flammulina_velutipes": 0.5208736046666176,
+        "Cordyceps_militari": 0.48068752732969217,
+        "Ghost_Fungi_Omphalotus_nidiformis": 0.4557662077299632
+      },
+      "species_cis": {
+        "Schizophyllum_commune": {
+          "lower": 0.38563508958827825,
+          "upper": 0.46220037110571927,
+          "mean": 0.42486627782824643
+        },
+        "Enoki_fungi_Flammulina_velutipes": {
+          "lower": 0.4400032521561316,
+          "upper": 0.6131537340216241,
+          "mean": 0.5208736046666176
+        },
+        "Cordyceps_militari": {
+          "lower": 0.4044076404267003,
+          "upper": 0.5713639531296236,
+          "mean": 0.48068752732969217
+        },
+        "Ghost_Fungi_Omphalotus_nidiformis": {
+          "lower": 0.3832448579365399,
+          "upper": 0.5467275773747634,
+          "mean": 0.4557662077299632
+        }
+      },
+      "comparative_stats": {
+        "anova_f": 1.5653554905130231,
+        "anova_p": 0.20200679943164926,
+        "significant": "False",
+        "n_species_compared": 4
+      }
+    }
+  },
+  "comparative_stats": {},
+  "metadata": {
+    "analysis_date": "2025-08-30T15:01:23.668921",
+    "n_species": 4,
+    "tau_values": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "ci_method": "bootstrap",
+    "n_bootstrap": 1000
+  }
+}
