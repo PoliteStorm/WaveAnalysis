@@ -5,6 +5,8 @@
 	"baseline_win_s": 600.0,
 	"taus": [5.5, 24.5, 104.0],
 	"nu0_plot": 64,
-	"nu0_quicklook": 16
+	"nu0_quicklook": 16,
+	"research_basis": "Jones et al. (2023) - multiscalar spiking, highly variable ISIs",
+	"parameter_version": "2.0_research_validated"
 }
 

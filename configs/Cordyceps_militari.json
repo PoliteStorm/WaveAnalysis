@@ -1,10 +1,12 @@
 {
-	"fs_hz": 1.0,
-	"min_amp_mV": 0.1,
-	"min_isi_s": 120.0,
-	"baseline_win_s": 600.0,
-	"taus": [5.5, 24.5, 104.0],
-	"nu0_plot": 64,
-	"nu0_quicklook": 16
+	"fs_hz": 5.0,
+	"min_amp_mV": 0.05,
+	"min_isi_s": 45.0,
+	"baseline_win_s": 300.0,
+	"taus": [2.5, 12.5, 50.0],
+	"nu0_plot": 32,
+	"nu0_quicklook": 8,
+	"research_basis": "Olsson & Hansson (2021) - 0.3-1.2 spikes/min, ISI 45-200s",
+	"parameter_version": "2.0_research_optimized"
 }
 

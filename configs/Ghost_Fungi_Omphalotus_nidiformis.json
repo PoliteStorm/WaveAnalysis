@@ -1,10 +1,12 @@
 {
 	"fs_hz": 1.0,
-	"min_amp_mV": 0.1,
-	"min_isi_s": 120.0,
-	"baseline_win_s": 600.0,
-	"taus": [5.5, 24.5, 104.0],
-	"nu0_plot": 64,
-	"nu0_quicklook": 16
+	"min_amp_mV": 0.12,
+	"min_isi_s": 180.0,
+	"baseline_win_s": 800.0,
+	"taus": [7.0, 30.0, 120.0],
+	"nu0_plot": 56,
+	"nu0_quicklook": 14,
+	"research_basis": "Adamatzky (2022) - 0.05-0.3 spikes/min, ISI 180-1200s",
+	"parameter_version": "2.0_research_optimized"
 }
 
