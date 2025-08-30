@@ -151,7 +151,7 @@ def run_case(case_name: str, T_total: float, dt: float, u_center: float, sigma_u
     u_grid = np.linspace(0.0, U_max, N_u, endpoint=False)
     tau = sigma_u
     # Center the √t-domain window at the event location u_center
-    k_fft, W_vals = sqrt_time_transform_fft(V_func, tau, u_grid, u0=u_center)
+    k_fft, W_vals = sqrt_time_transform_fft(V_func, tau, u_grid, u0=u_center, window=args.window, detrend_u=args.detrend_u)
     power_k = np.abs(W_vals) ** 2
     idx_k0 = int(np.argmin(np.abs(k_fft - k0)))
     conc_sqrt = spectral_concentration(power_k)
@@ -179,11 +179,13 @@ def run_case(case_name: str, T_total: float, dt: float, u_center: float, sigma_u
 
 def main():
     parser = argparse.ArgumentParser(description="√t-transform demo and analysis")
-    parser.add_argument("--mode", choices=["demo", "csv", "zenodo"], default="demo")
+    parser.add_argument("--mode", choices=["demo", "csv", "zenodo", "ablation"], default="demo")
     parser.add_argument("--file", type=str, default="", help="CSV file with columns: time, V1[, V2..][, moisture]")
     parser.add_argument("--channel", type=str, default="V1", help="Channel name to analyze (for csv mode)")
     parser.add_argument("--nu0", type=int, default=64, help="Number of u0 positions (csv mode)")
     parser.add_argument("--taus", type=str, default="5.5,24.5,104", help="Comma-separated τ values to evaluate")
+    parser.add_argument("--window", choices=["gaussian", "morlet"], default="gaussian", help="Window type for √t transform")
+    parser.add_argument("--detrend_u", action="store_true", help="Apply linear detrend in u-domain to reduce low-k leakage")
     args = parser.parse_args()
 
     if args.mode == "demo":
@@ -228,6 +230,25 @@ def main():
             noise_sigma=noise_sigma,
             seed=2,
         )
+        return
+
+    if args.mode == "ablation":
+        ablation_results = run_ablation_study()
+        # Save results to JSON for further analysis
+        import json
+        from datetime import datetime
+        ts = datetime.now().isoformat(timespec='seconds')
+        output_file = f"ablation_study_{ts}.json"
+        with open(output_file, 'w') as f:
+            json.dump({
+                "timestamp": ts,
+                "created_by": "joe knowles",
+                "intended_for": "peer review",
+                "window_types": ["gaussian", "morlet"],
+                "detrend_options": [False, True],
+                "results": ablation_results
+            }, f, indent=2)
+        print(f"\nAblation results saved to: {output_file}")
         return
 
     if args.mode == "zenodo":
@@ -329,6 +350,136 @@ def compute_tau_band_powers(V_func, u0_grid: np.ndarray, tau_values: np.ndarray,
                                            window=window, detrend_u=detrend_u)
             powers[iu, it] = float(np.sum(np.abs(W) ** 2))
     return powers
+
+
+def compute_ablation_snr_concentration(V_func, u0_grid: np.ndarray, tau_values: List[float],
+                                     window: str = "gaussian", detrend_u: bool = False):
+    """Compute SNR and spectral concentration for ablation studies"""
+    U_max = u0_grid[-1] if len(u0_grid) > 0 else 0.0
+    N_u = 4096
+    u_grid = np.linspace(0.0, U_max if U_max > 0 else 1.0, N_u, endpoint=False)
+
+    results = {}
+    for iu, u0 in enumerate(u0_grid):
+        for tau in tau_values:
+            key = f"u0_{u0:.1f}_tau_{tau}"
+            k_fft, W = sqrt_time_transform_fft(V_func, tau, u_grid, u0=u0, window=window, detrend_u=detrend_u)
+            power_k = np.abs(W) ** 2
+
+            # Find the peak frequency (simplified - could be more sophisticated)
+            peak_idx = np.argmax(power_k)
+            peak_k = k_fft[peak_idx]
+
+            # Compute metrics
+            conc = spectral_concentration(power_k)
+            snr = snr_vs_background(power_k, peak_idx, exclude_width=5)
+
+            results[key] = {
+                "peak_k": float(peak_k),
+                "concentration": float(conc),
+                "snr": float(snr),
+                "total_power": float(np.sum(power_k))
+            }
+
+    return results
+
+
+def run_ablation_study():
+    """Run ablation study comparing window types and detrending options"""
+    print("Running √t-transform ablation study...")
+
+    # Test cases with different characteristics
+    test_cases = [
+        {
+            "name": "Early Event (hard for STFT)",
+            "u_center": 10.0,
+            "sigma_u": 3.0,
+            "k0": 12.0,
+            "A1": 0.8,
+            "seed": 1
+        },
+        {
+            "name": "Late Event (easier for STFT)",
+            "u_center": 60.0,
+            "sigma_u": 6.0,
+            "k0": 12.0,
+            "A1": 0.8,
+            "seed": 2
+        },
+        {
+            "name": "Broad Spectrum Event",
+            "u_center": 35.0,
+            "sigma_u": 10.0,
+            "k0": 8.0,
+            "A1": 0.6,
+            "seed": 3
+        }
+    ]
+
+    T_total = 3600.0
+    dt = 0.1
+    A2 = 0.1
+    omega2 = 2 * np.pi * 0.01
+    spike_amp = 0.2
+    noise_sigma = 0.3
+
+    # Tau values to test
+    tau_values = [5.5, 24.5, 104.0]
+    u0_grid = np.linspace(5.0, 60.0, 16)
+
+    ablation_configs = [
+        ("gaussian", False, "Gaussian (no detrend)"),
+        ("gaussian", True, "Gaussian (with detrend)"),
+        ("morlet", False, "Morlet (no detrend)"),
+        ("morlet", True, "Morlet (with detrend)")
+    ]
+
+    print("Ablation Study Results:")
+    print("=" * 60)
+
+    all_results = {}
+
+    for case in test_cases:
+        print(f"\n{case['name']}:")
+        print("-" * 40)
+
+        # Generate signal
+        t = np.arange(0.0, T_total, dt)
+        V, _ = synthesize_signal(t, case['u_center'], case['sigma_u'], case['k0'],
+                               case['A1'], A2, omega2, spike_amp, noise_sigma,
+                               random_state=case['seed'])
+
+        def V_func(t_vals):
+            return np.interp(t_vals, t, V, left=0.0, right=0.0)
+
+        case_results = {}
+        for window, detrend, config_name in ablation_configs:
+            results = compute_ablation_snr_concentration(V_func, u0_grid, tau_values, window, detrend)
+
+            # Aggregate metrics across u0 positions and taus
+            conc_values = [r['concentration'] for r in results.values()]
+            snr_values = [r['snr'] for r in results.values()]
+
+            avg_conc = np.mean(conc_values)
+            avg_snr = np.mean(snr_values)
+            max_conc = np.max(conc_values)
+            max_snr = np.max(snr_values)
+
+            print(f"  {config_name}:")
+            print(".6f")
+            print(".2f")
+
+            case_results[config_name] = {
+                "avg_concentration": float(avg_conc),
+                "avg_snr": float(avg_snr),
+                "max_concentration": float(max_conc),
+                "max_snr": float(max_snr),
+                "details": results
+            }
+
+        all_results[case['name']] = case_results
+
+    return all_results
 
 
 def load_csv_timeseries(path: str) -> Tuple[np.ndarray, Dict[str, np.ndarray], Optional[np.ndarray]]:
