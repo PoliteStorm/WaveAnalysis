@@ -1,0 +1,6 @@
+time_s,stimulus_type,description
+1000.0,moisture,"Moisture stimulus at 1000s"
+5000.0,temperature,"Temperature change at 5000s"
+8000.0,light,"Light stimulus at 8000s"
+12000.0,chemical,"Chemical stimulus at 12000s"
+15000.0,mechanical,"Mechanical stimulus at 15000s"

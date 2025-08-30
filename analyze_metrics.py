@@ -164,6 +164,8 @@ def main():
     ap.add_argument('--config', type=str, default='', help='Path to species config JSON (overrides args if present)')
     ap.add_argument('--window', type=str, default='gaussian', choices=['gaussian','morlet'], help='Window for √t transform')
     ap.add_argument('--detrend_u', action='store_true', help='Apply linear detrend in u-domain before FFT')
+    ap.add_argument('--stimulus_csv', type=str, default='', help='CSV file with stimulus timing data (columns: time_s, stimulus_type)')
+    ap.add_argument('--stimulus_window', type=float, default=300.0, help='Analysis window around stimuli (seconds)')
     args = ap.parse_args()
     # optional stimulus CSV
     ap_stim = args
@@ -230,13 +232,44 @@ def main():
     out['isi_stats'] = isi_stats
     out['band_fractions'] = band_fracs
 
+    # Optional stimulus-response validation
+    stimulus_validation = None
+    if args.stimulus_csv and os.path.isfile(args.stimulus_csv):
+        try:
+            import csv
+            stimulus_times = []
+            with open(args.stimulus_csv) as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if 'time_s' in row and row['time_s']:
+                        stimulus_times.append(float(row['time_s']))
+                    elif 't_s' in row and row['t_s']:
+                        stimulus_times.append(float(row['t_s']))
+
+            if stimulus_times:
+                stimulus_validation = validate_stimulus_response(
+                    V, stimulus_times,
+                    pre_window=args.stimulus_window,
+                    post_window=args.stimulus_window,
+                    fs_hz=args.fs
+                )
+                out['stimulus_validation'] = stimulus_validation
+                print(f"✅ Stimulus-response validation completed: {len(stimulus_times)} stimuli analyzed")
+            else:
+                print("⚠️  No valid stimulus times found in CSV")
+        except Exception as e:
+            print(f"⚠️  Stimulus validation failed: {str(e)}")
+    else:
+        if args.stimulus_csv:
+            print(f"⚠️  Stimulus CSV not found: {args.stimulus_csv}")
+
     # Organize results directory
     base = os.path.splitext(os.path.basename(args.file))[0].replace(' ', '_')
     target_dir = os.path.join(args.out_dir, 'zenodo', base, timestamp)
     os.makedirs(target_dir, exist_ok=True)
     json_path = args.json_out if args.json_out else os.path.join(target_dir, 'metrics.json')
     with open(json_path, 'w') as f:
-        json.dump(out, f)
+        json.dump(out, f, default=str)
     # Write bibliography
     bib_path = os.path.join(target_dir, 'references.md')
     with open(bib_path, 'w') as f:
@@ -468,6 +501,171 @@ def main():
                     w.writerow(['t_s'])
                     for s in spikes_t.tolist():
                         w.writerow([float(s)])
+
+
+def validate_stimulus_response(v_signal, stimulus_times, pre_window=300, post_window=600, fs_hz=1.0):
+    """
+    Validate stimulus-response detection capability with comprehensive statistical analysis.
+
+    Args:
+        v_signal: Voltage signal array
+        stimulus_times: Array of stimulus timing points (in seconds)
+        pre_window: Pre-stimulus analysis window (seconds)
+        post_window: Post-stimulus analysis window (seconds)
+        fs_hz: Sampling frequency
+
+    Returns:
+        Dict containing statistical validation results
+    """
+    import numpy as np
+    from scipy import stats
+
+    # Convert stimulus times to sample indices
+    stimulus_indices = np.round(np.array(stimulus_times) * fs_hz).astype(int)
+
+    pre_samples = int(pre_window * fs_hz)
+    post_samples = int(post_window * fs_hz)
+
+    responses = []
+
+    for stim_idx in stimulus_indices:
+        # Define analysis windows
+        pre_start = max(0, stim_idx - pre_samples)
+        pre_end = stim_idx
+        post_start = stim_idx
+        post_end = min(len(v_signal), stim_idx + post_samples)
+
+        # Extract signal segments
+        pre_signal = v_signal[pre_start:pre_end]
+        post_signal = v_signal[post_start:post_end]
+
+        if len(pre_signal) == 0 or len(post_signal) == 0:
+            continue
+
+        # Basic statistics
+        pre_stats = {
+            'mean': float(np.mean(pre_signal)),
+            'std': float(np.std(pre_signal)),
+            'median': float(np.median(pre_signal)),
+            'min': float(np.min(pre_signal)),
+            'max': float(np.max(pre_signal))
+        }
+
+        post_stats = {
+            'mean': float(np.mean(post_signal)),
+            'std': float(np.std(post_signal)),
+            'median': float(np.median(post_signal)),
+            'min': float(np.min(post_signal)),
+            'max': float(np.max(post_signal))
+        }
+
+        # Statistical tests
+        try:
+            # T-test for means
+            t_stat, p_value = stats.ttest_ind(pre_signal, post_signal, equal_var=False)
+
+            # Effect size (Cohen's d)
+            pooled_std = np.sqrt((np.var(pre_signal) + np.var(post_signal)) / 2)
+            if pooled_std > 0:
+                cohens_d = abs(np.mean(post_signal) - np.mean(pre_signal)) / pooled_std
+            else:
+                cohens_d = 0.0
+
+            # Mann-Whitney U test (non-parametric)
+            u_stat, u_p_value = stats.mannwhitneyu(pre_signal, post_signal, alternative='two-sided')
+
+            # Signal change metrics
+            mean_change = post_stats['mean'] - pre_stats['mean']
+            median_change = post_stats['median'] - pre_stats['median']
+            std_change = post_stats['std'] - pre_stats['std']
+
+            response = {
+                'stimulus_time_s': float(stim_idx / fs_hz),
+                'pre_window_samples': len(pre_signal),
+                'post_window_samples': len(post_signal),
+                'pre_stats': pre_stats,
+                'post_stats': post_stats,
+                'statistical_tests': {
+                    't_test': {
+                        't_statistic': float(t_stat),
+                        'p_value': float(p_value),
+                        'significant': bool(p_value < 0.05)
+                    },
+                    'mann_whitney': {
+                        'u_statistic': float(u_stat),
+                        'p_value': float(u_p_value),
+                        'significant': bool(u_p_value < 0.05)
+                    },
+                    'effect_size': {
+                        'cohens_d': float(cohens_d),
+                        'interpretation': _interpret_cohens_d(cohens_d)
+                    }
+                },
+                'signal_changes': {
+                    'mean_change': float(mean_change),
+                    'median_change': float(median_change),
+                    'std_change': float(std_change),
+                    'mean_change_percent': float((mean_change / abs(pre_stats['mean'])) * 100) if pre_stats['mean'] != 0 else 0.0
+                }
+            }
+
+            responses.append(response)
+
+        except Exception as e:
+            print(f"Warning: Could not analyze stimulus at {stim_idx / fs_hz:.1f}s: {str(e)}")
+            continue
+
+    # Aggregate results
+    if responses:
+        significant_responses = sum(1 for r in responses if r['statistical_tests']['t_test']['significant'])
+        strong_effects = sum(1 for r in responses if r['statistical_tests']['effect_size']['cohens_d'] >= 0.5)
+
+        summary = {
+            'total_stimuli': len(stimulus_times),
+            'analyzed_responses': len(responses),
+            'significant_responses': significant_responses,
+            'significant_percentage': float(significant_responses / len(responses) * 100) if responses else 0.0,
+            'strong_effect_responses': strong_effects,
+            'strong_effect_percentage': float(strong_effects / len(responses) * 100) if responses else 0.0,
+            'average_cohens_d': float(np.mean([r['statistical_tests']['effect_size']['cohens_d'] for r in responses])),
+            'median_p_value': float(np.median([r['statistical_tests']['t_test']['p_value'] for r in responses]))
+        }
+    else:
+        summary = {
+            'total_stimuli': len(stimulus_times),
+            'analyzed_responses': 0,
+            'significant_responses': 0,
+            'significant_percentage': 0.0,
+            'strong_effect_responses': 0,
+            'strong_effect_percentage': 0.0,
+            'average_cohens_d': 0.0,
+            'median_p_value': 1.0
+        }
+
+    return {
+        'summary': summary,
+        'individual_responses': responses,
+        'analysis_parameters': {
+            'pre_window_s': pre_window,
+            'post_window_s': post_window,
+            'fs_hz': fs_hz,
+            'pre_samples': pre_samples,
+            'post_samples': post_samples
+        }
+    }
+
+
+def _interpret_cohens_d(d):
+    """Interpret Cohen's d effect size."""
+    d = abs(d)
+    if d < 0.2:
+        return "negligible"
+    elif d < 0.5:
+        return "small"
+    elif d < 0.8:
+        return "medium"
+    else:
+        return "large"
 
 
 if __name__ == '__main__':
