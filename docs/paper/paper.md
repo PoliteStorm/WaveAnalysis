@@ -20,6 +20,8 @@ We summarize the core transform, its motivation, and biological validity in a co
 
 ## Transform and motivation
 
+We analyze publicly available fungal electrophysiology datasets—principally those curated and published by Adamatzky and collaborators—using a novel √t‑warped transform; experimental acquisition protocols and species coverage follow the original studies we cite.
+
 We analyze voltage $V(t)$ from fungal electrodes with a √time‑warped, windowed Fourier transform:
 
 $$
@@ -89,6 +91,8 @@ Note: Full interactive spheres are provided under `results/fingerprints/<species
 # 1. Introduction
 Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped transform tailored to sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
 
+We analyze publicly available fungal electrophysiology datasets—principally those curated and published by Adamatzky and collaborators—using a novel √t‑warped transform; experimental acquisition protocols and species coverage follow the original studies we cite.
+
 # 2. Related work
 - Adamatzky (2022) surveyed fungal network dynamics and biocomputing perspectives.
 - Jones et al. (2023) and Sci Rep (2018) detail spiking and multi‑scalar rhythms across species; Adamatzky (2022, arXiv:2203.11198) extends cross‑species comparisons.
@@ -135,6 +139,8 @@ We implemented research-optimized, species-specific sampling rates based on publ
 | **Schizophyllum commune** | 1 Hz | 120 s | Jones et al. (2023) - multiscalar patterns |
 
 All rates satisfy Nyquist criteria (fs > 2 × max_spike_freq) with 3-20× safety margins. τ-scales: {5.5, 24.5, 104} seconds; ν₀≈5-64 windows; float32 precision with caching for low-RAM efficiency.
+
+Acquisition parameters (sampling rates, electrode placement notes, and preprocessing) were verified against Adamatzky’s original publications and repository metadata for each dataset prior to analysis.
 
 ## 3.5 Machine learning
 √t bands + spike stats; LOFO/LOCO CV; feature importance, confusion, calibration.
@@ -378,6 +384,9 @@ The √t‑warped wave transform provides a tidy, computationally efficient view
 - Adamatzky et al. (2018). On spiking behaviour of Pleurotus djamor. https://doi.org/10.1038/s41598-018-26007-1
 - Volkov, A.G. (ed.). Plant Electrophysiology: Theory & Methods. https://doi.org/10.1007/978-3-540-73547-2
 - Fromm, J., Lautner, S. (2007). Electrical signals and their physiological significance in plants. https://doi.org/10.1104/pp.106.084077
+
+# Data Availability and Attribution
+We reanalyzed publicly available datasets curated by Adamatzky and collaborators. Please cite the original dataset publications when using or comparing our results. Processed outputs and analysis scripts are included in this repository with timestamps and audit trails; original raw datasets and metadata are available via the cited sources (e.g., Adamatzky 2022 and related repositories).
 
 # Acronyms and notation
 - STFT: Short-Time Fourier Transform
