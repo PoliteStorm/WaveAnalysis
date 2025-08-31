@@ -49,3 +49,9 @@ Source summary: `results/ml/2025-08-31T08-23-49_quick_mlp/results.json`
 - Produce per-species interactive dashboards and export concise application guides.
 
 
+## Defaults and Rerun (√t settings)
+- Default ψ: Gaussian with u-domain detrend (robust SNR/concentration across species).
+- Rationale: ψ-sweep and artifact checks did not show significant advantages for alternatives in a quick surrogate pass; Gaussian+detrend is stable.
+- Status: 200-permutation cross-modal rerun is in progress; this page will be updated with p-values and CIs on completion.
+
+
