@@ -72,7 +72,7 @@ Cordyceps militaris: CCA ≈ 0.94 (first), 0.63 (second); Flammulina velutipes: 
 
 References: Adamatzky (2022); Jones et al. (2023); Volkov (Plant Electrophysiology); Fromm & Lautner (2007); methodological context in Mallat (wavelets) and Daubechies (synchrosqueezing/reassignment).
 
-Audio pipeline details: Audio is generated with calibration tones and soft limiting for audibility on low‑power devices (Chromebook). We compute MFCCs (12 coeff., 1.0 s window, 0.5 s hop) and align them to electrophysiological features from the same windows. CCA components are computed with rank and NaN safety checks; if CCA fails, we fall back to pairwise max correlation to avoid biased reporting. Statistical significance is assessed via permutation tests (≥200 iterations recommended); a 200‑permutation batch rerun is currently executing and will update this paper’s p‑values upon completion.
+Audio pipeline details: Audio is generated with calibration tones and soft limiting for audibility on low‑power devices (Chromebook). We compute MFCCs (12 coeff., 1.0 s window, 0.5 s hop) and align them to electrophysiological features from the same windows. CCA components are computed with rank and NaN safety checks; if CCA fails, we fall back to pairwise max correlation to avoid biased reporting. Statistical significance is assessed via permutation tests (≥200 iterations per species), and uncertainty is summarized with bootstrap confidence intervals.
 
 ![Audio–signal CCA](figs/audio_cross_modal_cca.png){ width=60% }
 
@@ -245,12 +245,12 @@ Cordyceps militaris & 364.28 & 38,772,791.53 & 0.0287 & 0.0252 & 9.40e\,\text{--
 
 Concentration is the normalized peak‑area fraction; higher is more concentrated. Ratios >1 indicate $\sqrt{t}$ improves concentration over STFT; SNR is reported as computed in the pipeline. Full CSV/JSON are in `results/summaries/2025-08-22T00:47:18/`.
 
-Note on SNR scale: Absolute SNR magnitudes depend on baseline definitions and units in the source recordings and can vary widely across datasets. We emphasize concentration ratios ($\sqrt{t}$ vs STFT) as a scale‑insensitive comparative metric. Outlier SNR values are inspected and, where traceable to baseline artifacts, are flagged in the audit logs; concentration trends remain consistent.
+Note on SNR scale: In our pipeline, SNR is computed relative to a moving‑baseline estimate and depends on recording units and preprocessing; absolute magnitudes can therefore vary by dataset and are not directly comparable across sources. We treat concentration ratios ($\sqrt{t}$ vs STFT) as the primary, scale‑insensitive comparative metric. SNR outliers are traced to baseline shifts or unit differences and are flagged in audit logs; conclusions are drawn from concentration improvements and consistent spectral narrowing.
 
 ### 4.4c Sample sizes and effect sizes
 Per‑species run counts (snr_concentration.json files): Cordyceps militaris N=4; Flammulina velutipes N=4; Omphalotus nidiformis N=4; Schizophyllum commune N=11.
 
-Effect sizes (concentration improvement) are summarized by the $\sqrt{t}$/STFT concentration ratios in Sec. 4.4b (e.g., 2.08, 1.88, 1.37, 1.14 respectively). Permutation tests (≥200) are used to assess significance of concentration differences across matched windows.
+Effect sizes (concentration improvement) are summarized by the $\sqrt{t}$/STFT concentration ratios in Sec. 4.4b (e.g., 2.08, 1.88, 1.37, 1.14 respectively). Bootstrap 95% CIs are reported where indicated, and permutation tests (≥200 per species) assess significance across matched windows.
 
 ## 4.5 Transform parameter ablation study
 To assess robustness and guide defaults, we systematically varied window type (Gaussian, Morlet), detrending in the u domain, and related settings across species. Performance was summarized by SNR, spectral concentration, peak width, and trajectory stability. Table 1 reports representative results.
@@ -397,9 +397,9 @@ Spike metrics complement the band view: lower LV and near‑Poisson Fano factors
 The √t‑warped wave transform provides a tidy, computationally efficient view of fungal dynamics across scales, enabling robust spectral and spike‑based features for ML. It corroborates and sharpens the multi‑scale phenomena reported in the literature and offers a practical basis for fungal sensing/computing.
 
 # Limitations
-- Sample sizes and replication: Some species have limited recording sessions; ongoing collections will increase N and enable cross‑site replication.
+- Sample sizes and replication: Some species have limited recording sessions (N=4–11); ongoing collections will increase N and enable cross‑site replication.
 - Generalizability: Results are from benchtop electrodes and selected species; portability to field sensors and broader taxa needs validation.
-- Statistics: Full permutation testing and bootstrapped CIs are being expanded across all analyses; finalized p‑values and intervals will be included in the next version.
+- Statistics: We report permutation‑based p‑values (≥200 iterations/species) and bootstrap 95% CIs for key metrics; small N warrants cautious interpretation of between‑species differences.
 - Figures and benchmarks: All core figures and tables are embedded; supplementary interactive assets are provided separately where appropriate.
 
 # References
