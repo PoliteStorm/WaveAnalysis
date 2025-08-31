@@ -60,6 +60,7 @@ def main():
     ap = argparse.ArgumentParser(description='Generate interactive spherical fingerprints per species')
     ap.add_argument('--results_root', default='results/zenodo')
     ap.add_argument('--out_root', default='results/fingerprints')
+    ap.add_argument('--export_png', action='store_true', help='Also export static PNGs if kaleido is available')
     args = ap.parse_args()
 
     species = [
@@ -173,6 +174,12 @@ def main():
         os.makedirs(out_dir, exist_ok=True)
         out_html = os.path.join(out_dir, 'sphere.html')
         fig.write_html(out_html, include_plotlyjs='cdn', full_html=True, config={'responsive': True, 'displaylogo': False})
+        if args.export_png:
+            try:
+                out_png = os.path.join(out_dir, 'sphere.png')
+                fig.write_image(out_png, scale=2, width=1000, height=800)
+            except Exception:
+                pass
         # write a mapping JSON
         mapping = {
             'created_by': 'joe knowles',

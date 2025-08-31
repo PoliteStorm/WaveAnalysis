@@ -76,6 +76,16 @@ Audio pipeline details: Audio is generated with calibration tones and soft limit
 
 Figure S3. Cross‑modal CCA across species: first two canonical correlations per species with bootstrap CIs; dotted line shows permutation‑null 95th percentile.
 
+## 4.9 Species fingerprints (visual summary)
+
+We include compact spiral/spherical fingerprints summarizing τ‑band fractions, confidence bands, spike activity, and √t concentration/SNR contrast for quick species comparison.
+
+![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
+![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
+![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
+
+Note: Full interactive spheres are provided under `results/fingerprints/<species>/<timestamp>/sphere.html`; static PNGs are included in the peer‑review package.
+
 # 1. Introduction
 Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped transform tailored to sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
 
