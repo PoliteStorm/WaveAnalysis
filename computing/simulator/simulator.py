@@ -14,6 +14,7 @@ import json
 from datetime import datetime
 import os
 import glob
+import csv
 
 
 class FungalNeuron:
@@ -22,28 +23,34 @@ class FungalNeuron:
     Models the complex spiking patterns observed in Schizophyllum commune.
     """
 
-    def __init__(self, species: str = "schizophyllum_commune", seed: int = 42):
+    def __init__(self, species: str = "schizophyllum_commune", seed: int = 42, profile: Optional[Dict] = None):
         np.random.seed(seed)
         self.species = species
         self.rng = np.random.RandomState(seed)
 
-        # Load empirical spiking statistics
-        self.spike_stats = {
-            'mean_isi': 3540.0,  # seconds
-            'std_isi': 3658.7,
-            'min_isi': 333.0,
-            'max_isi': 11429.0,
-            'mean_amplitude': 0.19,
-            'std_amplitude': 0.45,
-            'spike_probability': 0.001  # per second
-        }
+        # Load empirical spiking statistics (data-driven if profile available)
+        if profile and 'spike_stats' in profile:
+            self.spike_stats = dict(profile['spike_stats'])
+        else:
+            self.spike_stats = {
+                'mean_isi': 3540.0,  # seconds
+                'std_isi': 3658.7,
+                'min_isi': 333.0,
+                'max_isi': 11429.0,
+                'mean_amplitude': 0.19,
+                'std_amplitude': 0.45,
+                'spike_probability': 0.001  # per second
+            }
 
         # Multi-scale rhythm bands (from our analysis)
-        self.rhythm_bands = {
-            'fast': {'freq': 1/5.5, 'power': 0.22},    # ~0.18 Hz
-            'medium': {'freq': 1/24.5, 'power': 0.20},  # ~0.04 Hz
-            'slow': {'freq': 1/104.0, 'power': 0.58}    # ~0.01 Hz
-        }
+        if profile and 'rhythm_bands' in profile:
+            self.rhythm_bands = dict(profile['rhythm_bands'])
+        else:
+            self.rhythm_bands = {
+                'fast': {'freq': 1/5.5, 'power': 0.22},    # ~0.18 Hz
+                'medium': {'freq': 1/24.5, 'power': 0.20},  # ~0.04 Hz
+                'slow': {'freq': 1/104.0, 'power': 0.58}    # ~0.01 Hz
+            }
 
         # Internal state
         self.membrane_potential = 0.0
@@ -121,8 +128,8 @@ class FungalNetwork:
     Models the interconnected nature of mycelial networks.
     """
 
-    def __init__(self, n_neurons: int = 10, connectivity: float = 0.3):
-        self.neurons = [FungalNeuron(f"neuron_{i}", seed=i)
+    def __init__(self, n_neurons: int = 10, connectivity: float = 0.3, profile: Optional[Dict] = None):
+        self.neurons = [FungalNeuron(f"neuron_{i}", seed=i, profile=profile)
                        for i in range(n_neurons)]
         self.connectivity = connectivity
 
@@ -229,9 +236,9 @@ class FungalSensor:
     Uses stimulus-response validation results to model sensing capabilities.
     """
 
-    def __init__(self, target_stimulus: str = 'moisture'):
+    def __init__(self, target_stimulus: str = 'moisture', profile: Optional[Dict] = None):
         self.target_stimulus = target_stimulus
-        self.network = FungalNetwork(n_neurons=5, connectivity=0.4)
+        self.network = FungalNetwork(n_neurons=5, connectivity=0.4, profile=profile)
 
         # Sensor calibration based on our validation results
         self.calibration = {
@@ -315,7 +322,7 @@ class FungalComputer:
             return "simple_pattern"
 
 
-def build_metadata(prototype: str, kind: str) -> Dict:
+def build_metadata(prototype: str, kind: str, profile: Optional[Dict] = None) -> Dict:
     ts = datetime.now().isoformat(timespec='seconds')
     # Collect data sources present in workspace
     sources = []
@@ -329,26 +336,116 @@ def build_metadata(prototype: str, kind: str) -> Dict:
             # include latest subdir if any
             sub = sorted(glob.glob(os.path.join(p, '*')))
             sources.append(sub[-1] if sub else p)
-    return {
+    meta = {
         'created_by': 'joe knowles',
         'timestamp': ts,
         'prototype': prototype,
         'type': kind,
         'data_sources': sources,
     }
+    if profile and profile.get('source_path'):
+        meta['profile_source'] = profile['source_path']
+    if profile and profile.get('species'):
+        meta['species'] = profile['species']
+    return meta
+
+
+def load_species_profile(species_hint: Optional[str] = None) -> Optional[Dict]:
+    base = os.path.join('results', 'zenodo')
+    if not os.path.isdir(base):
+        return None
+    # choose species directory
+    species_dirs = []
+    for name in os.listdir(base):
+        path = os.path.join(base, name)
+        if os.path.isdir(path):
+            species_dirs.append(path)
+    if species_hint:
+        species_dirs = [p for p in species_dirs if os.path.basename(p) == species_hint]
+    if not species_dirs:
+        return None
+    sp_dir = species_dirs[0]
+    runs = sorted(glob.glob(os.path.join(sp_dir, '*')))
+    if not runs:
+        return None
+    run_dir = runs[-1]
+    metrics_path = os.path.join(run_dir, 'metrics.json')
+    profile = {
+        'species': os.path.basename(sp_dir),
+        'source_path': metrics_path,
+    }
+    try:
+        with open(metrics_path, 'r') as f:
+            m = json.load(f)
+    except Exception:
+        return profile
+    # Spike stats
+    spike_count = int(m.get('spike_count', 0) or 0)
+    mean_amp = float(m.get('amplitude_stats', {}).get('mean', 0.2))
+    std_amp = float(m.get('amplitude_stats', {}).get('std', 0.3))
+    # Duration from tau CSV if available
+    tau_csv = os.path.join(run_dir, 'tau_band_timeseries.csv')
+    dur_s = 3600.0
+    if os.path.isfile(tau_csv):
+        try:
+            with open(tau_csv, 'r') as cf:
+                reader = csv.DictReader(cf)
+                last_t = 0.0
+                for row in reader:
+                    try:
+                        last_t = float(row.get('time_s', last_t))
+                    except Exception:
+                        pass
+                dur_s = max(dur_s, last_t)
+        except Exception:
+            pass
+    mean_isi = dur_s / max(1, spike_count)
+    spike_prob = min(0.02, (spike_count / max(1.0, dur_s)))
+    profile['spike_stats'] = {
+        'mean_isi': float(mean_isi),
+        'std_isi': float(0.5 * mean_isi),
+        'min_isi': float(max(30.0, 0.1 * mean_isi)),
+        'max_isi': float(5.0 * mean_isi),
+        'mean_amplitude': float(mean_amp),
+        'std_amplitude': float(std_amp),
+        'spike_probability': float(spike_prob),
+    }
+    # Rhythm bands from band fractions
+    band_fracs = m.get('band_fractions', {})
+    try:
+        taus = sorted([(float(k), float(v)) for k, v in band_fracs.items()], key=lambda x: x[0])
+        # map by nearest known tau
+        def nearest(target):
+            return sorted(taus, key=lambda kv: abs(kv[0] - target))[0][1] if taus else 0.33
+        fast_p = nearest(5.5)
+        med_p = nearest(24.5)
+        slow_p = nearest(104.0)
+        s = fast_p + med_p + slow_p
+        if s <= 0:
+            s = 1.0
+        profile['rhythm_bands'] = {
+            'fast': {'freq': 1/5.5, 'power': float(fast_p / s)},
+            'medium': {'freq': 1/24.5, 'power': float(med_p / s)},
+            'slow': {'freq': 1/104.0, 'power': float(slow_p / s)},
+        }
+    except Exception:
+        pass
+    return profile
 
 
 def run_fungal_computing_demo():
     """Demonstrate fungal computing capabilities."""
     print("🧬 Fungal Computing Simulator Demo")
     print("=" * 50)
+    # Load data-driven profile
+    profile = load_species_profile()
     # Print metadata header
-    meta = build_metadata('fungal_computing_simulator', 'computing')
+    meta = build_metadata('fungal_computing_simulator', 'computing', profile)
     print(json.dumps(meta))
 
     # 1. Sensor Demonstration
     print("\n1. Fungal Sensor Demonstration:")
-    sensor = FungalSensor('moisture')
+    sensor = FungalSensor('moisture', profile=profile)
 
     test_intensities = [0.0, 0.2, 0.5, 0.8, 1.0]
     for intensity in test_intensities:
@@ -391,7 +488,7 @@ def run_fungal_computing_demo():
 
     # 4. Network Dynamics
     print("\n4. Network Dynamics Analysis:")
-    network = FungalNetwork(n_neurons=8, connectivity=0.4)
+    network = FungalNetwork(n_neurons=8, connectivity=0.4, profile=profile)
 
     # Test with different stimulus patterns
     stimulus_scenarios = {

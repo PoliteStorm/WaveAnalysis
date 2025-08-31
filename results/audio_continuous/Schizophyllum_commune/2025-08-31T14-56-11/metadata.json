@@ -1,0 +1,16 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-31T14-56-11",
+  "file": "/home/kronos/mushroooom/data/zenodo_5790768/Schizophyllum commune.txt",
+  "channel": "diff_1",
+  "fs_hz": 1.0,
+  "audio_fs": 22050,
+  "carrier_hz": 660.0,
+  "speed": 3600.0,
+  "depth": 0.9,
+  "paths": {
+    "wav": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-31T14-56-11/continuous.wav",
+    "mp3": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-31T14-56-11/continuous.mp3",
+    "html": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-31T14-56-11/index.html"
+  }
+}

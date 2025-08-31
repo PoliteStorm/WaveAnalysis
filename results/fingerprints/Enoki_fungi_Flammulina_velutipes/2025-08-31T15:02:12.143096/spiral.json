@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "title": "Enoki fungi Flammulina velutipes \u2014 spiral fingerprint",
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-31T15:02:12.143096",
+  "species": "Enoki_fungi_Flammulina_velutipes",
+  "band_fractions": {
+    "5.5": 0.0625,
+    "24.5": 0.1875,
+    "104.0": 0.75
+  },
+  "spike_count": 1297,
+  "snr": {
+    "sqrt": 18.71384768668309,
+    "stft": 56971757.623350255
+  },
+  "concentration": {
+    "sqrt": 0.025987286949525023
+  },
+  "amplitude_entropy_bits": 2.289839686777215,
+  "taus_for_labels": null,
+  "ci_halfwidths": null,
+  "units": {
+    "tau": "sqrt(seconds)",
+    "spike_rate": "spikes/hour",
+    "amplitude": "mV",
+    "snr": "unitless (power ratio)",
+    "concentration": "unitless (0-1)",
+    "fractions": "unitless; sum\u22481.0"
+  },
+  "normalization": {
+    "band_fraction_method": "csv_mean_normalized",
+    "description": "If CSV available, fractions are mean \u03c4-power normalized across \u03c4; else uses metrics.band_fractions and are renormalized to sum 1."
+  },
+  "n_windows": 22,
+  "channel": "diff_1",
+  "provenance": {
+    "git_sha": "41f016d8706ad796893418a42b5bafd4483afce9",
+    "source_metrics": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/metrics.json",
+    "source_concentration": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/snr_concentration.json",
+    "source_tau_csv": "results/zenodo/Enoki_fungi_Flammulina_velutipes/2025-08-22T00:39:11/tau_band_timeseries.csv",
+    "intended_for": "peer_review"
+  },
+  "encodings": {
+    "rings": {
+      "order": "increasing \u03c4",
+      "colors": [
+        "red",
+        "#1f77b4",
+        "#4fa3ff"
+      ],
+      "radius": "proportional to mean band fraction",
+      "thickness": "proportional to 95% CI half-width",
+      "labels": "\u03c4 and fraction annotated per ring"
+    },
+    "triangles": {
+      "count": "= spike_count (capped 48)",
+      "size": "\u221d amplitude_entropy_bits"
+    },
+    "spiral": {
+      "z_height": "\u221d concentration_sqrt with SNR contrast",
+      "color": "#808080"
+    },
+    "center": {
+      "color": "gold"
+    }
+  },
+  "references": [
+    {
+      "label": "Sci Rep 2018",
+      "title": "Spiking in Pleurotus djamor",
+      "url": "https://www.nature.com/articles/s41598-018-26007-1"
+    },
+    {
+      "label": "Jones 2023",
+      "title": "Multiscalar electrical spiking in Schizophyllum commune",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10406843/"
+    },
+    {
+      "label": "Adamatzky 2022",
+      "title": "Language of fungi from electrical spiking activity",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/"
+    },
+    {
+      "label": "Biosystems 2021",
+      "title": "Electrical activity of fungi: spikes detection and complexity",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0303264721000307"
+    }
+  ]
+}

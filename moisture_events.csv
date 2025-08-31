@@ -1,0 +1,4 @@
+time_s,stimulus_type,intensity,notes
+600,moisture,0.5ml,after 10 min baseline
+2400,moisture,0.5ml,after 30 min
+3600,moisture,0.5ml,after 1 h

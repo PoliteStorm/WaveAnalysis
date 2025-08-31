@@ -1,0 +1,178 @@
+[
+  {
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 32,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8080407872189213,
+        "avg_snr": 1910160.5491986095,
+        "n_points": 96
+      },
+      "morlet": {
+        "avg_concentration": 0.7191525803528145,
+        "avg_snr": 418286.8874967073,
+        "n_points": 96
+      },
+      "dog": {
+        "avg_concentration": 0.7641028916180009,
+        "avg_snr": 563651.2234631887,
+        "n_points": 96
+      },
+      "bump": {
+        "avg_concentration": 0.8014302493460753,
+        "avg_snr": 1510781.9292299459,
+        "n_points": 96
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 32,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8310766289635971,
+        "avg_snr": 13958817.689071333,
+        "n_points": 96
+      },
+      "morlet": {
+        "avg_concentration": 0.7716984571529223,
+        "avg_snr": 3063655.0347586554,
+        "n_points": 96
+      },
+      "dog": {
+        "avg_concentration": 0.828287382670584,
+        "avg_snr": 471485.63537587266,
+        "n_points": 96
+      },
+      "bump": {
+        "avg_concentration": 0.8315646760751735,
+        "avg_snr": 1747211.3013078563,
+        "n_points": 96
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 32,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.9102990876736893,
+        "avg_snr": 13717456.757373312,
+        "n_points": 96
+      },
+      "morlet": {
+        "avg_concentration": 0.801234403726545,
+        "avg_snr": 562660.4827570963,
+        "n_points": 96
+      },
+      "dog": {
+        "avg_concentration": 0.8221873579299608,
+        "avg_snr": 524262.4855270313,
+        "n_points": 96
+      },
+      "bump": {
+        "avg_concentration": 0.8776825444599838,
+        "avg_snr": 4585354.924620158,
+        "n_points": 96
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 32,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8135076262430214,
+        "avg_snr": 2932844.714103093,
+        "n_points": 96
+      },
+      "morlet": {
+        "avg_concentration": 0.7914445139480936,
+        "avg_snr": 1013723.8551215042,
+        "n_points": 96
+      },
+      "dog": {
+        "avg_concentration": 0.8564327246010072,
+        "avg_snr": 577449.8066210663,
+        "n_points": 96
+      },
+      "bump": {
+        "avg_concentration": 0.8528137922299782,
+        "avg_snr": 7470030.747924284,
+        "n_points": 96
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/__MACOSX/._Schizophyllum commune.txt",
+    "error": "No numeric data found in data/zenodo_5790768/__MACOSX/._Schizophyllum commune.txt"
+  },
+  {
+    "file": "data/zenodo_5790768/__MACOSX/._Enoki fungi Flammulina velutipes.txt",
+    "error": "No numeric data found in data/zenodo_5790768/__MACOSX/._Enoki fungi Flammulina velutipes.txt"
+  },
+  {
+    "file": "data/zenodo_5790768/__MACOSX/._Ghost Fungi Omphalotus nidiformis.txt",
+    "error": "No numeric data found in data/zenodo_5790768/__MACOSX/._Ghost Fungi Omphalotus nidiformis.txt"
+  },
+  {
+    "file": "data/zenodo_5790768/__MACOSX/._Cordyceps militari.txt",
+    "error": "No numeric data found in data/zenodo_5790768/__MACOSX/._Cordyceps militari.txt"
+  },
+  {
+    "file": "data/_manifests/sha256sums.txt",
+    "error": "No numeric data found in data/_manifests/sha256sums.txt"
+  }
+]
