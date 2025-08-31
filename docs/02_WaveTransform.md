@@ -50,6 +50,21 @@ Implications:
 
 Provenance: `results/psi_sweep/2025-08-31T10-57-57/summary.json`
 
+### Artifact checks (Gaussian vs Bump; Ghost species)
+- Configs tested: detrend on/off; bump support {2.5, 3.0, 3.5}; reduced FFT size.
+- Surrogate test: 5 phase‑randomized surrogates (quick pass) for p‑values.
+- Results (real vs surrogate; p one‑sided):
+  - Gaussian+detrend: conc=0.749, SNR=4.88e5; p_conc≈0.17, p_snr≈0.17
+  - Bump+detrend (support=3.0): conc=0.766, SNR=4.61e5; p_conc≈0.17, p_snr≈0.33
+  - Bump+detrend (support=3.0, smaller FFT): conc=0.880, SNR=2.56e9; p_conc≈0.50, p_snr≈0.33 with large surrogate outlier ⇒ likely FFT/normalization sensitivity.
+
+Significance and guidance:
+- With only 5 surrogates the resolution is coarse (steps of ≈0.17). No condition crosses p<0.05 in this quick pass.
+- Gaussian+detrend remains a robust default; Bump’s extreme SNR under reduced FFT is not supported by surrogates and may reflect sizing/edge effects.
+- Next: rerun with 50–200 surrogates and fixed FFT sizing; report bootstrap CIs for peak metrics.
+
+Provenance: `results/psi_artifacts/2025-08-31T12-13-57/report.json`
+
 Reproducibility
 - All outputs timestamped; include created_by and intended_for; organized under results/ with references.
 
