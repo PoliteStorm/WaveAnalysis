@@ -1,0 +1,16 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-30T22-50-53",
+  "file": "/home/kronos/mushroooom/data/zenodo_5790768/Cordyceps militari.txt",
+  "channel": "diff_1",
+  "fs_hz": 1.0,
+  "audio_fs": 22050,
+  "carrier_hz": 660.0,
+  "speed": 3600.0,
+  "depth": 0.9,
+  "paths": {
+    "wav": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.wav",
+    "mp3": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.mp3",
+    "html": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/index.html"
+  }
+}

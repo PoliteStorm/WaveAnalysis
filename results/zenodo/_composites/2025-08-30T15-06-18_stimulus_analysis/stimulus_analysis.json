@@ -1,0 +1,227 @@
+{
+  "summary": {
+    "total_stimuli": 5,
+    "stimulus_types": {
+      "moisture": 1,
+      "temperature": 1,
+      "light": 1,
+      "chemical": 1,
+      "mechanical": 1
+    },
+    "analysis_timestamp": "2025-08-30T15:06:18.747669"
+  },
+  "individual_responses": [
+    {
+      "stimulus_index": 0,
+      "stimulus_time_s": 1000.0,
+      "stimulus_type": "moisture",
+      "intensity": 1.0,
+      "duration_s": 10.0,
+      "voltage_effects": {
+        "cohen_d": -0.22357193762268587,
+        "hedges_g": -0.22338516073244136,
+        "glass_delta": -0.23333777684896614,
+        "interpretation": "small",
+        "confidence": "high",
+        "pre_mean": 0.05568874396537976,
+        "post_mean": 0.03387301122338505,
+        "pre_std": 0.09349421699562821,
+        "post_std": 0.09955402063047775,
+        "n_pre": 300,
+        "n_post": 600
+      },
+      "spike_response": {
+        "pre_rate_hz": 0.0,
+        "post_rate_hz": 0.0016666666666666668,
+        "rate_ratio": Infinity,
+        "pre_spike_count": 0,
+        "post_spike_count": 1,
+        "mann_whitney_u": null,
+        "mann_whitney_p": null,
+        "significant_change": false,
+        "response_type": "increased"
+      },
+      "literature_comparison": {
+        "expected_response": "rapid_increase",
+        "expected_effect_range": "0.5-2.0",
+        "biological_mechanism": "hyphal turgor pressure change",
+        "consistency_check": {
+          "consistent_with_literature": false,
+          "effect_size_match": "weaker_than_expected",
+          "response_pattern_match": "unknown",
+          "confidence": "high"
+        }
+      }
+    },
+    {
+      "stimulus_index": 1,
+      "stimulus_time_s": 5000.0,
+      "stimulus_type": "temperature",
+      "intensity": 1.0,
+      "duration_s": 10.0,
+      "voltage_effects": {
+        "cohen_d": -0.2637805964946358,
+        "hedges_g": -0.2635602284106804,
+        "glass_delta": -0.2715703420019166,
+        "interpretation": "small",
+        "confidence": "high",
+        "pre_mean": 0.035797780291208454,
+        "post_mean": 0.008756185736379698,
+        "pre_std": 0.09957491806906481,
+        "post_std": 0.10395218789337024,
+        "n_pre": 300,
+        "n_post": 600
+      },
+      "spike_response": {
+        "pre_rate_hz": 0.0,
+        "post_rate_hz": 0.0016666666666666668,
+        "rate_ratio": Infinity,
+        "pre_spike_count": 0,
+        "post_spike_count": 1,
+        "mann_whitney_u": null,
+        "mann_whitney_p": null,
+        "significant_change": false,
+        "response_type": "increased"
+      },
+      "literature_comparison": {
+        "expected_response": "delayed_response",
+        "expected_effect_range": "0.3-1.2",
+        "biological_mechanism": "metabolic rate change",
+        "consistency_check": {
+          "consistent_with_literature": false,
+          "effect_size_match": "weaker_than_expected",
+          "response_pattern_match": "unknown",
+          "confidence": "high"
+        }
+      }
+    },
+    {
+      "stimulus_index": 2,
+      "stimulus_time_s": 8000.0,
+      "stimulus_type": "light",
+      "intensity": 1.0,
+      "duration_s": 10.0,
+      "voltage_effects": {
+        "cohen_d": 0.0,
+        "hedges_g": 0.0,
+        "glass_delta": 0.0,
+        "interpretation": "insufficient_data",
+        "confidence": "low"
+      },
+      "spike_response": {
+        "pre_rate_hz": 0.0,
+        "post_rate_hz": 0.0016666666666666668,
+        "rate_ratio": Infinity,
+        "pre_spike_count": 0,
+        "post_spike_count": 1,
+        "mann_whitney_u": null,
+        "mann_whitney_p": null,
+        "significant_change": false,
+        "response_type": "increased"
+      },
+      "literature_comparison": {
+        "expected_response": "variable",
+        "expected_effect_range": "0.2-0.8",
+        "biological_mechanism": "photosensitive pigments",
+        "consistency_check": {
+          "consistent_with_literature": false,
+          "effect_size_match": "weaker_than_expected",
+          "response_pattern_match": "unknown",
+          "confidence": "low"
+        }
+      }
+    },
+    {
+      "stimulus_index": 3,
+      "stimulus_time_s": 12000.0,
+      "stimulus_type": "chemical",
+      "intensity": 1.0,
+      "duration_s": 10.0,
+      "voltage_effects": {
+        "cohen_d": 0.0,
+        "hedges_g": 0.0,
+        "glass_delta": 0.0,
+        "interpretation": "insufficient_data",
+        "confidence": "low"
+      },
+      "spike_response": {
+        "pre_rate_hz": 0.0,
+        "post_rate_hz": 0.0016666666666666668,
+        "rate_ratio": Infinity,
+        "pre_spike_count": 0,
+        "post_spike_count": 1,
+        "mann_whitney_u": null,
+        "mann_whitney_p": null,
+        "significant_change": false,
+        "response_type": "increased"
+      },
+      "literature_comparison": {
+        "expected_response": "sustained_change",
+        "expected_effect_range": "0.4-1.5",
+        "biological_mechanism": "nutrient transport signaling",
+        "consistency_check": {
+          "consistent_with_literature": false,
+          "effect_size_match": "weaker_than_expected",
+          "response_pattern_match": "unknown",
+          "confidence": "low"
+        }
+      }
+    },
+    {
+      "stimulus_index": 4,
+      "stimulus_time_s": 15000.0,
+      "stimulus_type": "mechanical",
+      "intensity": 1.0,
+      "duration_s": 10.0,
+      "voltage_effects": {
+        "cohen_d": 0.0,
+        "hedges_g": 0.0,
+        "glass_delta": 0.0,
+        "interpretation": "insufficient_data",
+        "confidence": "low"
+      },
+      "spike_response": {
+        "pre_rate_hz": 0.0,
+        "post_rate_hz": 0.0016666666666666668,
+        "rate_ratio": Infinity,
+        "pre_spike_count": 0,
+        "post_spike_count": 1,
+        "mann_whitney_u": null,
+        "mann_whitney_p": null,
+        "significant_change": false,
+        "response_type": "increased"
+      },
+      "literature_comparison": {
+        "expected_response": "immediate_response",
+        "expected_effect_range": "0.6-1.8",
+        "biological_mechanism": "mechanosensitive ion channels",
+        "consistency_check": {
+          "consistent_with_literature": false,
+          "effect_size_match": "weaker_than_expected",
+          "response_pattern_match": "unknown",
+          "confidence": "low"
+        }
+      }
+    }
+  ],
+  "aggregate_statistics": {
+    "total_responses": 5,
+    "significant_responses": 0,
+    "response_rate": 0.0,
+    "stimulus_type_distribution": {
+      "moisture": 1,
+      "temperature": 1,
+      "light": 1,
+      "chemical": 1,
+      "mechanical": 1
+    },
+    "effect_size_summary": {
+      "mean_cohen_d": -0.09747050682346434,
+      "median_cohen_d": 0.0,
+      "std_cohen_d": 0.12005175207160701,
+      "min_cohen_d": -0.2637805964946358,
+      "max_cohen_d": 0.0
+    }
+  },
+  "literature_comparison": {}
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-42-08/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-43-35/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-36-14/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-46-09/metadata.json"
+  },
+  {
+    "error": true,
+    "reason": "'NoneType' object has no attribute 'shape'",
+    "meta": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/metadata.json"
+  }
+]

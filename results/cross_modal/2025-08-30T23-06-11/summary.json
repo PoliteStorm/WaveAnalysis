@@ -1,0 +1,461 @@
+[
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-08-02",
+    "meta_path": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-42-08/metadata.json",
+    "wav_path": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-42-08/continuous.wav",
+    "file": "data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.055139114074492124,
+        "pearson_p": 0.07369574980141573,
+        "spearman_r": 0.19231364498223677,
+        "perm_p": 0.0658682634730539
+      },
+      "rms__range": {
+        "pearson_r": 0.1369674329908569,
+        "pearson_p": 8.182769159381164e-06,
+        "spearman_r": 0.231869773659735,
+        "perm_p": 0.003992015968063872
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": -0.5916887314520334,
+        "pearson_p": 1.8646440097976986e-100,
+        "spearman_r": -0.4578196331557664,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.007035031952751625,
+        "pearson_p": 0.8196320963954569,
+        "spearman_r": -0.1710139621182105,
+        "perm_p": 0.8243512974051896
+      },
+      "flatness__std": {
+        "pearson_r": 0.014492012954992754,
+        "pearson_p": 0.6385469461773798,
+        "spearman_r": -0.15029024983498615,
+        "perm_p": 0.6227544910179641
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.12224248132985757,
+        "pearson_p": 6.979719921099577e-05,
+        "spearman_r": -0.07512605969779333,
+        "perm_p": 0.003992015968063872
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-10-50",
+    "meta_path": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/metadata.json",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.wav",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.055139114074492124,
+        "pearson_p": 0.07369574980141573,
+        "spearman_r": 0.19231364498223677,
+        "perm_p": 0.0658682634730539
+      },
+      "rms__range": {
+        "pearson_r": 0.1369674329908569,
+        "pearson_p": 8.182769159381164e-06,
+        "spearman_r": 0.231869773659735,
+        "perm_p": 0.003992015968063872
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": -0.5916887314520334,
+        "pearson_p": 1.8646440097976986e-100,
+        "spearman_r": -0.4578196331557664,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.007035031952751625,
+        "pearson_p": 0.8196320963954569,
+        "spearman_r": -0.1710139621182105,
+        "perm_p": 0.8243512974051896
+      },
+      "flatness__std": {
+        "pearson_r": 0.014492012954992754,
+        "pearson_p": 0.6385469461773798,
+        "spearman_r": -0.15029024983498615,
+        "perm_p": 0.6227544910179641
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.12224248132985757,
+        "pearson_p": 6.979719921099577e-05,
+        "spearman_r": -0.07512605969779333,
+        "perm_p": 0.003992015968063872
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-11-33",
+    "meta_path": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-43-35/metadata.json",
+    "wav_path": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-43-35/continuous.wav",
+    "file": "data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.33118608042139275,
+        "pearson_p": 8.963713718525701e-17,
+        "spearman_r": 0.3978791505177071,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.27417995158237773,
+        "pearson_p": 8.982155557101793e-12,
+        "spearman_r": 0.41746423847347597,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": 0.17123697525772558,
+        "pearson_p": 2.5558920546216425e-05,
+        "spearman_r": 0.10558023571275024,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.30774590408031566,
+        "pearson_p": 1.3878745326660802e-14,
+        "spearman_r": 0.43930365334694077,
+        "perm_p": 0.001996007984031936
+      },
+      "flatness__std": {
+        "pearson_r": 0.09094551717981132,
+        "pearson_p": 0.026152326778366822,
+        "spearman_r": 0.12400905482740583,
+        "perm_p": 0.029940119760479042
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": 0.11710764344786606,
+        "pearson_p": 0.004135513086299862,
+        "spearman_r": 0.09848657583280397,
+        "perm_p": 0.013972055888223553
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-12-10",
+    "meta_path": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/metadata.json",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/continuous.wav",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.33118608042139275,
+        "pearson_p": 8.963713718525701e-17,
+        "spearman_r": 0.3978791505177071,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.27417995158237773,
+        "pearson_p": 8.982155557101793e-12,
+        "spearman_r": 0.41746423847347597,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": 0.17123697525772558,
+        "pearson_p": 2.5558920546216425e-05,
+        "spearman_r": 0.10558023571275024,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.30774590408031566,
+        "pearson_p": 1.3878745326660802e-14,
+        "spearman_r": 0.43930365334694077,
+        "perm_p": 0.001996007984031936
+      },
+      "flatness__std": {
+        "pearson_r": 0.09094551717981132,
+        "pearson_p": 0.026152326778366822,
+        "spearman_r": 0.12400905482740583,
+        "perm_p": 0.029940119760479042
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": 0.11710764344786606,
+        "pearson_p": 0.004135513086299862,
+        "spearman_r": 0.09848657583280397,
+        "perm_p": 0.013972055888223553
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-17-34",
+    "meta_path": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/metadata.json",
+    "wav_path": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/continuous.wav",
+    "file": "data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.4594880677363234,
+        "pearson_p": 9.710143818679048e-96,
+        "spearman_r": 0.7080180258250384,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.09553183817711261,
+        "pearson_p": 4.4637037358430836e-05,
+        "spearman_r": 0.413123377705243,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": -0.19957545233004176,
+        "pearson_p": 8.331184904387056e-18,
+        "spearman_r": -0.09838329410374745,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": -0.048445001674609654,
+        "pearson_p": 0.03877866311320755,
+        "spearman_r": -0.36435275997842576,
+        "perm_p": 0.031936127744510975
+      },
+      "flatness__std": {
+        "pearson_r": -0.5391287714753406,
+        "pearson_p": 9.259753886357398e-138,
+        "spearman_r": -0.8378227547300476,
+        "perm_p": 0.001996007984031936
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.01525855515135265,
+        "pearson_p": 0.5153416286500336,
+        "spearman_r": -0.015856836859142905,
+        "perm_p": 0.5449101796407185
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-24-33",
+    "meta_path": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/metadata.json",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/continuous.wav",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.4594880677363234,
+        "pearson_p": 9.710143818679048e-96,
+        "spearman_r": 0.7080180258250384,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.09553183817711261,
+        "pearson_p": 4.4637037358430836e-05,
+        "spearman_r": 0.413123377705243,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": -0.19957545233004176,
+        "pearson_p": 8.331184904387056e-18,
+        "spearman_r": -0.09838329410374745,
+        "perm_p": 0.001996007984031936
+      },
+      "bandwidth__range": {
+        "pearson_r": -0.048445001674609654,
+        "pearson_p": 0.03877866311320755,
+        "spearman_r": -0.36435275997842576,
+        "perm_p": 0.031936127744510975
+      },
+      "flatness__std": {
+        "pearson_r": -0.5391287714753406,
+        "pearson_p": 9.259753886357398e-138,
+        "spearman_r": -0.8378227547300476,
+        "perm_p": 0.001996007984031936
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.01525855515135265,
+        "pearson_p": 0.5153416286500336,
+        "spearman_r": -0.015856836859142905,
+        "perm_p": 0.5449101796407185
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-24-50",
+    "meta_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-36-14/metadata.json",
+    "wav_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-36-14/continuous.wav",
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.26073842453480695,
+        "pearson_p": 0.0015375176287184026,
+        "spearman_r": 0.3417178397102818,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.3604903684572842,
+        "pearson_p": 8.42846600294908e-06,
+        "spearman_r": 0.4472051645410172,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": 0.21291957000437722,
+        "pearson_p": 0.010133087233091106,
+        "spearman_r": 0.5287347046434123,
+        "perm_p": 0.015968063872255488
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.49455065880235494,
+        "pearson_p": 2.576048805814383e-10,
+        "spearman_r": 0.4409935443237285,
+        "perm_p": 0.001996007984031936
+      },
+      "flatness__std": {
+        "pearson_r": -0.18303091977017222,
+        "pearson_p": 0.02755545290832547,
+        "spearman_r": -0.39702015430640836,
+        "perm_p": 0.05389221556886228
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.11825568106562814,
+        "pearson_p": 0.15658874560201702,
+        "spearman_r": -0.1250120580717012,
+        "perm_p": 0.1996007984031936
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-25-02",
+    "meta_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-46-09/metadata.json",
+    "wav_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-46-09/continuous.wav",
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.26073842453480695,
+        "pearson_p": 0.0015375176287184026,
+        "spearman_r": 0.3417178397102818,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.3604903684572842,
+        "pearson_p": 8.42846600294908e-06,
+        "spearman_r": 0.4472051645410172,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": 0.21291957000437722,
+        "pearson_p": 0.010133087233091106,
+        "spearman_r": 0.5287347046434123,
+        "perm_p": 0.015968063872255488
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.49455065880235494,
+        "pearson_p": 2.576048805814383e-10,
+        "spearman_r": 0.4409935443237285,
+        "perm_p": 0.001996007984031936
+      },
+      "flatness__std": {
+        "pearson_r": -0.18303091977017222,
+        "pearson_p": 0.02755545290832547,
+        "spearman_r": -0.39702015430640836,
+        "perm_p": 0.05389221556886228
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.11825568106562814,
+        "pearson_p": 0.15658874560201702,
+        "spearman_r": -0.1250120580717012,
+        "perm_p": 0.1996007984031936
+      }
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T23-25-16",
+    "meta_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/metadata.json",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/continuous.wav",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "speed": 3600.0,
+    "window_s": 1.0,
+    "hop_s": 0.5,
+    "stats": {
+      "rms__std": {
+        "pearson_r": 0.26073842453480695,
+        "pearson_p": 0.0015375176287184026,
+        "spearman_r": 0.3417178397102818,
+        "perm_p": 0.001996007984031936
+      },
+      "rms__range": {
+        "pearson_r": 0.3604903684572842,
+        "pearson_p": 8.42846600294908e-06,
+        "spearman_r": 0.4472051645410172,
+        "perm_p": 0.001996007984031936
+      },
+      "centroid__abs_deriv": {
+        "pearson_r": 0.21291957000437722,
+        "pearson_p": 0.010133087233091106,
+        "spearman_r": 0.5287347046434123,
+        "perm_p": 0.015968063872255488
+      },
+      "bandwidth__range": {
+        "pearson_r": 0.49455065880235494,
+        "pearson_p": 2.576048805814383e-10,
+        "spearman_r": 0.4409935443237285,
+        "perm_p": 0.001996007984031936
+      },
+      "flatness__std": {
+        "pearson_r": -0.18303091977017222,
+        "pearson_p": 0.02755545290832547,
+        "spearman_r": -0.39702015430640836,
+        "perm_p": 0.05389221556886228
+      },
+      "rolloff85__abs_deriv": {
+        "pearson_r": -0.11825568106562814,
+        "pearson_p": 0.15658874560201702,
+        "spearman_r": -0.1250120580717012,
+        "perm_p": 0.1996007984031936
+      }
+    }
+  }
+]

@@ -1,0 +1,107 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-30T22:12:03",
+  "intended_for": "peer_review",
+  "n_samples": 54,
+  "n_features": 20,
+  "feature_names": [
+    "amp_H",
+    "amp_kurt",
+    "amp_mean",
+    "amp_skew",
+    "amp_std",
+    "burst_index",
+    "complexity_index",
+    "cv2",
+    "dur_mean",
+    "dur_std",
+    "fano",
+    "isi_mean",
+    "isi_std",
+    "lv",
+    "mse_mean",
+    "spike_count",
+    "tau_frac_104",
+    "tau_frac_24.5",
+    "tau_frac_5.5",
+    "victor_distance"
+  ],
+  "training": {
+    "ok": true,
+    "mode": "cv",
+    "n_samples": 54,
+    "n_classes": 4,
+    "cv_accuracy_mean": 0.9818181818181818,
+    "labels": [
+      "Cordyceps_militari",
+      "Enoki_fungi_Flammulina_velutipes",
+      "Ghost_Fungi_Omphalotus_nidiformis",
+      "Schizophyllum_commune"
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        11,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        7,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        25
+      ]
+    ],
+    "classification_report": {
+      "Cordyceps_militari": {
+        "precision": 1.0,
+        "recall": 0.9090909090909091,
+        "f1-score": 0.9523809523809523,
+        "support": 11
+      },
+      "Enoki_fungi_Flammulina_velutipes": {
+        "precision": 0.9166666666666666,
+        "recall": 1.0,
+        "f1-score": 0.9565217391304348,
+        "support": 11
+      },
+      "Ghost_Fungi_Omphalotus_nidiformis": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 7
+      },
+      "Schizophyllum_commune": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 25
+      },
+      "accuracy": 0.9814814814814815,
+      "macro avg": {
+        "precision": 0.9791666666666666,
+        "recall": 0.9772727272727273,
+        "f1-score": 0.9772256728778468,
+        "support": 54
+      },
+      "weighted avg": {
+        "precision": 0.9830246913580246,
+        "recall": 0.9814814814814815,
+        "f1-score": 0.9814431408634308,
+        "support": 54
+      }
+    }
+  }
+}

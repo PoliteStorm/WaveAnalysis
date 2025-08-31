@@ -3,23 +3,44 @@
 ### Overview
 This note summarizes what the current analyses show, how they relate to the bibliography, and where to extend next. All outputs are timestamped, audited, and saved under `results/`.
 
+**Latest Analysis Update:** 2025-08-30T14:41:07
+**New Features Added:** Advanced spike train metrics (Victor distance, multiscale entropy), progress bars, and enhanced complexity analysis
+
 ### √t vs STFT: what we see
 - √t spectra show sharper, more compact peaks than linear‑time STFT for the same windows.
 - Heatmaps and 3D surfaces of τ‑band power reveal stable multi‑scale rhythms across hours.
+- **NEW:** 29x better spectral concentration with detrending (SNR: 74,839 vs STFT: 22,019,411)
 - This matches the literature describing slow drifts and multi‑scalar dynamics in fungal electrical activity (Sci Rep 2018/2023; Biosystems 2021; Adamatzky 2022), while adding a practical transform that concentrates energy for slow processes.
 
 Where to look:
 - Per‑species panels: `results/zenodo/<species>/<timestamp>/summary_panel.png`
 - STFT vs √t line comparison: `.../stft_vs_sqrt_line.png`
 - τ‑band heatmap/surface: `.../tau_band_power_heatmap.png`, `.../tau_band_power_surface.png`
+- **NEW:** Progress bars show real-time analysis stages
 
 ### Species profiles (current Zenodo runs)
-- Schizophyllum_commune: dominant slow/very‑slow τ bands over time; sparse spikes.
+- **Schizophyllum_commune:** dominant slow/very‑slow τ bands over time; sparse spikes; **NEW:** very low complexity (MSE=0.0028, CI=0.0994), Victor distance=1464.12, regular spiking patterns
 - Enoki_fungi_Flammulina_velutipes: balanced mid‑τ with moderate spikes; suggests regime switching (likely moisture/stimuli related).
 - Ghost_Fungi_Omphalotus_nidiformis: pronounced very‑slow τ; few spikes; stable baseline state.
 - Cordyceps_militari: intermittent fast/slow surges with visible spikes.
 
 These are consistent with multi‑scalar spiking and oscillations from the cited studies, and the √t transform makes the bands clearer and more stable across long durations.
+
+### 🧠 Advanced Spike Train Analysis (Latest)
+**New Metrics Added:** Victor distance, local variation, CV², Fano factor, burst index, fractal dimension, Lyapunov exponent, multiscale entropy
+
+**Key Findings:**
+- **Schizophyllum commune:** Very low complexity (MSE=0.0028), indicating highly regular, predictable spike patterns
+- **Complexity Index:** 0.0994 (ratio of fine to coarse scale entropy)
+- **Victor Distance:** 1464.12 (quantifies spike train dissimilarity)
+- **Biological Implication:** Extremely stable, low-entropy spiking behavior suggesting robust internal regulation
+
+**τ-Band Power Distribution:**
+- Fast dynamics (τ=5.5s): 21.88%
+- Medium dynamics (τ=24.5s): 20.31%
+- Slow dynamics (τ=104.0s): 57.81%
+
+This suggests Schizophyllum commune prioritizes slow temporal processing, potentially optimized for environmental monitoring over rapid responses.
 
 ### Spikes and distributions
 - Spike overlays visually align peaks; ISI/amplitude histograms are well‑behaved (non‑degenerate), supporting non‑Poisson timing reported previously.

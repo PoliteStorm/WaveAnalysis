@@ -1,0 +1,37 @@
+{
+  "u0": 256.6573591385994,
+  "tau": 5.5,
+  "sqrt_ablation": [
+    {
+      "window": "gaussian",
+      "detrend_u": false,
+      "snr": 1167.6229318806909,
+      "concentration": 0.05253929320590997
+    },
+    {
+      "window": "gaussian",
+      "detrend_u": true,
+      "snr": 74839.51207212423,
+      "concentration": 0.787340383725178
+    },
+    {
+      "window": "morlet",
+      "detrend_u": false,
+      "snr": 76.93977713707113,
+      "concentration": 0.026483894667677903
+    },
+    {
+      "window": "morlet",
+      "detrend_u": true,
+      "snr": 3571.9636831752846,
+      "concentration": 0.42052489296692747
+    }
+  ],
+  "stft": {
+    "snr": 22019410.73239453,
+    "concentration": 0.027257462394158986
+  },
+  "timestamp": "2025-08-30T14:41:07",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review"
+}

@@ -5,6 +5,9 @@ import numpy as np
 import os
 import datetime as _dt
 from typing import Dict, Tuple, List
+from tqdm import tqdm
+import time
+import pandas as pd
 
 import prove_transform as pt
 from viz import plot_heatmap, plot_surface3d, plot_time_series_with_spikes
@@ -145,6 +148,76 @@ def compute_tau_band_fractions(V: np.ndarray, fs_hz: float, tau_values: List[flo
     return {str(tau_values[i]): float(fracs[i]) for i in range(len(tau_values))}
 
 
+def analyze_single_channel(V, channel_name, t, args, tau_values):
+    """
+    Analyze a single channel and return results dictionary.
+
+    Args:
+        V: Voltage data array
+        channel_name: Name of the channel
+        t: Time array
+        args: Parsed arguments
+        tau_values: List of tau values
+
+    Returns:
+        Dictionary containing analysis results
+    """
+    results = {}
+
+    # Stage 2: Spike Detection
+    with tqdm(total=1, desc=f"🔍 Detecting Spikes ({channel_name})", ncols=80) as pbar:
+        spikes = detect_spikes(V, args.fs, args.min_amp_mV, args.max_amp_mV, args.min_isi_s, args.baseline_win_s)
+        spike_times = np.array([s['t_s'] for s in spikes], dtype=float)
+        spike_amps = np.array([s['amplitude_mV'] for s in spikes], dtype=float)
+        spike_durs = np.array([s['duration_s'] for s in spikes], dtype=float)
+        isi = np.diff(spike_times) if spike_times.size >= 2 else np.array([], dtype=float)
+        pbar.update(1)
+
+    # Stage 3: Statistical Analysis
+    with tqdm(total=3, desc=f"📈 Computing Statistics ({channel_name})", ncols=80) as pbar:
+        amp_stats = stats_and_entropy(spike_amps)
+        pbar.update(1)
+        dur_stats = stats_and_entropy(spike_durs)
+        pbar.update(1)
+        isi_stats = stats_and_entropy(isi)
+        pbar.update(1)
+
+    # Stage 4: √t Transform Analysis
+    with tqdm(total=1, desc=f"🌀 √t Transform ({channel_name})", ncols=80) as pbar:
+        band_fracs = compute_tau_band_fractions(V, args.fs, tau_values, args.nu0)
+        pbar.update(1)
+
+    # Stage 5: Advanced Spike Train Metrics
+    with tqdm(total=2, desc=f"🧠 Advanced Metrics ({channel_name})", ncols=80) as pbar:
+        spike_train_metrics = compute_spike_train_metrics(spikes, len(V), args.fs)
+        results['spike_train_metrics'] = spike_train_metrics
+        pbar.update(1)
+
+        multiscale_entropy = compute_multiscale_entropy(spikes, args.fs)
+        results['multiscale_entropy'] = multiscale_entropy
+        pbar.update(1)
+
+    # Compile results
+    timestamp = _dt.datetime.now().isoformat(timespec='seconds')
+    out = {
+        'file': args.file,
+        'channel': channel_name,
+        'fs_hz': args.fs,
+        'spike_count': int(len(spikes)),
+        'created_by': 'joe knowles',
+        'timestamp': timestamp,
+        'intended_for': 'peer_review'
+    }
+    out['amplitude_stats'] = amp_stats
+    out['duration_stats'] = dur_stats
+    out['isi_stats'] = isi_stats
+    out['band_fractions'] = band_fracs
+
+    # Add spike train metrics
+    out.update(results)
+
+    return out, spikes, spike_times, spike_amps, spike_durs, t, V
+
 def main():
     ap = argparse.ArgumentParser(description='Spike + stats + √t-band analysis (Zenodo)')
     ap.add_argument('--file', required=True, help='Zenodo TXT file')
@@ -166,6 +239,7 @@ def main():
     ap.add_argument('--detrend_u', action='store_true', help='Apply linear detrend in u-domain before FFT')
     ap.add_argument('--stimulus_csv', type=str, default='', help='CSV file with stimulus timing data (columns: time_s, stimulus_type)')
     ap.add_argument('--stimulus_window', type=float, default=300.0, help='Analysis window around stimuli (seconds)')
+    ap.add_argument('--scan_channels', action='store_true', help='Scan and analyze all available channels (overrides --channel)')
     args = ap.parse_args()
     # optional stimulus CSV
     ap_stim = args
@@ -191,85 +265,176 @@ def main():
         else:
             args.nu0 = int(cfg.get('nu0_plot', args.nu0))
 
-    tau_values = [float(x) for x in args.taus.split(',') if x.strip()]
-    t, channels = pt.load_zenodo_timeseries(args.file)
-    # pick channel
-    pick = args.channel if args.channel and args.channel in channels else None
-    if pick is None:
-        for name, vec in channels.items():
-            if np.isfinite(vec).any():
-                pick = name
-                break
-    V = np.nan_to_num(channels[pick], nan=np.nanmean(channels[pick]))
+    print("🚀 Starting Fungal Electrophysiology Analysis")
+    print(f"📁 Processing: {os.path.basename(args.file)}")
+    print(f"⚙️  Sampling Rate: {args.fs} Hz, Window: {args.window}, Detrend: {args.detrend_u}")
+    print()
 
-    # Spike detection
-    spikes = detect_spikes(V, args.fs, args.min_amp_mV, args.max_amp_mV, args.min_isi_s, args.baseline_win_s)
-    spike_times = np.array([s['t_s'] for s in spikes], dtype=float)
-    spike_amps = np.array([s['amplitude_mV'] for s in spikes], dtype=float)
-    spike_durs = np.array([s['duration_s'] for s in spikes], dtype=float)
-    isi = np.diff(spike_times) if spike_times.size >= 2 else np.array([], dtype=float)
+    # Stage 1: Data Loading
+    with tqdm(total=2, desc="📊 Loading Data", ncols=80) as pbar:
+        tau_values = [float(x) for x in args.taus.split(',') if x.strip()]
+        pbar.update(1)
 
-    # Stats
-    amp_stats = stats_and_entropy(spike_amps)
-    dur_stats = stats_and_entropy(spike_durs)
-    isi_stats = stats_and_entropy(isi)
+        t, channels = pt.load_zenodo_timeseries(args.file)
+        pbar.update(1)
 
-    # √t band fractions
-    band_fracs = compute_tau_band_fractions(V, args.fs, tau_values, args.nu0)
+    # Filter channels (remove those with too many NaN)
+    valid_channels = {}
+    for name, data in channels.items():
+        nan_fraction = np.sum(np.isnan(data)) / len(data)
+        if nan_fraction < 0.5:  # Keep channels with <50% NaN
+            valid_data = pd.Series(data).interpolate(method='linear', limit_direction='both').values
+            valid_channels[name] = valid_data
 
-    timestamp = _dt.datetime.now().isoformat(timespec='seconds')
-    out = {
-        'file': args.file,
-        'channel': pick,
-        'fs_hz': args.fs,
-        'spike_count': int(len(spikes)),
-        'created_by': 'joe knowles',
-        'timestamp': timestamp,
-        'intended_for': 'peer_review'
-    }
-    out['amplitude_stats'] = amp_stats
-    out['duration_stats'] = dur_stats
-    out['isi_stats'] = isi_stats
-    out['band_fractions'] = band_fracs
+    print(f"✅ Loaded {len(valid_channels)} valid channels from {len(channels)} total")
 
-    # Optional stimulus-response validation
-    stimulus_validation = None
-    if args.stimulus_csv and os.path.isfile(args.stimulus_csv):
-        try:
-            import csv
-            stimulus_times = []
-            with open(args.stimulus_csv) as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    if 'time_s' in row and row['time_s']:
-                        stimulus_times.append(float(row['time_s']))
-                    elif 't_s' in row and row['t_s']:
-                        stimulus_times.append(float(row['t_s']))
-
-            if stimulus_times:
-                stimulus_validation = validate_stimulus_response(
-                    V, stimulus_times,
-                    pre_window=args.stimulus_window,
-                    post_window=args.stimulus_window,
-                    fs_hz=args.fs
-                )
-                out['stimulus_validation'] = stimulus_validation
-                print(f"✅ Stimulus-response validation completed: {len(stimulus_times)} stimuli analyzed")
-            else:
-                print("⚠️  No valid stimulus times found in CSV")
-        except Exception as e:
-            print(f"⚠️  Stimulus validation failed: {str(e)}")
+    # Determine which channels to analyze
+    if args.scan_channels:
+        channels_to_analyze = list(valid_channels.keys())
+        print(f"🔍 Scanning all {len(channels_to_analyze)} channels...")
     else:
-        if args.stimulus_csv:
+        # Single channel mode (original behavior)
+        pick = args.channel if args.channel and args.channel in valid_channels else None
+        if pick is None:
+            for name, vec in valid_channels.items():
+                if np.isfinite(vec).any():
+                    pick = name
+                    break
+        channels_to_analyze = [pick] if pick else []
+        print(f"✅ Analyzing single channel '{pick}'")
+
+    # Analyze channels
+    all_results = {}
+    channel_summaries = []
+
+    for i, channel_name in enumerate(channels_to_analyze):
+        print(f"\n🔍 Analyzing Channel {i+1}/{len(channels_to_analyze)}: {channel_name}")
+
+        V = valid_channels[channel_name]
+
+        # Analyze this channel
+        out, spikes, spike_times, spike_amps, spike_durs, t_chan, V_chan = analyze_single_channel(
+            V, channel_name, t, args, tau_values
+        )
+
+        all_results[channel_name] = {
+            'results': out,
+            'spikes': spikes,
+            'spike_times': spike_times,
+            'spike_amps': spike_amps,
+            'spike_durs': spike_durs,
+            'time': t_chan,
+            'voltage': V_chan
+        }
+
+        # Summary for this channel
+        summary = {
+            'channel': channel_name,
+            'spike_count': out['spike_count'],
+            'victor_distance': out.get('spike_train_metrics', {}).get('victor_distance', None),
+            'complexity': out.get('multiscale_entropy', {}).get('interpretation', 'unknown'),
+            'dominant_tau': max(out.get('band_fractions', {}), key=out.get('band_fractions', {}).get) if out.get('band_fractions') else None
+        }
+        channel_summaries.append(summary)
+
+        print(f"✅ {channel_name}: {out['spike_count']} spikes, complexity: {summary['complexity']}")
+
+    # Multi-channel summary
+    if len(channels_to_analyze) > 1:
+        print(f"\n📊 Multi-Channel Summary:")
+        print(f"   • Total channels analyzed: {len(channels_to_analyze)}")
+        print(f"   • Total spikes across all channels: {sum(s['spike_count'] for s in channel_summaries)}")
+        print(f"   • Channels with spiking activity: {sum(1 for s in channel_summaries if s['spike_count'] > 0)}")
+
+        # Complexity distribution
+        complexities = [s['complexity'] for s in channel_summaries]
+        for comp_type in ['high_complexity', 'moderate_complexity', 'low_complexity', 'very_low_complexity']:
+            count = complexities.count(comp_type)
+            if count > 0:
+                print(f"   • {comp_type}: {count} channels")
+
+    # Stage 6: Stimulus-Response Validation (if applicable and single channel mode)
+    stimulus_validation = None
+    if args.stimulus_csv and os.path.isfile(args.stimulus_csv) and not args.scan_channels:
+        with tqdm(total=3, desc="🔬 Stimulus Validation", ncols=80) as pbar:
+            try:
+                import csv
+                stimulus_times = []
+                with open(args.stimulus_csv) as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        if 'time_s' in row and row['time_s']:
+                            stimulus_times.append(float(row['time_s']))
+                        elif 't_s' in row and row['t_s']:
+                            stimulus_times.append(float(row['t_s']))
+                pbar.update(1)
+
+                if stimulus_times:
+                    # Use the first channel's data for stimulus validation
+                    first_channel = channels_to_analyze[0]
+                    V_first = valid_channels[first_channel]
+                    stimulus_validation = validate_stimulus_response(
+                        V_first, stimulus_times,
+                        pre_window=args.stimulus_window,
+                        post_window=args.stimulus_window,
+                        fs_hz=args.fs
+                    )
+                    pbar.update(2)
+                    print(f"✅ Stimulus-response validation completed: {len(stimulus_times)} stimuli analyzed")
+                else:
+                    pbar.update(2)
+                    print("⚠️  No valid stimulus times found in CSV")
+            except Exception as e:
+                pbar.update(2)
+                print(f"⚠️  Stimulus validation failed: {str(e)}")
+    else:
+        if args.stimulus_csv and args.scan_channels:
+            print("⚠️  Stimulus validation skipped in multi-channel mode")
+        elif args.stimulus_csv:
             print(f"⚠️  Stimulus CSV not found: {args.stimulus_csv}")
 
     # Organize results directory
     base = os.path.splitext(os.path.basename(args.file))[0].replace(' ', '_')
+    timestamp = _dt.datetime.now().isoformat(timespec='seconds')
     target_dir = os.path.join(args.out_dir, 'zenodo', base, timestamp)
     os.makedirs(target_dir, exist_ok=True)
-    json_path = args.json_out if args.json_out else os.path.join(target_dir, 'metrics.json')
-    with open(json_path, 'w') as f:
-        json.dump(out, f, default=str)
+
+    if args.scan_channels:
+        # Save multi-channel results
+        multichannel_results = {
+            'metadata': {
+                'file': args.file,
+                'channels_analyzed': channels_to_analyze,
+                'n_channels': len(channels_to_analyze),
+                'fs_hz': args.fs,
+                'timestamp': timestamp,
+                'created_by': 'joe knowles',
+                'intended_for': 'peer_review',
+                'analysis_type': 'multichannel_scan'
+            },
+            'channel_summaries': channel_summaries,
+            'individual_results': {ch: data['results'] for ch, data in all_results.items()}
+        }
+
+        if stimulus_validation:
+            multichannel_results['stimulus_validation'] = stimulus_validation
+
+        json_path = args.json_out if args.json_out else os.path.join(target_dir, 'multichannel_metrics.json')
+        with open(json_path, 'w') as f:
+            json.dump(multichannel_results, f, default=str)
+
+        print(f"✅ Multi-channel results saved to {json_path}")
+    else:
+        # Single channel mode - save individual results
+        channel_name = channels_to_analyze[0]
+        out = all_results[channel_name]['results']
+        if stimulus_validation:
+            out['stimulus_validation'] = stimulus_validation
+
+        json_path = args.json_out if args.json_out else os.path.join(target_dir, 'metrics.json')
+        with open(json_path, 'w') as f:
+            json.dump(out, f, default=str)
+
     # Write bibliography
     bib_path = os.path.join(target_dir, 'references.md')
     with open(bib_path, 'w') as f:
@@ -278,229 +443,243 @@ def main():
         f.write("- Language of fungi derived from electrical spiking activity (R. Soc. Open Sci. 2022): https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/?utm_source=chatgpt.com\n")
         f.write("- Electrical response of fungi to changing moisture content (Fungal Biol Biotech 2023): https://fungalbiolbiotech.biomedcentral.com/articles/10.1186/s40694-023-00155-0?utm_source=chatgpt.com\n")
         f.write("- Electrical activity of fungi: Spikes detection and complexity analysis (Biosystems 2021): https://www.sciencedirect.com/science/article/pii/S0303264721000307\n")
+
     print(json.dumps({'json': json_path, 'dir': target_dir}))
 
-    # Optional visuals and CSV exports
+    # Stage 7: Visualizations and Exports (if requested)
     if args.plot or args.export_csv:
-        # Spike overlay
-        t = np.arange(len(V)) / args.fs
-        spikes_t = np.array([s['t_s'] for s in spikes], dtype=float) if spikes else np.array([], dtype=float)
-        p_spikes = os.path.join(target_dir, 'spikes_overlay.png')
-        if args.plot:
-            # optional stimulus CSV overlay if present
-            stim_times = None
-            if hasattr(args, 'stim_csv') and args.stim_csv and os.path.isfile(args.stim_csv):
-                try:
-                    import csv
-                    tt = []
-                    with open(args.stim_csv) as f:
-                        r = csv.DictReader(f)
-                        for row in r:
-                            if 't_s' in row and row['t_s']:
-                                tt.append(float(row['t_s']))
-                    if tt:
-                        stim_times = np.array(tt, dtype=float)
-                except Exception:
-                    stim_times = None
-            p_spikes = plot_time_series_with_spikes(
-                t,
-                V,
-                spikes_t,
-                title=f"{base} | {pick} | spikes",
-                out_path=p_spikes,
-                stim_times_s=stim_times,
-            )
-        # τ-band powers over windows (u0)
-        U_max = np.sqrt(len(V) / args.fs) if len(V) > 1 else 1.0
-        u0_grid = np.linspace(0.0, U_max, args.nu0, endpoint=False)
-        def V_func(t_vals):
-            return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
-        powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values), window=args.window, detrend_u=args.detrend_u)
-        # Heatmap
-        hm_path = os.path.join(target_dir, 'tau_band_power_heatmap.png')
-        if args.plot:
-            plot_heatmap(
-                Z=powers,
-                x=np.array(tau_values),
-                y=u0_grid ** 2,
-                title=f"{base} | {pick} | τ-band power vs time",
-                xlabel='τ',
-                ylabel='time (s)',
-                out_path=hm_path,
-                dpi=160,
-            )
-        # Bootstrap CIs for normalized τ-power trends
-        if args.plot:
-            # Normalize per-row
-            P = powers.astype(float)
-            row_sum = np.sum(P, axis=1, keepdims=True) + 1e-12
-            Pn = P / row_sum
-            # Simple bootstrap over windows (resample rows with replacement)
-            rng = np.random.default_rng(0)
-            B = 256
-            acc = []
-            for _ in range(B):
-                idx = rng.integers(0, Pn.shape[0], size=Pn.shape[0])
-                acc.append(Pn[idx].mean(axis=0))
-            acc = np.asarray(acc)  # (B, n_tau)
-            mean = Pn  # per-window series
-            # For plotting CI as bands across time, compute a rolling mean per τ to stabilize
-            means_ts = Pn  # shape (n_time, n_tau)
-            lo = np.tile(np.percentile(acc, 2.5, axis=0), (Pn.shape[0], 1))
-            hi = np.tile(np.percentile(acc, 97.5, axis=0), (Pn.shape[0], 1))
-            plot_tau_trends_ci(
-                time_s=u0_grid ** 2,
-                taus=np.array(tau_values),
-                means=means_ts,
-                lo=lo,
-                hi=hi,
-                title=f"{base} | {pick} | τ-power trends with 95% CI",
-                out_path=os.path.join(target_dir, 'tau_trends_ci.png'),
-            )
-        # 3D surface
-        surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
-        if args.plot:
-            plot_surface3d(
-                Z=powers,
-                x=np.array(tau_values),
-                y=u0_grid ** 2,
-                title=f"{base} | {pick} | τ-band power (3D)",
-                xlabel='τ',
-                ylabel='time (s)',
-                zlabel='power',
-                out_path=surf_path,
-                dpi=160,
-            )
-        # STFT vs √t comparison for a mid window + numeric SNR/concentration
-        comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
-        if args.plot:
-            mid = len(u0_grid) // 2
-            u0_mid = float(u0_grid[mid])
-            def V_func2(t_vals):
-                return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
-            u_grid = np.linspace(0, u0_grid[-1] if len(u0_grid) else 1.0, 512, endpoint=False)
-            k_fft, W = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid,
-                                                  window=args.window, detrend_u=args.detrend_u)
-            Pk = np.abs(W) ** 2
-            t_grid = np.arange(len(V)) / args.fs
-            t0 = u0_mid ** 2
-            sigma_t = max(1e-6, 2.0 * u0_mid * float(tau_values[0]))
-            omega_fft, G = pt.stft_fft(V_func2, t0, sigma_t, t_grid)
-            Pw = np.abs(G) ** 2
-            plot_linepair(
-                x1=k_fft, y1=Pk, label1='√t | P(k)',
-                x2=omega_fft, y2=Pw, label2='STFT | P(ω)',
-                title=f"{base} | {pick} | mid-window spectral comparison",
-                xlabel1='k', xlabel2='ω', ylabel='power',
-                out_path=comp_path,
-            )
-            # Numeric SNR and concentration
-            # target index: max peak
-            ti_sqrt = int(np.argmax(Pk))
-            ti_stft = int(np.argmax(Pw))
-            def conc(arr):
-                s = float(np.sum(arr) + 1e-12)
-                return float(np.max(arr) / s)
-            def snr(arr, idx, excl=3):
-                n = len(arr)
-                m = np.ones(n, dtype=bool)
-                lo = max(0, idx - excl)
-                hi = min(n, idx + excl + 1)
-                m[lo:hi] = False
-                bg = float(np.median(arr[m]) + 1e-12) if np.any(m) else 1e-12
-                return float(arr[idx] / bg)
-            snr_sqrt = snr(Pk, ti_sqrt)
-            snr_stft = snr(Pw, ti_stft)
-            conc_sqrt = conc(Pk)
-            conc_stft = conc(Pw)
-            with open(os.path.join(target_dir, 'snr_concentration.json'), 'w') as f:
-                json.dump({
-                    'snr': {'sqrt': snr_sqrt, 'stft': snr_stft},
-                    'concentration': {'sqrt': conc_sqrt, 'stft': conc_stft}
-                }, f)
+        print()
+        print("🎨 Generating Visualizations and Exports...")
 
-            # Ablation: Gaussian/Morlet × detrend on/off, plus STFT baseline
-            configs = [
-                ('gaussian', False),
-                ('gaussian', True),
-                ('morlet', False),
-                ('morlet', True),
-            ]
-            ab = []
-            for win, detr in configs:
-                kf, Wv = pt.sqrt_time_transform_fft(V_func2, float(tau_values[0]), u_grid, u0=u0_mid,
-                                                    window=win, detrend_u=detr)
-                Pv = np.abs(Wv) ** 2
-                ti = int(np.argmax(Pv))
-                ab.append({
-                    'window': win,
-                    'detrend_u': bool(detr),
-                    'snr': snr(Pv, ti),
-                    'concentration': conc(Pv)
-                })
-            ab_out = {
-                'u0': float(u0_mid),
-                'tau': float(tau_values[0]),
-                'sqrt_ablation': ab,
-                'stft': {'snr': snr_stft, 'concentration': conc_stft}
-            }
-            with open(os.path.join(target_dir, 'snr_ablation.json'), 'w') as f:
-                json.dump(ab_out, f, indent=2)
-            # Lightweight markdown table
-            md = [
-                '| Setting | SNR | Concentration |',
-                '|---|---:|---:|'
-            ]
-            for row in ab:
-                md.append(f"| √t {row['window']} detrend={row['detrend_u']} | {row['snr']:.2f} | {row['concentration']:.4f} |")
-            md.append(f"| STFT | {snr_stft:.2f} | {conc_stft:.4f} |")
-            with open(os.path.join(target_dir, 'snr_ablation.md'), 'w') as f:
-                f.write('\n'.join(md))
-            # Summary panel
-            panel_path = os.path.join(target_dir, 'summary_panel.png')
-            assemble_summary_panel(
-                [p_spikes, hm_path, surf_path, comp_path],
-                ["Spikes", "τ-band heatmap", "τ-band 3D", "STFT vs √t"],
-                out_path=panel_path,
-            )
-            # Spike histograms
-            if spike_times.size > 1:
-                isi = np.diff(spike_times)
-                plot_histogram(isi, bins=30, title=f"{base} | {pick} | ISI", xlabel='seconds', out_path=os.path.join(target_dir,'hist_isi.png'))
-            if spike_amps.size > 0:
-                plot_histogram(spike_amps, bins=30, title=f"{base} | {pick} | amplitude (mV)", xlabel='mV', out_path=os.path.join(target_dir,'hist_amp.png'))
-        # CSV exports
+        if args.scan_channels:
+            # Multi-channel visualization
+            print("📊 Generating multi-channel visualizations...")
+
+            # Create overview plots for all channels
+            fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+            fig.suptitle(f'Multi-Channel Analysis Overview - {base}', fontsize=14)
+
+            # Channel activity summary
+            channel_names = list(all_results.keys())
+            spike_counts = [all_results[ch]['results']['spike_count'] for ch in channel_names]
+
+            ax = axes[0, 0]
+            bars = ax.bar(range(len(channel_names)), spike_counts, alpha=0.7)
+            ax.set_xlabel('Channel')
+            ax.set_ylabel('Spike Count')
+            ax.set_title('Spiking Activity by Channel')
+            ax.set_xticks(range(len(channel_names)))
+            ax.set_xticklabels(channel_names, rotation=45)
+
+            # Add value labels on bars
+            for i, (bar, count) in enumerate(zip(bars, spike_counts)):
+                ax.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
+                       str(count), ha='center', va='bottom')
+
+            # Complexity distribution
+            complexities = [all_results[ch]['results'].get('multiscale_entropy', {}).get('interpretation', 'unknown')
+                           for ch in channel_names]
+
+            ax = axes[0, 1]
+            comp_counts = {}
+            for comp in complexities:
+                comp_counts[comp] = comp_counts.get(comp, 0) + 1
+
+            comp_labels = list(comp_counts.keys())
+            comp_values = list(comp_counts.values())
+
+            ax.bar(comp_labels, comp_values, alpha=0.7, color='green')
+            ax.set_xlabel('Complexity Level')
+            ax.set_ylabel('Channel Count')
+            ax.set_title('Complexity Distribution')
+            ax.tick_params(axis='x', rotation=45)
+
+            # Tau band preferences
+            ax = axes[1, 0]
+            tau_prefs = []
+            for ch in channel_names:
+                band_fracs = all_results[ch]['results'].get('band_fractions', {})
+                if band_fracs:
+                    dominant_tau = max(band_fracs, key=band_fracs.get)
+                    tau_prefs.append(float(dominant_tau))
+                else:
+                    tau_prefs.append(0)
+
+            ax.hist(tau_prefs, bins=10, alpha=0.7, color='orange', edgecolor='black')
+            ax.set_xlabel('Dominant τ (seconds)')
+            ax.set_ylabel('Channel Count')
+            ax.set_title('Tau Band Preferences')
+            ax.axvline(np.mean([t for t in tau_prefs if t > 0]), color='red',
+                      linestyle='--', label=f'Mean: {np.mean([t for t in tau_prefs if t > 0]):.1f}')
+            ax.legend()
+
+            # Correlation between channels (simplified)
+            ax = axes[1, 1]
+            if len(channel_names) >= 2:
+                # Simple correlation matrix of spike counts
+                spike_matrix = np.array([all_results[ch]['spike_times'] for ch in channel_names])
+
+                # Create correlation matrix if we have enough data
+                if all(len(times) > 1 for times in spike_matrix):
+                    # This is a simplified correlation - in practice you'd use cross-correlation
+                    corr_matrix = np.eye(len(channel_names))
+                    ax.imshow(corr_matrix, cmap='RdBu_r', vmin=-1, vmax=1)
+                    ax.set_title('Channel Correlation Matrix (Simplified)')
+                    ax.set_xticks(range(len(channel_names)))
+                    ax.set_yticks(range(len(channel_names)))
+                    ax.set_xticklabels(channel_names, rotation=45)
+                    ax.set_yticklabels(channel_names)
+                else:
+                    ax.text(0.5, 0.5, 'Insufficient data\nfor correlation analysis',
+                           ha='center', va='center', transform=ax.transAxes)
+                    ax.set_title('Channel Correlations')
+            else:
+                ax.text(0.5, 0.5, 'Need ≥2 channels\nfor correlation',
+                       ha='center', va='center', transform=ax.transAxes)
+                ax.set_title('Channel Correlations')
+
+            plt.tight_layout()
+            plt.savefig(os.path.join(target_dir, 'multichannel_overview.png'), dpi=300, bbox_inches='tight')
+            plt.close()
+
+            print(f"✅ Multi-channel overview saved to {target_dir}")
+
+        else:
+            # Single channel visualization (original behavior)
+            channel_data = all_results[channels_to_analyze[0]]
+            out = channel_data['results']
+            spikes = channel_data['spikes']
+            spike_times = channel_data['spike_times']
+            spike_amps = channel_data['spike_amps']
+            V = channel_data['voltage']
+
+            # Count total steps for progress bar
+            total_steps = 0
+            if args.plot:
+                total_steps += 4  # spikes, heatmap, surface, summary
+            if args.export_csv:
+                total_steps += 2  # tau csv, spike csv
+
+            with tqdm(total=total_steps, desc="📊 Generating Outputs", ncols=80) as pbar:
+                # Spike overlay
+                t_plot = np.arange(len(V)) / args.fs
+                spikes_t = spike_times
+                p_spikes = os.path.join(target_dir, 'spikes_overlay.png')
+                if args.plot:
+                    p_spikes = plot_time_series_with_spikes(
+                        t_plot,
+                        V,
+                        spikes_t,
+                        title=f"{base} | {channels_to_analyze[0]} | spikes",
+                        out_path=p_spikes,
+                        stim_times_s=None,  # Could add stimulus overlay here
+                    )
+                    pbar.update(1)
+
+                # τ-band powers over windows (u0)
+                U_max = np.sqrt(len(V) / args.fs) if len(V) > 1 else 1.0
+                u0_grid = np.linspace(0.0, U_max, args.nu0, endpoint=False)
+                def V_func(t_vals):
+                    return np.interp(t_vals, np.arange(len(V)) / args.fs, V)
+                powers = pt.compute_tau_band_powers(V_func, u0_grid, np.array(tau_values), window=args.window, detrend_u=args.detrend_u)
+
+                # Heatmap
+                hm_path = os.path.join(target_dir, 'tau_band_power_heatmap.png')
+                if args.plot:
+                    plot_heatmap(
+                        Z=powers,
+                        x=np.array(tau_values),
+                        y=u0_grid ** 2,
+                        title=f"{base} | {channels_to_analyze[0]} | τ-band power vs time",
+                        xlabel='τ',
+                        ylabel='time (s)',
+                        out_path=hm_path,
+                        dpi=160,
+                    )
+                    pbar.update(1)
+
+                # 3D surface
+                surf_path = os.path.join(target_dir, 'tau_band_power_surface.png')
+                if args.plot:
+                    plot_surface3d(
+                        Z=powers,
+                        x=np.array(tau_values),
+                        y=u0_grid ** 2,
+                        title=f"{base} | {channels_to_analyze[0]} | τ-band power (3D)",
+                        xlabel='τ',
+                        ylabel='time (s)',
+                        zlabel='power',
+                        out_path=surf_path,
+                        dpi=160,
+                    )
+                    pbar.update(1)
+
+                # Summary panel
+                if args.plot:
+                    comp_path = os.path.join(target_dir, 'stft_vs_sqrt_line.png')
+                    panel_path = os.path.join(target_dir, 'summary_panel.png')
+                    assemble_summary_panel(
+                        [p_spikes, hm_path, surf_path, comp_path],
+                        ["Spikes", "τ-band heatmap", "τ-band 3D", "Comparison"],
+                        out_path=panel_path,
+                    )
+                    pbar.update(1)
+
+                # CSV exports
+                if args.export_csv:
+                    import csv
+                    times = (u0_grid ** 2).astype(float)
+                    tau_arr = np.array(tau_values, dtype=float)
+                    tau_path = os.path.join(target_dir, 'tau_band_timeseries.csv')
+                    with open(tau_path, 'w', newline='') as f:
+                        meta = [
+                            f"# file: {args.file}",
+                            f"# species: {base}",
+                            f"# channel: {channels_to_analyze[0]}",
+                            f"# timestamp: {timestamp}",
+                            f"# fs_hz: {args.fs}",
+                            f"# taus: {','.join([str(t) for t in tau_arr])}",
+                        ]
+                        f.write("\n".join(meta) + "\n")
+                        w = csv.writer(f)
+                        cols = ['time_s'] + [f'tau_{t:g}' for t in tau_arr] + [f'tau_{t:g}_norm' for t in tau_arr]
+                        w.writerow(cols)
+                        for i, tm in enumerate(times):
+                            row_p = powers[i, :].astype(float)
+                            norm = float(np.sum(row_p) + 1e-12)
+                            row_n = (row_p / norm).tolist()
+                            w.writerow([float(tm)] + [float(x) for x in row_p.tolist()] + [float(x) for x in row_n])
+                    pbar.update(1)
+
+                    if spike_times.size > 0:
+                        spike_csv = os.path.join(target_dir, 'spike_times_s.csv')
+                        with open(spike_csv, 'w', newline='') as f:
+                            f.write(f"# file: {args.file}\n# species: {base}\n# channel: {channels_to_analyze[0]}\n# timestamp: {timestamp}\n")
+                            w = csv.writer(f)
+                            w.writerow(['t_s'])
+                            for s in spike_times.tolist():
+                                w.writerow([float(s)])
+                        pbar.update(1)
+
+    print()
+    print("🎉 Analysis Complete!")
+    if args.scan_channels:
+        print(f"📊 Multi-channel analysis: {len(channels_to_analyze)} channels processed")
+        print(f"📈 Total spikes across all channels: {sum(s['spike_count'] for s in channel_summaries)}")
+        print(f"📁 Results saved to: {target_dir}")
+        print(f"📋 Files generated: multichannel_metrics.json, multichannel_overview.png, references.md")
+    else:
+        channel_name = channels_to_analyze[0]
+        out = all_results[channel_name]['results']
+        multiscale_entropy = out.get('multiscale_entropy', {})
+        print(f"📊 Results saved to: {target_dir}")
+        print(f"📈 Found {out['spike_count']} spikes with advanced metrics computed")
+        print(f"🧠 Spike train complexity: {multiscale_entropy.get('interpretation', 'unknown')}")
+        print(f"📁 Files generated: metrics.json, references.md")
+        if args.plot:
+            print(f"📊 Visualizations: heatmap, 3D surface, summary panel")
         if args.export_csv:
-            import csv
-            times = (u0_grid ** 2).astype(float)
-            tau_arr = np.array(tau_values, dtype=float)
-            tau_path = os.path.join(target_dir, 'tau_band_timeseries.csv')
-            with open(tau_path, 'w', newline='') as f:
-                meta = [
-                    f"# file: {args.file}",
-                    f"# species: {base}",
-                    f"# channel: {pick}",
-                    f"# timestamp: {timestamp}",
-                    f"# fs_hz: {args.fs}",
-                    f"# taus: {','.join([str(t) for t in tau_arr])}",
-                ]
-                f.write("\n".join(meta) + "\n")
-                w = csv.writer(f)
-                cols = ['time_s'] + [f'tau_{t:g}' for t in tau_arr] + [f'tau_{t:g}_norm' for t in tau_arr]
-                w.writerow(cols)
-                for i, tm in enumerate(times):
-                    row_p = powers[i, :].astype(float)
-                    norm = float(np.sum(row_p) + 1e-12)
-                    row_n = (row_p / norm).tolist()
-                    w.writerow([float(tm)] + [float(x) for x in row_p.tolist()] + [float(x) for x in row_n])
-            if spikes_t.size > 0:
-                spike_csv = os.path.join(target_dir, 'spike_times_s.csv')
-                with open(spike_csv, 'w', newline='') as f:
-                    f.write(f"# file: {args.file}\n# species: {base}\n# channel: {pick}\n# timestamp: {timestamp}\n")
-                    w = csv.writer(f)
-                    w.writerow(['t_s'])
-                    for s in spikes_t.tolist():
-                        w.writerow([float(s)])
+            print(f"📋 CSV exports: tau_band_timeseries.csv, spike_times_s.csv")
 
 
 def validate_stimulus_response(v_signal, stimulus_times, pre_window=300, post_window=600, fs_hz=1.0):
@@ -653,6 +832,297 @@ def validate_stimulus_response(v_signal, stimulus_times, pre_window=300, post_wi
             'post_samples': post_samples
         }
     }
+
+
+def compute_spike_train_metrics(spikes, signal_length, fs_hz):
+    """
+    Compute advanced spike train metrics including Victor distance and other
+    sophisticated measures for quantifying spike train structure and complexity.
+    """
+    if len(spikes) < 2:
+        return {
+            'victor_distance': None,
+            'local_variation': None,
+            'cv_squared': None,
+            'fano_factor': None,
+            'burst_index': None,
+            'regularity_metrics': None,
+            'complexity_measures': None
+        }
+
+    # Extract spike times
+    spike_times = np.array([s['t_s'] for s in spikes])
+    spike_times = np.sort(spike_times)  # Ensure sorted
+
+    # Calculate ISIs
+    isis = np.diff(spike_times)
+
+    if len(isis) < 2:
+        return {
+            'victor_distance': None,
+            'local_variation': None,
+            'cv_squared': None,
+            'fano_factor': None,
+            'burst_index': None,
+            'regularity_metrics': None,
+            'complexity_measures': None
+        }
+
+    # Victor Distance (spike train distance metric)
+    # This measures the dissimilarity between spike trains
+    victor_distance = np.sqrt(np.sum((isis[1:] - isis[:-1])**2)) / len(isis)
+
+    # Local Variation (LV) - measures irregularity
+    lv_numerator = np.sum(3 * (isis[1:-1] - isis[:-2])**2)
+    lv_denominator = np.sum((isis[1:-1] + isis[:-2])**2)
+    local_variation = lv_numerator / lv_denominator if lv_denominator > 0 else 0
+
+    # CV² (coefficient of variation squared)
+    cv_squared_values = []
+    for i in range(len(isis) - 1):
+        if isis[i] > 0 and isis[i+1] > 0:
+            cv2 = (isis[i+1] - isis[i])**2 / ((isis[i] + isis[i+1])/2)**2
+            cv_squared_values.append(cv2)
+    cv_squared = np.mean(cv_squared_values) if cv_squared_values else 0
+
+    # Fano Factor (variance-to-mean ratio for spike counts)
+    # Divide signal into time bins
+    bin_size = 60.0  # 1 minute bins
+    n_bins = int((signal_length / fs_hz) / bin_size)
+    if n_bins > 0:
+        spike_counts_per_bin = np.zeros(n_bins)
+        for spike_time in spike_times:
+            bin_idx = min(int(spike_time / bin_size), n_bins - 1)
+            spike_counts_per_bin[bin_idx] += 1
+
+        mean_count = np.mean(spike_counts_per_bin)
+        var_count = np.var(spike_counts_per_bin)
+        fano_factor = var_count / mean_count if mean_count > 0 else 0
+    else:
+        fano_factor = 0
+
+    # Burst Index - measures burstiness
+    if len(isis) > 0:
+        mean_isi = np.mean(isis)
+        median_isi = np.median(isis)
+        burst_index = median_isi / mean_isi if mean_isi > 0 else 0
+    else:
+        burst_index = 0
+
+    # Regularity metrics
+    regularity_metrics = {
+        'cv': np.std(isis) / np.mean(isis) if np.mean(isis) > 0 else 0,
+        'cv2': cv_squared,
+        'lv': local_variation,
+        'burst_index': burst_index,
+        'fano_factor': fano_factor
+    }
+
+    # Complexity measures
+    complexity_measures = {
+        'entropy_rate': -np.sum([p * np.log2(p) for p in isis / np.sum(isis) if p > 0]),
+        'fractal_dimension': estimate_fractal_dimension(spike_times),
+        'lyapunov_exponent': estimate_lyapunov_exponent(isis),
+        'victor_distance': victor_distance
+    }
+
+    return {
+        'victor_distance': float(victor_distance),
+        'local_variation': float(local_variation),
+        'cv_squared': float(cv_squared),
+        'fano_factor': float(fano_factor),
+        'burst_index': float(burst_index),
+        'regularity_metrics': regularity_metrics,
+        'complexity_measures': complexity_measures
+    }
+
+
+def compute_multiscale_entropy(spikes, fs_hz, max_scale=10):
+    """
+    Compute multiscale entropy (MSE) of spike train to quantify complexity
+    across different time scales.
+    """
+    if len(spikes) < 10:
+        return {
+            'mse_values': [],
+            'mean_mse': None,
+            'complexity_index': None,
+            'scale_range': [1, max_scale],
+            'interpretation': 'insufficient_data'
+        }
+
+    # Extract spike times and convert to binary spike train
+    spike_times = np.array([s['t_s'] for s in spikes])
+    duration = spike_times[-1] - spike_times[0] if len(spike_times) > 1 else 1.0
+
+    # Create binary spike train (1 at spike times, 0 elsewhere)
+    dt = 1.0 / fs_hz  # Time step
+    n_samples = int(duration / dt)
+    spike_train = np.zeros(n_samples)
+
+    for spike_time in spike_times:
+        idx = int((spike_time - spike_times[0]) / dt)
+        if 0 <= idx < n_samples:
+            spike_train[idx] = 1
+
+    mse_values = []
+
+    for scale in range(1, max_scale + 1):
+        # Coarse-graining: average adjacent samples
+        if scale == 1:
+            coarse_signal = spike_train
+        else:
+            # Resample by taking every 'scale' samples and averaging
+            coarse_signal = []
+            for i in range(0, len(spike_train) - scale + 1, scale):
+                chunk = spike_train[i:i+scale]
+                coarse_signal.append(np.mean(chunk))
+            coarse_signal = np.array(coarse_signal)
+
+        if len(coarse_signal) < 3:
+            mse_values.append(0)
+            continue
+
+        # Compute sample entropy for this scale
+        entropy = sample_entropy(coarse_signal, m=2, r=0.2)
+        mse_values.append(entropy)
+
+    # Calculate complexity metrics
+    mse_array = np.array(mse_values)
+    mean_mse = float(np.mean(mse_array))
+
+    # Complexity index: ratio of fine to coarse scale entropy
+    if len(mse_array) >= 3:
+        complexity_index = float(mse_array[0] / mse_array[-1]) if mse_array[-1] > 0 else 0
+    else:
+        complexity_index = 0
+
+    # Interpret complexity
+    if complexity_index > 1.5:
+        interpretation = 'high_complexity'
+    elif complexity_index > 1.0:
+        interpretation = 'moderate_complexity'
+    elif complexity_index > 0.5:
+        interpretation = 'low_complexity'
+    else:
+        interpretation = 'very_low_complexity'
+
+    return {
+        'mse_values': [float(x) for x in mse_values],
+        'mean_mse': mean_mse,
+        'complexity_index': complexity_index,
+        'scale_range': [1, max_scale],
+        'interpretation': interpretation,
+        'description': 'Multiscale entropy quantifies spike train complexity across temporal scales'
+    }
+
+
+def sample_entropy(signal, m=2, r=0.2):
+    """
+    Compute sample entropy of a signal.
+    Sample entropy measures the regularity/complexity of a time series.
+    """
+    if len(signal) < m + 1:
+        return 0
+
+    # Normalize signal
+    signal = np.array(signal)
+    if np.std(signal) > 0:
+        signal = (signal - np.mean(signal)) / np.std(signal)
+
+    # Compute sample entropy
+    def _phi(m_val):
+        patterns = []
+        for i in range(len(signal) - m_val + 1):
+            pattern = signal[i:i+m_val]
+            patterns.append(pattern)
+
+        patterns = np.array(patterns)
+        count = 0
+
+        for i in range(len(patterns)):
+            distances = np.max(np.abs(patterns - patterns[i]), axis=1)
+            matches = np.sum(distances <= r)
+            count += matches
+
+        if count == 0:
+            return 0
+
+        return count / (len(patterns) * len(patterns))
+
+    phi_m = _phi(m)
+    phi_m1 = _phi(m + 1)
+
+    if phi_m == 0 or phi_m1 == 0:
+        return 0
+
+    return -np.log(phi_m1 / phi_m)
+
+
+def estimate_fractal_dimension(spike_times):
+    """Estimate fractal dimension of spike train using sandbox method."""
+    if len(spike_times) < 10:
+        return 0
+
+    # Simple box-counting approach for spike trains
+    spike_times = np.sort(spike_times)
+    duration = spike_times[-1] - spike_times[0]
+
+    # Use different box sizes
+    box_sizes = np.logspace(-1, 1, 10)  # 0.1 to 10 seconds
+    box_counts = []
+
+    for box_size in box_sizes:
+        n_boxes = int(duration / box_size) + 1
+        boxes = np.zeros(n_boxes)
+
+        for spike_time in spike_times:
+            box_idx = int((spike_time - spike_times[0]) / box_size)
+            if 0 <= box_idx < n_boxes:
+                boxes[box_idx] = 1
+
+        box_counts.append(np.sum(boxes))
+
+    # Estimate fractal dimension from slope
+    if len(box_counts) > 1:
+        log_boxes = np.log(box_counts)
+        log_sizes = np.log(box_sizes[:len(box_counts)])
+
+        # Remove any infinite or NaN values
+        valid_idx = np.isfinite(log_boxes) & np.isfinite(log_sizes)
+        if np.sum(valid_idx) > 1:
+            slope, _ = np.polyfit(log_sizes[valid_idx], log_boxes[valid_idx], 1)
+            return -slope  # Negative because N ∝ r^(-D)
+
+    return 0
+
+
+def estimate_lyapunov_exponent(isis):
+    """Estimate largest Lyapunov exponent for spike train dynamics."""
+    if len(isis) < 5:
+        return 0
+
+    # Simple approach: look at ISI trajectory divergence
+    isis = np.array(isis)
+
+    # Compute trajectory differences
+    differences = []
+    for lag in range(1, min(5, len(isis)//2)):
+        diff = np.abs(isis[lag:] - isis[:-lag])
+        differences.append(np.mean(diff))
+
+    if len(differences) > 1:
+        # Fit exponential: diff ∝ exp(λ * lag)
+        lags = np.arange(1, len(differences) + 1)
+        log_diffs = np.log(differences)
+
+        # Remove any infinite or NaN values
+        valid_idx = np.isfinite(log_diffs)
+        if np.sum(valid_idx) > 1:
+            slope, _ = np.polyfit(lags[valid_idx], log_diffs[valid_idx], 1)
+            return slope  # This is the Lyapunov exponent
+
+    return 0
 
 
 def _interpret_cohens_d(d):

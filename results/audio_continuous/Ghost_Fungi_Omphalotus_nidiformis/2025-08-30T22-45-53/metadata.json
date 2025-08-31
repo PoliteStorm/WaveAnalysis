@@ -1,0 +1,16 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-30T22-45-53",
+  "file": "data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+  "channel": "diff_1",
+  "fs_hz": 1.0,
+  "audio_fs": 22050,
+  "carrier_hz": 660.0,
+  "speed": 3600.0,
+  "depth": 0.9,
+  "paths": {
+    "wav": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/continuous.wav",
+    "mp3": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/continuous.mp3",
+    "html": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/index.html"
+  }
+}
