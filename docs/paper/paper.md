@@ -410,3 +410,9 @@ We reanalyzed publicly available datasets curated by Adamatzky and collaborators
 - CCA: Canonical Correlation Analysis
 - τ (tau): scale parameter in the √t (u) domain
 - u: √t time coordinate; t = u²
+
+# Author Contributions
+Conceptualization: J.K.; Methodology: J.K.; Software: J.K.; Validation: J.K.; Formal analysis: J.K.; Investigation: J.K.; Resources: J.K.; Data curation: J.K.; Writing—original draft: J.K.; Writing—review & editing: J.K.; Visualization: J.K.; Supervision: J.K.; Project administration: J.K.
+
+# Acknowledgments
+We thank Andrew Adamatzky and collaborators for curating and publishing the fungal electrophysiology datasets reanalyzed in this work. We also acknowledge open‑source contributors whose tools (Python, Pandoc/LaTeX, and related libraries) enabled a fully reproducible pipeline on consumer hardware. Any errors are our own.
