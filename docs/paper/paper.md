@@ -38,12 +38,29 @@ Rationale: many biological transport and diffusion‑like processes evolve subli
 
 Figure S1. Representative spectral line comparison (matched window): √t transform exhibits higher concentration and contrast than STFT for long‑time structure.
 
+Interpretation and contrast to STFT: In $u=\sqrt{t}$, slowly varying processes that stretch in $t$ become compact and near‑stationary over local windows in $u$. A Gaussian window in $u$ therefore aggregates energy from long‑time structure without excessive bandwidth smearing. Matching windows between STFT and √t (via $t_0=u_0^2$ and $\sigma_t=2u_0\tau$) shows that √t reduces peak width and increases contrast when rhythms evolve sublinearly in $t$. In practice we observe: (i) sharper spectral peaks, (ii) more stable $\tau$‑band trajectories across hours, and (iii) improved separability of species‑level profiles (Sec. 4.2).
+
+Practical defaults and grids: We scan $u_0\in[0,\sqrt{T}]$ on an evenly spaced grid (ν₀≈32–256) and evaluate a small set of biologically motivated $\tau$ scales {5.5, 24.5, 104}s. Windows are energy‑normalized to remove trivial $\tau$ bias, and we optionally detrend $f(u)=2uV(u^2)\psi(\cdot)$ over the effective support of $\psi$ to suppress low‑$k$ leakage. Unless stated otherwise, we use a Gaussian window with u‑domain detrend as the robust default.
+
 ## Biological validity and implementation
 
 - Baselines and drift: Long recordings show baseline drift and sparse spikes; we apply energy‑normalized windows and optional detrending in the $u$ domain, which ablation shows improves SNR and concentration (Sec. 4.5).
 - Sampling design: Species‑specific sampling rates (Sec. 3.4) respect Nyquist with ample margins given literature spiking rates (Olsson & Hansson 2021; Adamatzky et al. 2018; Jones et al. 2023).
 - Interpretability: √t warping emphasizes slowly varying physiological rhythms (transport/metabolic), aligning with biological timescales reported in the literature (Volkov; Fromm & Lautner 2007).
 - Relation to known methods: The transform is a windowed Fourier analysis in the $u=\sqrt{t}$ coordinate, closely related to wavelet‑style scalings and reassignment/synchrosqueezing ideas (Daubechies; Mallat), but tailored to sublinear temporal evolution.
+
+Implementation specifics used in this work:
+- Channel handling: Channels with >50% NaN samples are excluded; remaining NaNs are linearly interpolated prior to analysis.
+- Spike detection: Moving‑average baselining (300–900 s), absolute‑amplitude thresholding (0.05–0.2 mV), and refractory enforcement (120–300 s) produce robust spike times and durations.
+- τ‑band fractions: For each $u_0$, we integrate $\sum_k |W(k;u_0,\tau)|^2$ and convert to per‑window fractions across τ, then summarize time‑in‑τ as a stable species‑level fingerprint (Sec. 4.2).
+- Complexity and metrics: We compute spike‑train metrics (Victor distance, LV, CV², Fano, Burst Index, fractal dimension, Lyapunov) and Multiscale Entropy, reporting both raw values and qualitative interpretations.
+- Performance: Shared $u$‑grids and power‑of‑two FFTs keep memory <500 MB and typical processing <5 minutes for 24‑hour 1 Hz traces on commodity hardware (Sec. 4.6).
+
+ψ sensitivity and artifact controls: We compared Gaussian and Morlet windows (and verified with DOG/Bump in separate utilities) and ran phase‑randomized surrogates to detect window‑induced artifacts. Across species, Gaussian+detrend showed the most consistent SNR/concentration without spurious peaks in surrogates. Morlet occasionally sharpened narrow‑band cases but increased leakage in slow drifts. Overall, defaults are set to Gaussian+detrend; alternative windows did not change qualitative conclusions (Sec. 4.5).
+
+![ψ‑sweep summary](figs/psi_sweep_summary.png){ width=58% }
+
+Figure S2. ψ sweep across species: mean spectral concentration and SNR with and without u‑detrend. Gaussian+detrend is consistently robust; other windows show case‑dependent trade‑offs.
 
 ## Cross‑modal validation (audio ↔ voltage)
 
@@ -52,6 +69,12 @@ We sonify voltage via amplitude‑modulated carriers with time compression, then
 Cordyceps militaris: CCA ≈ 0.94 (first), 0.63 (second); Flammulina velutipes: ≈ 0.73, 0.45; Omphalotus nidiformis: ≈ 0.86, 0.74; Schizophyllum commune: ≈ 0.94, 0.71. Permutation tests (with larger iteration counts) support statistical significance and rule out trivial correlations.
 
 References: Adamatzky (2022); Jones et al. (2023); Volkov (Plant Electrophysiology); Fromm & Lautner (2007); methodological context in Mallat (wavelets) and Daubechies (synchrosqueezing/reassignment).
+
+Audio pipeline details: Audio is generated with calibration tones and soft limiting for audibility on low‑power devices (Chromebook). We compute MFCCs (12 coeff., 1.0 s window, 0.5 s hop) and align them to electrophysiological features from the same windows. CCA components are computed with rank and NaN safety checks; if CCA fails, we fall back to pairwise max correlation to avoid biased reporting. Statistical significance is assessed via permutation tests (≥200 iterations recommended); a 200‑permutation batch rerun is currently executing and will update this paper’s p‑values upon completion.
+
+![Audio–signal CCA](figs/audio_cross_modal_cca.png){ width=60% }
+
+Figure S3. Cross‑modal CCA across species: first two canonical correlations per species with bootstrap CIs; dotted line shows permutation‑null 95th percentile.
 
 # 1. Introduction
 Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped transform tailored to sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
