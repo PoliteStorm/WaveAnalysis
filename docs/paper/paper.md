@@ -16,7 +16,7 @@ Fungal electrical activity exhibits spikes and slow oscillatory modulations over
 
 # Short Note: Square‑root–time windowed transform for fungal bioelectric signals
 
-We summarize the core transform, its motivation, and biological validity in a concise form suitable for citation and preprint deposition.
+We summarize the core transform, its motivation, and biological validity in a concise form suitable for citation.
 
 ## Transform and motivation
 
@@ -212,33 +212,45 @@ We summarize √t versus STFT performance across species using a numeric table b
 
 ### 4.4a Comparative methods (qualitative summary)
 
-| Method | Spectral concentration | Drift robustness | Runtime | Notes |
-|---|---|---|---:|:---|
-| √t (Gaussian + detrend) | High | High | Fast | Best peak sharpness; stable τ‑band trajectories |
-| STFT (Gaussian) | Low–Medium | Medium | Fast | Wider peaks under slow modulations |
-| Multitaper | Medium–High | High | Medium | Robust SNR baseline; less compact than √t |
-| Synchrosqueezing | High | Medium | Medium–Slow | Excellent concentration; more parameter‑sensitive |
-| HHT/EMD | Variable | Medium | Slow | Adaptive but less stable; sensitive to noise |
+\begin{longtable}{p{0.24\linewidth} p{0.18\linewidth} p{0.18\linewidth} p{0.12\linewidth} p{0.22\linewidth}}
+\toprule
+Method & Spectral concentration & Drift robustness & Runtime & Notes \\
+\midrule
+\endhead
 
-This table complements the numeric ablations by contextualizing where √t provides the largest gains and where alternatives may be preferable.
+$\sqrt{t}$ (Gaussian + detrend) & High & High & Fast & Best peak sharpness; stable $\tau$‑band trajectories \\
+STFT (Gaussian) & Low–Medium & Medium & Fast & Wider peaks under slow modulations \\
+Multitaper & Medium–High & High & Medium & Robust SNR baseline; less compact than $\sqrt{t}$ \\
+Synchrosqueezing & High & Medium & Medium–Slow & Excellent concentration; more parameter‑sensitive \\
+HHT/EMD & Variable & Medium & Slow & Adaptive but less stable; sensitive to noise \\
+\bottomrule
+\end{longtable}
+
+This table complements the numeric ablations by contextualizing where $\sqrt{t}$ provides the largest gains and where alternatives may be preferable.
 
 ### 4.4b Cross‑species SNR and spectral concentration (table)
 
-| Species | SNR (√t) | SNR (STFT) | Concentration (√t) | Concentration (STFT) | √t/STFT SNR ratio | √t/STFT conc. ratio |
-|---|---:|---:|---:|---:|---:|---:|
-| Schizophyllum commune | 689.49 | 22,019,410.73 | 0.0567 | 0.0273 | 3.13e‑05 | 2.08 |
-| Flammulina velutipes (Enoki) | 18.71 | 56,971,757.62 | 0.0260 | 0.0138 | 3.28e‑07 | 1.88 |
-| Omphalotus nidiformis (Ghost) | 315.77 | 10,873,317.48 | 0.0226 | 0.0165 | 2.90e‑05 | 1.37 |
-| Cordyceps militaris | 364.28 | 38,772,791.53 | 0.0287 | 0.0252 | 9.40e‑06 | 1.14 |
+\begin{longtable}{p{0.30\linewidth} r r r r r r}
+\toprule
+Species & SNR ($\sqrt{t}$) & SNR (STFT) & Conc. ($\sqrt{t}$) & Conc. (STFT) & SNR ratio & Conc. ratio \\
+\midrule
+\endhead
 
-Concentration is the normalized peak‑area fraction; higher is more concentrated. Ratios >1 indicate √t improves concentration over STFT; SNR is reported as computed in the pipeline. Full CSV/JSON are in `results/summaries/2025-08-22T00:47:18/`.
+Schizophyllum commune & 689.49 & 22,019,410.73 & 0.0567 & 0.0273 & 3.13e\,\text{--}05 & 2.08 \\
+Flammulina velutipes (Enoki) & 18.71 & 56,971,757.62 & 0.0260 & 0.0138 & 3.28e\,\text{--}07 & 1.88 \\
+Omphalotus nidiformis (Ghost) & 315.77 & 10,873,317.48 & 0.0226 & 0.0165 & 2.90e\,\text{--}05 & 1.37 \\
+Cordyceps militaris & 364.28 & 38,772,791.53 & 0.0287 & 0.0252 & 9.40e\,\text{--}06 & 1.14 \\
+\bottomrule
+\end{longtable}
 
-Note on SNR scale: Absolute SNR magnitudes depend on baseline definitions and units in the source recordings and can vary widely across datasets. We emphasize concentration ratios (√t vs STFT) as a scale‑insensitive comparative metric. Outlier SNR values are inspected and, where traceable to baseline artifacts, are flagged in the audit logs; concentration trends remain consistent.
+Concentration is the normalized peak‑area fraction; higher is more concentrated. Ratios >1 indicate $\sqrt{t}$ improves concentration over STFT; SNR is reported as computed in the pipeline. Full CSV/JSON are in `results/summaries/2025-08-22T00:47:18/`.
+
+Note on SNR scale: Absolute SNR magnitudes depend on baseline definitions and units in the source recordings and can vary widely across datasets. We emphasize concentration ratios ($\sqrt{t}$ vs STFT) as a scale‑insensitive comparative metric. Outlier SNR values are inspected and, where traceable to baseline artifacts, are flagged in the audit logs; concentration trends remain consistent.
 
 ### 4.4c Sample sizes and effect sizes
 Per‑species run counts (snr_concentration.json files): Cordyceps militaris N=4; Flammulina velutipes N=4; Omphalotus nidiformis N=4; Schizophyllum commune N=11.
 
-Effect sizes (concentration improvement) are summarized by the √t/STFT concentration ratios in Sec. 4.4b (e.g., 2.08, 1.88, 1.37, 1.14 respectively). Where applicable, we report bootstrap CIs around these ratios in the bioRxiv version; permutation tests (≥200) are used to assess significance of concentration differences across matched windows.
+Effect sizes (concentration improvement) are summarized by the $\sqrt{t}$/STFT concentration ratios in Sec. 4.4b (e.g., 2.08, 1.88, 1.37, 1.14 respectively). Permutation tests (≥200) are used to assess significance of concentration differences across matched windows.
 
 ## 4.5 Transform parameter ablation study
 To assess robustness and guide defaults, we systematically varied window type (Gaussian, Morlet), detrending in the u domain, and related settings across species. Performance was summarized by SNR, spectral concentration, peak width, and trajectory stability. Table 1 reports representative results.
@@ -387,8 +399,8 @@ The √t‑warped wave transform provides a tidy, computationally efficient view
 # Limitations
 - Sample sizes and replication: Some species have limited recording sessions; ongoing collections will increase N and enable cross‑site replication.
 - Generalizability: Results are from benchtop electrodes and selected species; portability to field sensors and broader taxa needs validation.
-- Statistics: Full permutation testing and bootstrapped CIs are being expanded across all analyses; the bioRxiv version will include finalized p‑values and intervals.
-- Figures and benchmarks: The current draft references several figures and a cross‑method benchmark; the bioRxiv submission will include the complete SNR/concentration table, stimulus‑response plots, and comparative panels.
+- Statistics: Full permutation testing and bootstrapped CIs are being expanded across all analyses; finalized p‑values and intervals will be included in the next version.
+- Figures and benchmarks: All core figures and tables are embedded; supplementary interactive assets are provided separately where appropriate.
 
 # References
 - Adamatzky, A. (2022). Fungal networks. https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/
