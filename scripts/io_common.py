@@ -79,3 +79,4 @@ def save_figure(fig, out_path: str | Path) -> None:
 	fig.tight_layout()
 	fig.savefig(out, dpi=200)
 	fig.clf()
+

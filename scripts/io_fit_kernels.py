@@ -22,8 +22,8 @@ from numpy.typing import ArrayLike
 import matplotlib.pyplot as plt
 
 from io_common import create_run_context, save_json, save_figure
+from io_loaders import load_stimulus_df, load_bands_df
 
-# Placeholder loaders — replace with your real loaders
 
 def load_stimulus_timeseries() -> pd.DataFrame:
 	"""Return df with columns: time_s, stim_moisture, stim_light, stim_mech, stim_elec."""

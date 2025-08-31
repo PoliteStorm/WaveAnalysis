@@ -467,3 +467,6 @@ Scope expansion and interpretation
 - Add controlled stimulus–response experiments with negative controls; report phase‑randomized surrogate analyses systematically.
 - Standardize SNR reporting (fixed baseline protocol and units) and foreground concentration/effect sizes for comparisons.
 - Either expand species coverage or explicitly limit scope to an exploratory methodology paper pending broader validation.
+
+# 9. Standards & Sharing
+We will organize future releases with BIDS/NWB-inspired metadata and directory structure to improve reuse and interoperability (cf. community overviews of open electrophysiology datasets and standards). Raw data are referenced via Zenodo DOI; derived features, protocols, and reports are versioned in this repository.

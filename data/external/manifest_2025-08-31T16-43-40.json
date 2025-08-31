@@ -23,8 +23,10 @@
       "url": "https://lter.kbs.msu.edu/datatables/30",
       "auth_required": false,
       "notes": "Landing page with CSV export; manual or scripted CSV export may require form params.",
-      "downloaded": false,
-      "local_paths": []
+      "downloaded": true,
+      "local_paths": [
+        "data/external/KBS_LTER_gravimetric/30.csv"
+      ]
     },
     {
       "name": "OpenDataBay_env_conditions",

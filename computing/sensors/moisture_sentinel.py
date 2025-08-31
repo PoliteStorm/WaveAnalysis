@@ -21,17 +21,20 @@ def load_tau_timeseries(run_dir: str, tau: float) -> tuple[np.ndarray, np.ndarra
     times = []
     fast_vals = []
     with open(path, 'r') as f:
-        rdr = csv.DictReader(f)
-        key = f'tau_{tau:g}'
-        for row in rdr:
-            try:
-                t = float(row.get('time_s', 'nan'))
-                v = float(row.get(key, 'nan'))
-                if np.isfinite(t) and np.isfinite(v):
-                    times.append(t)
-                    fast_vals.append(v)
-            except Exception:
-                continue
+        lines = [ln for ln in f if not ln.lstrip().startswith('#')]
+    if not lines:
+        return np.array([]), np.array([])
+    rdr = csv.DictReader(lines)
+    key = f'tau_{tau:g}'
+    for row in rdr:
+        try:
+            t = float(row.get('time_s', 'nan'))
+            v = float(row.get(key, 'nan'))
+            if np.isfinite(t) and np.isfinite(v):
+                times.append(t)
+                fast_vals.append(v)
+        except Exception:
+            continue
     return np.asarray(times, dtype=float), np.asarray(fast_vals, dtype=float)
 
 
