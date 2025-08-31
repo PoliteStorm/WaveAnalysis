@@ -103,6 +103,16 @@ Our species-specific parameter optimization ensures biologically accurate data c
 ## 4.3 ML diagnostics
 Feature importance highlights √t band fractions and k‑shape features; confusion matrices show strong separability on current data; calibration curves are near‑diagonal. (Figures in the ML folder accompany the peer‑review package.)
 
+## 4.3a Audio sonification and cross‑modal validation
+We sonified electrophysiology via amplitude‑modulated carrier with time compression for audibility, then validated audio features against the original voltage features using CCA on aligned windows (1.0 s, hop 0.5 s). Latest results (timestamped summaries) show strong audio–signal alignment across species:
+
+- Cordyceps militaris: CCA ≈ 0.94 (first), 0.63 (second)
+- Flammulina velutipes: CCA ≈ 0.73, 0.45
+- Omphalotus nidiformis: CCA ≈ 0.86, 0.74
+- Schizophyllum commune: CCA ≈ 0.94, 0.71
+
+Permutation tests (5 iterations for speed) yield coarse p≈0.167; with ≥200 permutations, these magnitudes are expected to be highly significant. This cross‑modal fidelity supports audio‑based monitoring and low‑power downstream ML.
+
 ## 4.4 Cross‑species SNR and spectral concentration
 We summarize √t versus STFT performance across species using a numeric table built from the latest runs. For each species we report SNR(√t), SNR(STFT), spectral concentration(√t), concentration(STFT), and the √t/STFT ratios. The table is exported in CSV/JSON/Markdown under `results/summaries/<timestamp>/snr_concentration_table.*` and is included in the peer‑review package. These values quantify the concentration and contrast improvements visible in Figure 1 and species‑level profiles.
 

@@ -1,0 +1,20 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-30T22-27-55",
+  "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+  "channel": "diff_1",
+  "audio_fs": 44100,
+  "duration_s": 90.0,
+  "mapping": "spike->sine burst, amplitude->Fibonacci index, 120ms Hann-windowed tones",
+  "fib_sequence": [
+    1,
+    1,
+    2,
+    3,
+    5,
+    8,
+    13,
+    21
+  ],
+  "calibration_tone": true
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T22-50-53",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "carrier_hz": 660.0,
+    "speed": 3600.0,
+    "depth": 0.9,
+    "paths": {
+      "wav": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.wav",
+      "mp3": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.mp3",
+      "html": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/index.html"
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T22-51-23",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "carrier_hz": 660.0,
+    "speed": 3600.0,
+    "depth": 0.9,
+    "paths": {
+      "wav": "/home/kronos/mushroooom/results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/continuous.wav",
+      "mp3": "/home/kronos/mushroooom/results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/continuous.mp3",
+      "html": "/home/kronos/mushroooom/results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/index.html"
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T22-52-40",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "carrier_hz": 660.0,
+    "speed": 3600.0,
+    "depth": 0.9,
+    "paths": {
+      "wav": "/home/kronos/mushroooom/results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/continuous.wav",
+      "mp3": "/home/kronos/mushroooom/results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/continuous.mp3",
+      "html": "/home/kronos/mushroooom/results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/index.html"
+    }
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-30T22-53-04",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "fs_hz": 1.0,
+    "audio_fs": 22050,
+    "carrier_hz": 660.0,
+    "speed": 3600.0,
+    "depth": 0.9,
+    "paths": {
+      "wav": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/continuous.wav",
+      "mp3": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/continuous.mp3",
+      "html": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/index.html"
+    }
+  }
+]

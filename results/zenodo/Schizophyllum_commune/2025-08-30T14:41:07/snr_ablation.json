@@ -30,5 +30,8 @@
   "stft": {
     "snr": 22019410.73239453,
     "concentration": 0.027257462394158986
-  }
+  },
+  "timestamp": "2025-08-30T14:41:07",
+  "created_by": "joe knowles",
+  "intended_for": "peer_review"
 }

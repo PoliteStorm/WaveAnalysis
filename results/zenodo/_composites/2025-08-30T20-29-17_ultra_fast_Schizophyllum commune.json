@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "n_channels": 7,
+    "sampling_rate_hz": 1.0,
+    "total_samples": 263687,
+    "analysis_type": "ultra_fast",
+    "timestamp": "2025-08-30T20:29:17.442516",
+    "parallel_workers": 4
+  },
+  "channel_results": [
+    {
+      "channel": "ch_1",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_2",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_3",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_4",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_5",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_6",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    },
+    {
+      "channel": "ch_7",
+      "spike_count": 0,
+      "spike_rate_hz": 0.0,
+      "complexity_score": 0.0,
+      "complexity_type": "low",
+      "dominant_tau_s": 4096.0,
+      "dominant_freq_hz": 0.000244140625,
+      "signal_std": NaN,
+      "signal_mean": NaN
+    }
+  ],
+  "summary_stats": {
+    "total_spikes": 0,
+    "active_channels": 0,
+    "avg_spike_rate": 0.0,
+    "complexity_distribution": {
+      "high": 0,
+      "medium": 0,
+      "low": 7
+    }
+  }
+}

@@ -1,0 +1,164 @@
+[
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-11-22",
+    "file": "data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "wav_path": "results/audio_continuous/Cordyceps_militari/2025-08-30T22-42-08/continuous.wav",
+    "frames": 1053,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.9410365280195885,
+      0.6315700213232363
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-12-14",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Cordyceps_militari/2025-08-30T22-50-53/continuous.wav",
+    "frames": 1053,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.9410365280195885,
+      0.6315700213232363
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-12-38",
+    "file": "data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "wav_path": "results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-43-35/continuous.wav",
+    "frames": 598,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.7250133238046191,
+      0.45408358898265644
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-13-03",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Enoki_fungi_Flammulina_velutipes/2025-08-30T22-51-23/continuous.wav",
+    "frames": 598,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.7250133238046191,
+      0.45408358898265644
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-14-51",
+    "file": "data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "wav_path": "results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-45-53/continuous.wav",
+    "frames": 1820,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.8603354976073201,
+      0.7440162089090747
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-18-53",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Ghost_Fungi_Omphalotus_nidiformis/2025-08-30T22-52-40/continuous.wav",
+    "frames": 1820,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.8603354976073201,
+      0.7440162089090747
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-18-58",
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "wav_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-36-14/continuous.wav",
+    "frames": 145,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.9369342271604436,
+      0.7146271644369098
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-19-03",
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "wav_path": "results/audio_continuous/Schizophyllum_commune/2025-08-30T22-46-09/continuous.wav",
+    "frames": 145,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.9369342271604436,
+      0.7146271644369098
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  },
+  {
+    "created_by": "joe knowles",
+    "timestamp": "2025-08-31T08-19-10",
+    "file": "/home/kronos/mushroooom/data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "wav_path": "/home/kronos/mushroooom/results/audio_continuous/Schizophyllum_commune/2025-08-30T22-53-04/continuous.wav",
+    "frames": 145,
+    "win_s": 1.0,
+    "hop_s": 0.5,
+    "n_mfcc": 12,
+    "n_components": 2,
+    "canonical_correlations": [
+      0.9369342271604436,
+      0.7146271644369098
+    ],
+    "perm_p_first": 0.16666666666666666,
+    "fallback_pairwise": false
+  }
+]
