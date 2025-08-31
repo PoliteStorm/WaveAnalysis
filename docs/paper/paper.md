@@ -162,6 +162,7 @@ Timestamped, audited runs; composites README, CSV and audit indexes.
 - Sample sizes: per‑species N reported in Sec. 4.4c; analyses are run per‑recording and summarized across runs.
 - Multiple comparisons: where applicable, control FDR (Benjamini–Hochberg) across species/τ bands.
 - Reproducibility: seed‑controlled pipelines with timestamped outputs and audit trails; full parameter/state stored alongside results.
+- SNR reporting: use a fixed moving‑baseline protocol with unit normalization for comparability across datasets; report SNR alongside concentration ratios and effect sizes.
 
 ### 3.6b AI assistance and transparency
 Parts of this manuscript and analysis were AI‑assisted (code generation, document editing, and build orchestration). All computations, parameters, and outputs are reproducible from the provided scripts; AI‑generated code and text were reviewed, validated against audit trails, and edited for scientific accuracy. Decisions (transform definitions, statistics, and plots) are documented and version‑controlled.
@@ -399,7 +400,8 @@ Spike metrics complement the band view: lower LV and near‑Poisson Fano factors
 The √t‑warped wave transform provides a concise, computationally efficient view of fungal dynamics across scales. As a proof‑of‑concept, it sharpens phenomena reported in the literature and yields robust spectral and spike‑based features for ML on modest hardware. Larger datasets, controlled validation, and broader benchmarks will determine generalizability and define where √t offers the greatest biological and practical value.
 
 # Limitations
-- Sample sizes and replication: Some species have limited recording sessions (N=4–11); ongoing collections will increase N and enable cross‑site replication.
+- Sample sizes and replication: Target N≥20 per species in future collections; enable cross‑site replication to assess generalizability.
+- Controls and surrogates: Include negative controls and phase‑randomized surrogate analyses systematically alongside main results.
 - Generalizability: Results are from benchtop electrodes and selected species; portability to field sensors and broader taxa needs validation.
 - Statistics: We report permutation‑based p‑values (≥200 iterations/species) and bootstrap 95% CIs for key metrics; small N warrants cautious interpretation of between‑species differences.
 - Figures and benchmarks: All core figures and tables are embedded; supplementary interactive assets are provided separately where appropriate.
@@ -459,3 +461,9 @@ Scope expansion and interpretation
 - Figures S1–S3 (static PNGs) included in `docs/paper/figs/`.
 - Spiral fingerprint PNGs (static) included; interactive spheres provided separately in `results/fingerprints/<species>/<timestamp>/sphere.html`.
 - CSV/JSON summaries (e.g., SNR/concentration tables) available under `results/summaries/` with timestamps.
+
+# 8. Readiness and Next Steps
+- Increase sample sizes to N≥20 per species for adequate power; update effect sizes and CIs accordingly.
+- Add controlled stimulus–response experiments with negative controls; report phase‑randomized surrogate analyses systematically.
+- Standardize SNR reporting (fixed baseline protocol and units) and foreground concentration/effect sizes for comparisons.
+- Either expand species coverage or explicitly limit scope to an exploratory methodology paper pending broader validation.
