@@ -36,7 +36,7 @@ $$
 
 Rationale: many biological transport and diffusion‑like processes evolve sublinearly in time. Warping by $\sqrt{t}$ compresses long‑time structure, improving spectral concentration for slow modulations while preserving spike timing detail. In our datasets this yields narrower peaks and more stable $\tau$‑band trajectories than STFT (cf. Sec. 4.1), consistent with reports of multi‑scale rhythms in fungi (Adamatzky 2022; Jones et al. 2023) and slow bioelectric dynamics in plants/fungi (Volkov).
 
-![STFT vs √t](figs/Schizophyllum_commune_stft_vs_sqrt.png){ width=70% }
+![](figs/Schizophyllum_commune_stft_vs_sqrt.png){ width=70% }
 
 Figure S1. Representative spectral line comparison (matched window): √t transform exhibits higher concentration and contrast than STFT for long‑time structure.
 
@@ -60,7 +60,7 @@ Implementation specifics used in this work:
 
 ψ sensitivity and artifact controls: We compared Gaussian and Morlet windows (and verified with DOG/Bump in separate utilities) and ran phase‑randomized surrogates to detect window‑induced artifacts. Across species, Gaussian+detrend showed the most consistent SNR/concentration without spurious peaks in surrogates. Morlet occasionally sharpened narrow‑band cases but increased leakage in slow drifts. Overall, defaults are set to Gaussian+detrend; alternative windows did not change qualitative conclusions (Sec. 4.5).
 
-![ψ‑sweep summary](figs/psi_sweep_summary.png){ width=58% }
+![](figs/psi_sweep_summary.png){ width=58% }
 
 Figure S2. ψ sweep across species: mean spectral concentration and SNR with and without u‑detrend. Gaussian+detrend is consistently robust; other windows show case‑dependent trade‑offs.
 
@@ -74,7 +74,7 @@ References: Adamatzky (2022); Jones et al. (2023); Volkov (Plant Electrophysiolo
 
 Audio pipeline details: Audio is generated with calibration tones and soft limiting for audibility on low‑power devices (Chromebook). We compute MFCCs (12 coeff., 1.0 s window, 0.5 s hop) and align them to electrophysiological features from the same windows. CCA components are computed with rank and NaN safety checks; if CCA fails, we fall back to pairwise max correlation to avoid biased reporting. Statistical significance is assessed via permutation tests (≥200 iterations per species), and uncertainty is summarized with bootstrap confidence intervals.
 
-![Audio–signal CCA](figs/audio_cross_modal_cca.png){ width=60% }
+![](figs/audio_cross_modal_cca.png){ width=60% }
 
 Figure S3. Cross‑modal CCA across species: first two canonical correlations per species with bootstrap CIs; dotted line shows permutation‑null 95th percentile.
 
@@ -82,9 +82,9 @@ Figure S3. Cross‑modal CCA across species: first two canonical correlations pe
 
 We include compact spiral/spherical fingerprints summarizing τ‑band fractions, confidence bands, spike activity, and √t concentration/SNR contrast for quick species comparison.
 
-![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
-![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
-![Fingerprints](figs/fingerprints/spiral.png){ width=28% }
+![](figs/fingerprints/spiral.png){ width=28% }
+![](figs/fingerprints/spiral.png){ width=28% }
+![](figs/fingerprints/spiral.png){ width=28% }
 
 Note: Full interactive spheres are provided under `results/fingerprints/<species>/<timestamp>/sphere.html`; static PNGs are included in the peer‑review package.
 
@@ -163,25 +163,17 @@ Timestamped, audited runs; composites README, CSV and audit indexes.
 
 # 4. Results
 ## 4.1 √t vs STFT (Schizophyllum commune)
-Figure 1 shows a multi‑panel summary for a representative run: the √t τ‑band heatmap and surface, spike overlay, and STFT‑vs‑√t spectral comparison for a matched window. √t spectra exhibit narrower peaks and higher SNR, and τ‑band trajectories remain stable across hours.
+Figure 1. Summary panels for a representative run. (A) √t τ‑band heatmap and surface. (B) Spikes overlay on baseline‑subtracted signal. (C) STFT vs √t spectral line (matched window). (D) ISI and amplitude histograms.
 
-Figure 1A. Summary panel (√t transform, spikes, comparison)
+![](figs/Schizophyllum_commune_summary.png){ width=90% }
 
-![Schizophyllum commune summary](figs/Schizophyllum_commune_summary.png){ width=90% }
+![](figs/Schizophyllum_commune_heatmap.png){ width=49% } ![](figs/Schizophyllum_commune_surface.png){ width=49% }
 
-Figure 1B. τ‑band heatmap and surface (√t domain)
+![](figs/Schizophyllum_commune_spikes.png){ width=85% }
 
-![τ‑band heatmap](figs/Schizophyllum_commune_heatmap.png){ width=49% } ![τ‑band surface](figs/Schizophyllum_commune_surface.png){ width=49% }
+![](figs/Schizophyllum_commune_stft_vs_sqrt.png){ width=70% }
 
-Figure 1C. Spikes overlay (baseline‑subtracted overlay) and STFT vs √t spectral line (matched window)
-
-![Spikes overlay](figs/Schizophyllum_commune_spikes.png){ width=85% }
-
-![STFT vs √t](figs/Schizophyllum_commune_stft_vs_sqrt.png){ width=70% }
-
-Figure 1D. ISI and amplitude histograms
-
-![ISI histogram](figs/Schizophyllum_commune_hist_isi.png){ width=49% } ![Amplitude histogram](figs/Schizophyllum_commune_hist_amp.png){ width=49% }
+![](figs/Schizophyllum_commune_hist_isi.png){ width=49% } ![](figs/Schizophyllum_commune_hist_amp.png){ width=49% }
 
 ## 4.2 Species‑level profiles and parameter optimization
 Qualitatively, we observe distinct τ‑band "signatures" that become clearer under √t warping:
@@ -210,7 +202,7 @@ We estimate uncertainty via bootstrap confidence intervals on CCA components and
 ## 4.4 Cross‑species SNR and spectral concentration
 We summarize √t versus STFT performance across species using a numeric table built from the latest runs. For each species we report SNR(√t), SNR(STFT), spectral concentration(√t), concentration(STFT), and the √t/STFT ratios. The table is exported in CSV/JSON/Markdown under `results/summaries/<timestamp>/snr_concentration_table.*` and is included in the peer‑review package. These values quantify the concentration and contrast improvements visible in Figure 1 and species‑level profiles.
 
-### 4.4a Comparative methods (qualitative summary)
+_Table: Comparative methods (qualitative summary)._
 
 \begin{longtable}{>{\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.10\linewidth} >{\raggedright\arraybackslash}p{0.20\linewidth}}
 \toprule
@@ -228,7 +220,7 @@ HHT/EMD & Variable & Medium & Slow & Adaptive but less stable; sensitive to nois
 
 This table complements the numeric ablations by contextualizing where $\sqrt{t}$ provides the largest gains and where alternatives may be preferable.
 
-### 4.4b Cross‑species SNR and spectral concentration (table)
+_Table: Cross‑species SNR and spectral concentration (latest runs)._
 
 \begin{longtable}{>{\raggedright\arraybackslash}p{0.26\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.14\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.12\linewidth} >{\raggedleft\arraybackslash}p{0.12\linewidth}}
 \toprule
@@ -268,9 +260,7 @@ To assess robustness and guide defaults, we systematically varied window type (G
 In short: (i) u‑domain detrending consistently improves concentration and SNR; (ii) Gaussian windows are the most reliable across species; and (iii) the √t transform with Gaussian+detrend yields the sharpest peaks and most stable trajectories for long recordings.
 
 ## 4.6 Pipeline architecture and computational efficiency
-Figure 2 illustrates the complete analysis pipeline architecture, designed for both scientific rigor and computational efficiency on low-RAM devices.
-
-**Figure 2: Analysis Pipeline Schematic**
+Figure 4. Analysis Pipeline Schematic.
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -280,8 +270,8 @@ Figure 2 illustrates the complete analysis pipeline architecture, designed for b
 │ • Multi-channel │    │ • Detrending     │    │ • τ-band powers │
 │ • fs=1-5 Hz     │    │ • Normalization  │    │ • Energy conc.  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                       │                       │
-         v                       v                       v
+        │                       │                       │
+        v                       v                       v
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │  Spike Analysis │ -> │   Statistics     │ -> │   Validation    │
 │                 │    │                  │    │                 │
@@ -289,8 +279,8 @@ Figure 2 illustrates the complete analysis pipeline architecture, designed for b
 │ • Classification│    │ • Distribution   │    │ • Reproducibility│
 │ • Metrics       │    │ • Correlations   │    │ • Peer review   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                       │                       │
-         v                       v                       v
+        │                       │                       │
+        v                       v                       v
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │ Visualization   │    ┌─> ML Pipeline ──┐    │   Export        │
 │                 │    │                  │    │                 │
