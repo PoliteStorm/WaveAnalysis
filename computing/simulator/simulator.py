@@ -12,6 +12,8 @@ from scipy import stats, signal
 from typing import Dict, List, Tuple, Optional
 import json
 from datetime import datetime
+import os
+import glob
 
 
 class FungalNeuron:
@@ -262,7 +264,8 @@ class FungalSensor:
             'response_strength': response_strength,
             'spike_rate': result['spike_rate'],
             'network_synchrony': np.mean(result['synchrony_measure']),
-            'information_entropy': result['network_entropy']
+            'information_entropy': result['network_entropy'],
+            'metadata': build_metadata('fungal_computing_simulator', 'computing')
         }
 
 
@@ -312,10 +315,36 @@ class FungalComputer:
             return "simple_pattern"
 
 
+def build_metadata(prototype: str, kind: str) -> Dict:
+    ts = datetime.now().isoformat(timespec='seconds')
+    # Collect data sources present in workspace
+    sources = []
+    for p in [
+        os.path.join('results', 'zenodo'),
+        os.path.join('results', 'audio_continuous'),
+        os.path.join('results', 'cross_modal'),
+        os.path.join('results', 'psi_sweep'),
+    ]:
+        if os.path.isdir(p):
+            # include latest subdir if any
+            sub = sorted(glob.glob(os.path.join(p, '*')))
+            sources.append(sub[-1] if sub else p)
+    return {
+        'created_by': 'joe knowles',
+        'timestamp': ts,
+        'prototype': prototype,
+        'type': kind,
+        'data_sources': sources,
+    }
+
+
 def run_fungal_computing_demo():
     """Demonstrate fungal computing capabilities."""
     print("🧬 Fungal Computing Simulator Demo")
     print("=" * 50)
+    # Print metadata header
+    meta = build_metadata('fungal_computing_simulator', 'computing')
+    print(json.dumps(meta))
 
     # 1. Sensor Demonstration
     print("\n1. Fungal Sensor Demonstration:")

@@ -11,6 +11,8 @@ from datetime import datetime
 import json
 import serial  # For Arduino/Raspberry Pi communication
 import threading
+import os
+import glob
 
 
 class FungalSensorHardware:
@@ -251,7 +253,8 @@ class FungalSensorHardware:
                 'spike_analysis': {
                     'pre_spikes': len(self.detect_spikes(pre_signal)),
                     'post_spikes': len(self.detect_spikes(post_signal))
-                }
+                },
+                'metadata': build_metadata('fungal_sensor_prototype', 'sensor')
             }
 
         except Exception as e:
@@ -454,6 +457,8 @@ def demo_fungal_sensor():
     """Demonstrate fungal sensor capabilities."""
     print("🧬 Fungal Sensor Hardware Demo")
     print("=" * 50)
+    # Metadata header
+    print(json.dumps(build_metadata('fungal_sensor_prototype', 'sensor')))
 
     # Create sensor instance
     sensor = FungalSensorHardware()
@@ -515,3 +520,24 @@ def demo_fungal_sensor():
 
 if __name__ == '__main__':
     demo_fungal_sensor()
+
+# --- metadata utilities ---
+def build_metadata(prototype: str, kind: str) -> dict:
+    ts = datetime.now().isoformat(timespec='seconds')
+    sources = []
+    for p in [
+        os.path.join('results', 'zenodo'),
+        os.path.join('results', 'audio_continuous'),
+        os.path.join('results', 'cross_modal'),
+        os.path.join('results', 'psi_sweep'),
+    ]:
+        if os.path.isdir(p):
+            sub = sorted(glob.glob(os.path.join(p, '*')))
+            sources.append(sub[-1] if sub else p)
+    return {
+        'created_by': 'joe knowles',
+        'timestamp': ts,
+        'prototype': prototype,
+        'type': kind,
+        'data_sources': sources,
+    }
