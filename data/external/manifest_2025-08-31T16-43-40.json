@@ -1,0 +1,38 @@
+{
+  "created_by": "joe knowles",
+  "timestamp": "2025-08-31T16-43-40",
+  "entries": [
+    {
+      "name": "FIFE_soil_moisture_gravimetric",
+      "url": "https://daac.ornl.gov/FIFE/guides/Soil_Moisture_Gravimetric_Data.html",
+      "auth_required": true,
+      "notes": "Requires Earthdata sign-in for bulk files; this link documents access. Use wget with Earthdata netrc.",
+      "downloaded": false,
+      "local_paths": []
+    },
+    {
+      "name": "BOREAS_HYD06_gravimetric",
+      "url": "https://catalog.data.gov/dataset/boreas-hyd-06-ground-gravimetric-soil-moisture-data-11935",
+      "auth_required": false,
+      "notes": "Landing page; follow resource links to CSV/ZIP files.",
+      "downloaded": false,
+      "local_paths": []
+    },
+    {
+      "name": "KBS_LTER_gravimetric",
+      "url": "https://lter.kbs.msu.edu/datatables/30",
+      "auth_required": false,
+      "notes": "Landing page with CSV export; manual or scripted CSV export may require form params.",
+      "downloaded": false,
+      "local_paths": []
+    },
+    {
+      "name": "OpenDataBay_env_conditions",
+      "url": "https://www.opendatabay.com/data/ai-ml/93f63166-fd70-48bf-8067-9147c717fd41",
+      "auth_required": false,
+      "notes": "Direct download may require browser; record landing page and instructions.",
+      "downloaded": false,
+      "local_paths": []
+    }
+  ]
+}
