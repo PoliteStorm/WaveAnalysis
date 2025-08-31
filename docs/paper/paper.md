@@ -44,6 +44,8 @@ Interpretation and contrast to STFT: In $u=\sqrt{t}$, slowly varying processes t
 
 Practical defaults and grids: We scan $u_0\in[0,\sqrt{T}]$ on an evenly spaced grid (ν₀≈32–256) and evaluate a small set of biologically motivated $\tau$ scales {5.5, 24.5, 104}s. Windows are energy‑normalized to remove trivial $\tau$ bias, and we optionally detrend $f(u)=2uV(u^2)\psi(\cdot)$ over the effective support of $\psi$ to suppress low‑$k$ leakage. Unless stated otherwise, we use a Gaussian window with u‑domain detrend as the robust default.
 
+Normalization and windowing: windows are energy‑normalized so that changing τ does not trivially scale power; Gaussian windows in the $u=\sqrt{t}$ domain balance time–frequency localization while suppressing drift when combined with detrending.
+
 ## Biological validity and implementation
 
 - Baselines and drift: Long recordings show baseline drift and sparse spikes; we apply energy‑normalized windows and optional detrending in the $u$ domain, which ablation shows improves SNR and concentration (Sec. 4.5).
@@ -187,7 +189,13 @@ Qualitatively, we observe distinct τ‑band "signatures" that become clearer un
 Our species-specific parameter optimization ensures biologically accurate data capture, with all sampling rates validated against Nyquist criteria and literature-reported spiking frequencies. This optimization improves detection accuracy by 20-500% compared to uniform 1 Hz sampling.
 
 ## 4.3 ML diagnostics
-Feature importance highlights √t band fractions and k‑shape features; confusion matrices show strong separability on current data; calibration curves are near‑diagonal. (Figures in the ML folder accompany the peer‑review package.)
+Feature importance highlights √t band fractions and k‑shape features; confusion matrices show strong separability on current data; calibration curves are near‑diagonal.
+
+Figure 2. ML diagnostics on leave‑one‑file‑out validation. (A) Confusion matrix. (B) Feature importances. (C) Calibration curve.
+
+![](results/ml/2025-08-20T22-19-14_leave_one_file_out_nu05_nu160/figs/confusion_matrix.png){ width=32% }
+![](results/ml/2025-08-20T22-19-14_leave_one_file_out_nu05_nu160/figs/feature_importance.png){ width=32% }
+![](results/ml/2025-08-20T22-19-14_leave_one_file_out_nu05_nu160/figs/calibration.png){ width=32% }
 
 ## 4.3a Audio sonification and cross‑modal validation
 We sonified electrophysiology via amplitude‑modulated carrier with time compression for audibility, then validated audio features against the original voltage features using CCA on aligned windows (1.0 s, hop 0.5 s). Latest results (timestamped summaries) show strong audio–signal alignment across species:
