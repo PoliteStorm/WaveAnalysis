@@ -418,3 +418,25 @@ Conceptualization: J.K.; Methodology: J.K.; Software: J.K.; Validation: J.K.; Fo
 
 # Acknowledgments
 We thank Andrew Adamatzky and collaborators for curating and publishing the fungal electrophysiology datasets reanalyzed in this work. We also acknowledge open‑source contributors whose tools (Python, Pandoc/LaTeX, and related libraries) enabled a fully reproducible pipeline on consumer hardware. Any errors are our own.
+
+# 7. Roadmap and Validation Plan
+
+Statistics and methodology
+- Power analysis: conduct prospective power analyses per species to size future datasets; target ≥0.8 power for concentration‑ratio effects observed here.
+- Mixed‑effects models: add hierarchical models to capture within‑species and temporal variance; control FDR across τ and species.
+- Effect sizes: report standardized effects (e.g., Hedges’ g) with 95% CIs for all key comparisons.
+
+Controlled validation experiments
+- Stimulus protocols: standardized moisture/temperature/light challenges with pre‑registered endpoints; include negative controls and blinded scoring.
+- Spike detection validation: expert‑annotated ground truth; compare multiple algorithms; cross‑validate thresholds.
+- Mechanistic probes: pharmacology (ion channel blockers), metabolic correlates, and simultaneous optical/electrical recordings.
+
+Implementation and reproducibility
+- Transform optimization: adaptive τ selection; compare to synchrosqueezing/EMD; add frequency‑domain detrending.
+- Efficiency: parallel processing and streaming for real‑time monitoring; memory optimization for very long traces.
+- Reproducibility: containerized environment, CI tests, and explicit data/version provenance.
+
+Scope expansion and interpretation
+- Cross‑species: broaden taxa and growth stages; phylogenetic comparisons; field validation under environmental variation.
+- Biological interpretation: link √t features to metabolic/network hypotheses; integrate with systems biology readouts.
+- Applications: demonstrate sensing/biocomputing use‑cases and cost‑effectiveness in realistic settings.
