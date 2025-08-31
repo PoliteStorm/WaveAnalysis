@@ -1,0 +1,158 @@
+[
+  {
+    "file": "data/zenodo_5790768/Cordyceps militari.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 8,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8579700844642163,
+        "avg_snr": 1782697.6527630736,
+        "n_points": 24
+      },
+      "morlet": {
+        "avg_concentration": 0.8247799246955642,
+        "avg_snr": 603387.4250208086,
+        "n_points": 24
+      },
+      "dog": {
+        "avg_concentration": 0.8807508755729258,
+        "avg_snr": 487629.7785164376,
+        "n_points": 24
+      },
+      "bump": {
+        "avg_concentration": 0.8248232475840261,
+        "avg_snr": 414447.16879343713,
+        "n_points": 24
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Enoki fungi Flammulina velutipes.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 8,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8575033360558734,
+        "avg_snr": 46129254.564065956,
+        "n_points": 24
+      },
+      "morlet": {
+        "avg_concentration": 0.806748964448938,
+        "avg_snr": 494804.5056522784,
+        "n_points": 24
+      },
+      "dog": {
+        "avg_concentration": 0.8518076536568066,
+        "avg_snr": 511769.32461451454,
+        "n_points": 24
+      },
+      "bump": {
+        "avg_concentration": 0.8550652043022958,
+        "avg_snr": 8359628.78967147,
+        "n_points": 24
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Ghost Fungi Omphalotus nidiformis.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 8,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.8998125852477991,
+        "avg_snr": 8055758.399471176,
+        "n_points": 24
+      },
+      "morlet": {
+        "avg_concentration": 0.8187143457684071,
+        "avg_snr": 852715.1196704949,
+        "n_points": 24
+      },
+      "dog": {
+        "avg_concentration": 0.8570897327501618,
+        "avg_snr": 501117.82027533004,
+        "n_points": 24
+      },
+      "bump": {
+        "avg_concentration": 0.8803984171938616,
+        "avg_snr": 2562646858.8631997,
+        "n_points": 24
+      }
+    }
+  },
+  {
+    "file": "data/zenodo_5790768/Schizophyllum commune.txt",
+    "channel": "diff_1",
+    "taus": [
+      5.5,
+      24.5,
+      104.0
+    ],
+    "nu0": 8,
+    "windows": [
+      "gaussian",
+      "morlet",
+      "dog",
+      "bump"
+    ],
+    "detrend_u": true,
+    "metrics": {
+      "gaussian": {
+        "avg_concentration": 0.7966454395561091,
+        "avg_snr": 1293710.5735833263,
+        "n_points": 24
+      },
+      "morlet": {
+        "avg_concentration": 0.7648529688579311,
+        "avg_snr": 537021.2480300342,
+        "n_points": 24
+      },
+      "dog": {
+        "avg_concentration": 0.786419683926824,
+        "avg_snr": 331818.65223347576,
+        "n_points": 24
+      },
+      "bump": {
+        "avg_concentration": 0.7938463686870106,
+        "avg_snr": 1619679.8579979583,
+        "n_points": 24
+      }
+    }
+  }
+]

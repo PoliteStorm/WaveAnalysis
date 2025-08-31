@@ -28,6 +28,28 @@ What we observed (current Zenodo runs)
 Improvements next
 - Try Morlet and generalized Gaussians; adaptive u‑grid based on record length; u‑domain detrending; multi‑channel fusion (robust averaging of |W|); bootstrap CIs for features.
 
+### Psi-sweep results (Gaussian, Morlet, DOG, Bump; detrend on)
+- Data: one latest recording per species; τ = [5.5, 24.5, 104], 8 u0 positions
+- Metrics: avg spectral concentration (peak/sum), avg SNR vs background in k
+- Findings:
+  - Gaussian: consistently highest or near-highest concentration and strong SNR across species.
+  - Morlet: slightly narrower peaks but lower SNR at matched settings.
+  - DOG (Mexican-hat): competitive concentration; SNR typically below Gaussian.
+  - Bump: occasional very high SNR (Ghost) — treat cautiously; verify against edge/normalization artifacts.
+- Example averages:
+  - Cordyceps: Gaussian 0.858 / 1.78e6; Morlet 0.825 / 6.03e5; DOG 0.881 / 4.88e5; Bump 0.825 / 4.14e5
+  - Enoki: Gaussian 0.858 / 4.61e7; Morlet 0.807 / 4.95e5; DOG 0.852 / 5.12e5; Bump 0.855 / 8.36e6
+  - Ghost: Gaussian 0.900 / 8.06e6; Morlet 0.819 / 8.53e5; DOG 0.857 / 5.01e5; Bump 0.880 / 2.56e9
+  - Schizophyllum: Gaussian 0.797 / 1.29e6; Morlet 0.765 / 5.37e5; DOG 0.786 / 3.32e5; Bump 0.794 / 1.62e6
+
+Implications:
+- The √t warp drives the main gains; ψ mainly tunes the peak‑width/leakage trade‑off.
+- Gaussian + detrend is a safe default for robust SNR and concentration.
+- Bump’s extreme SNR cases warrant artifact checks (padding, energy norm, detrend band).
+- Recommended practice: report ψ choice, include Gaussian baseline, and add bootstrap CIs for peak metrics.
+
+Provenance: `results/psi_sweep/2025-08-31T10-57-57/summary.json`
+
 Reproducibility
 - All outputs timestamped; include created_by and intended_for; organized under results/ with references.
 
