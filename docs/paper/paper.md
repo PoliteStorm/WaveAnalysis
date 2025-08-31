@@ -12,7 +12,7 @@ mathfont: TeX Gyre Termes Math
 ---
 
 # Abstract
-Fungal electrical activity exhibits spikes and slow oscillatory modulations over seconds to hours. We introduce a √t‑warped wave transform that concentrates long‑time structure into compact spectral peaks, improving time‑frequency localization for sublinear temporal dynamics. On open fungal datasets (fs≈1 Hz) the method yields sharper spectra than STFT, stable τ‑band trajectories, and species‑specific multi‑scale “signatures.” Coupled with spike statistics and a lightweight ML pipeline, we obtain reproducible diagnostics under leave‑one‑file‑out validation. All analyses are timestamped, audited, and designed for low‑RAM devices.
+Fungal electrical activity exhibits spikes and slow oscillatory modulations over seconds to hours. We present a proof‑of‑concept √t‑warped wave transform that concentrates long‑time structure into compact spectral peaks, improving time‑frequency localization for sublinear temporal dynamics. On open fungal datasets (fs≈1 Hz) the method shows sharper spectra than STFT, stable τ‑band trajectories, and species‑specific multi‑scale signatures. Coupled with spike statistics and a lightweight ML pipeline, the initial evidence under leave‑one‑file‑out validation suggests practical promise. All analyses are timestamped, audited, and designed for low‑RAM devices.
 
 # Short Note: Square‑root–time windowed transform for fungal bioelectric signals
 
@@ -162,6 +162,9 @@ Timestamped, audited runs; composites README, CSV and audit indexes.
 - Sample sizes: per‑species N reported in Sec. 4.4c; analyses are run per‑recording and summarized across runs.
 - Multiple comparisons: where applicable, control FDR (Benjamini–Hochberg) across species/τ bands.
 - Reproducibility: seed‑controlled pipelines with timestamped outputs and audit trails; full parameter/state stored alongside results.
+
+### 3.6b AI assistance and transparency
+Parts of this manuscript and analysis were AI‑assisted (code generation, document editing, and build orchestration). All computations, parameters, and outputs are reproducible from the provided scripts; AI‑generated code and text were reviewed, validated against audit trails, and edited for scientific accuracy. Decisions (transform definitions, statistics, and plots) are documented and version‑controlled.
 
 # 4. Results
 ## 4.1 √t vs STFT (Schizophyllum commune)
@@ -393,13 +396,14 @@ The observed τ‑band patterns likely reflect overlapping biological processes 
 Spike metrics complement the band view: lower LV and near‑Poisson Fano factors indicate regular baseline signaling, whereas elevated CV² and burst indices during stimuli point to adaptive reconfiguration. Cross‑species differences in τ fingerprints and spike statistics align with known ecological strategies (e.g., Cordyceps’ higher responsiveness vs. Omphalotus’ slow rhythms). These hypotheses motivate targeted perturbation experiments (moisture/light/chemical) with pre‑registered outcomes.
 
 # 6. Conclusion
-The √t‑warped wave transform provides a tidy, computationally efficient view of fungal dynamics across scales, enabling robust spectral and spike‑based features for ML. It corroborates and sharpens the multi‑scale phenomena reported in the literature and offers a practical basis for fungal sensing/computing.
+The √t‑warped wave transform provides a concise, computationally efficient view of fungal dynamics across scales. As a proof‑of‑concept, it sharpens phenomena reported in the literature and yields robust spectral and spike‑based features for ML on modest hardware. Larger datasets, controlled validation, and broader benchmarks will determine generalizability and define where √t offers the greatest biological and practical value.
 
 # Limitations
 - Sample sizes and replication: Some species have limited recording sessions (N=4–11); ongoing collections will increase N and enable cross‑site replication.
 - Generalizability: Results are from benchtop electrodes and selected species; portability to field sensors and broader taxa needs validation.
 - Statistics: We report permutation‑based p‑values (≥200 iterations/species) and bootstrap 95% CIs for key metrics; small N warrants cautious interpretation of between‑species differences.
 - Figures and benchmarks: All core figures and tables are embedded; supplementary interactive assets are provided separately where appropriate.
+- Computational constraints: We prioritized low‑RAM and modest CPU footprints; while suitable for consumer hardware, extremely long recordings and high‑channel counts may benefit from parallel/streaming implementations and GPU‑accelerated baselines.
 
 # References
 - Adamatzky, A. (2022). Fungal networks. https://pmc.ncbi.nlm.nih.gov/articles/PMC8984380/
