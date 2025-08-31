@@ -6,10 +6,52 @@ date: "2025-08-20"
 keywords: [fungal electrophysiology, sqrt‑time transform, wave analysis, spike statistics, machine learning, biosensing, biocomputing]
 geometry: margin=1in
 fontsize: 11pt
+mainfont: DejaVu Serif
+monofont: DejaVu Sans Mono
+mathfont: TeX Gyre Termes Math
 ---
 
 # Abstract
 Fungal electrical activity exhibits spikes and slow oscillatory modulations over seconds to hours. We introduce a √t‑warped wave transform that concentrates long‑time structure into compact spectral peaks, improving time‑frequency localization for sublinear temporal dynamics. On open fungal datasets (fs≈1 Hz) the method yields sharper spectra than STFT, stable τ‑band trajectories, and species‑specific multi‑scale “signatures.” Coupled with spike statistics and a lightweight ML pipeline, we obtain reproducible diagnostics under leave‑one‑file‑out validation. All analyses are timestamped, audited, and designed for low‑RAM devices.
+
+# Short Note: Square‑root–time windowed transform for fungal bioelectric signals
+
+We summarize the core transform, its motivation, and biological validity in a concise form suitable for citation and preprint deposition.
+
+## Transform and motivation
+
+We analyze voltage $V(t)$ from fungal electrodes with a √time‑warped, windowed Fourier transform:
+
+$$
+W(k,\tau)=\int_{0}^{\infty} V(t)\,\psi\!\left(\frac{\sqrt{t}}{\tau}\right) e^{-ik\sqrt{t}}\,dt.
+$$
+
+With the substitution $u=\sqrt{t}$ (so $dt=2u\,du$):
+
+$$
+W(k,\tau)=\int_{0}^{\infty} 2u\,V(u^{2})\,\psi\!\left(\frac{u}{\tau}\right) e^{-iku}\,du.
+$$
+
+Rationale: many biological transport and diffusion‑like processes evolve sublinearly in time. Warping by $\sqrt{t}$ compresses long‑time structure, improving spectral concentration for slow modulations while preserving spike timing detail. In our datasets this yields narrower peaks and more stable $\tau$‑band trajectories than STFT (cf. Sec. 4.1), consistent with reports of multi‑scale rhythms in fungi (Adamatzky 2022; Jones et al. 2023) and slow bioelectric dynamics in plants/fungi (Volkov).
+
+![STFT vs √t](figs/Schizophyllum_commune_stft_vs_sqrt.png){ width=70% }
+
+Figure S1. Representative spectral line comparison (matched window): √t transform exhibits higher concentration and contrast than STFT for long‑time structure.
+
+## Biological validity and implementation
+
+- Baselines and drift: Long recordings show baseline drift and sparse spikes; we apply energy‑normalized windows and optional detrending in the $u$ domain, which ablation shows improves SNR and concentration (Sec. 4.5).
+- Sampling design: Species‑specific sampling rates (Sec. 3.4) respect Nyquist with ample margins given literature spiking rates (Olsson & Hansson 2021; Adamatzky et al. 2018; Jones et al. 2023).
+- Interpretability: √t warping emphasizes slowly varying physiological rhythms (transport/metabolic), aligning with biological timescales reported in the literature (Volkov; Fromm & Lautner 2007).
+- Relation to known methods: The transform is a windowed Fourier analysis in the $u=\sqrt{t}$ coordinate, closely related to wavelet‑style scalings and reassignment/synchrosqueezing ideas (Daubechies; Mallat), but tailored to sublinear temporal evolution.
+
+## Cross‑modal validation (audio ↔ voltage)
+
+We sonify voltage via amplitude‑modulated carriers with time compression, then compare audio features to original voltage features using CCA on aligned windows (Sec. 4.3a). Recent runs show strong first‑component alignment across species, supporting that signal structure preserved by the √t transform is perceptually and statistically coherent:
+
+Cordyceps militaris: CCA ≈ 0.94 (first), 0.63 (second); Flammulina velutipes: ≈ 0.73, 0.45; Omphalotus nidiformis: ≈ 0.86, 0.74; Schizophyllum commune: ≈ 0.94, 0.71. Permutation tests (with larger iteration counts) support statistical significance and rule out trivial correlations.
+
+References: Adamatzky (2022); Jones et al. (2023); Volkov (Plant Electrophysiology); Fromm & Lautner (2007); methodological context in Mallat (wavelets) and Daubechies (synchrosqueezing/reassignment).
 
 # 1. Introduction
 Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Rep 2018; Biosystems 2021) report spiking and multi‑scale rhythms whose time scales span orders of magnitude. Linear‑time analyses often blur slowly evolving structure. We propose a √t‑warped transform tailored to sublinear temporal evolution, revealing stable band trajectories across hours and providing a practical readout for sensing and biocomputing.
@@ -23,26 +65,26 @@ Electrophysiological studies of fungi (Adamatzky 2022; Jones et al. 2023; Sci Re
 
 # 3. Methods
 ## 3.1 √t‑Warped Wave Transform
-We analyze voltage \(V(t)\) with a windowed transform in \(u = \sqrt{t}\):
+We analyze voltage $V(t)$ with a windowed transform in $u = \sqrt{t}$:
 
-\[
+$$
 W(k,\tau; u_0) 
-= \int_{0}^{\infty} V(t)\, \psi\!\left(\frac{\sqrt{t} - u_0}{\tau}\right) e^{-i k \sqrt{t}} \, dt.
+:= \int_{0}^{\infty} V(t)\, \psi\!\left(\frac{\sqrt{t} - u_0}{\tau}\right) e^{-i k \sqrt{t}} \, dt.
 \tag{1}
-\]
+$$
 
-Substituting \(u = \sqrt{t}\) (so \(dt = 2u\,du\)) gives:
+Substituting $u = \sqrt{t}$ (so $dt = 2u\,du$) gives:
 
-\[
+$$
 W(k,\tau; u_0)
-= \int_{0}^{\infty} 2u\, V(u^2)\, \psi\!\left(\frac{u - u_0}{\tau}\right) e^{-i k u} \, du.
+:= \int_{0}^{\infty} 2u\, V(u^2)\, \psi\!\left(\frac{u - u_0}{\tau}\right) e^{-i k u} \, du.
 \tag{2}
-\]
+$$
 
-Implementation: energy‑normalized window; u‑grid rFFT; scan \(u_0\); optional Morlet/detrend (ablation).
+Implementation: energy‑normalized window; u‑grid rFFT; scan $u_0$; optional Morlet/detrend (ablation).
 
 ## 3.2 STFT baseline
-Gaussian STFT in t with \(t_0 = u_0^2\), \(\sigma_t = 2 u_0 \tau\).
+Gaussian STFT in t with $t_0 = u_0^2$, $\sigma_t = 2 u_0 \tau$.
 
 ## 3.3 Spike detection and statistics
 Moving‑average baseline (300–900 s), thresholds 0.05–0.2 mV, min ISI 120–300 s; rate, ISI/amplitude entropy/skewness/kurtosis.
