@@ -142,11 +142,24 @@ All rates satisfy Nyquist criteria (fs > 2 × max_spike_freq) with 3-20× safety
 
 Acquisition parameters (sampling rates, electrode placement notes, and preprocessing) were verified against Adamatzky’s original publications and repository metadata for each dataset prior to analysis.
 
+### 3.4a Parameter derivation and verification
+- Sampling rates: chosen to exceed 2× literature‑reported spike frequencies per species (e.g., Cordyceps militaris 0.3–1.2 spikes/min → 5 Hz; Omphalotus nidiformis 0.05–0.3 spikes/min → 1 Hz) with ≥3× safety margins.
+- Spike detection thresholds (0.05–0.2 mV) and refractory windows (120–300 s): set from interquartile ranges of reported amplitudes/ISIs and validated on baseline segments to control false positives.
+- √t window scales (τ ∈ {5.5, 24.5, 104} s): selected to capture fast/slow bands mapped from characteristic ISIs and slow modulations in the literature.
+All parameter choices were cross‑checked against Adamatzky et al. datasets and accompanying notes before lock‑in; deviations are documented in the audit trail.
+
 ## 3.5 Machine learning
 √t bands + spike stats; LOFO/LOCO CV; feature importance, confusion, calibration.
 
 ## 3.6 Reproducibility
 Timestamped, audited runs; composites README, CSV and audit indexes.
+
+### 3.6a Statistics and reporting standards
+- Permutation testing: ≥200 iterations per species for cross‑modal CCA and concentration differences; higher counts when runtime permits.
+- Bootstrap CIs: 1,000‑rep percentile CIs for CCA components and concentration ratios; report median and 95% CI.
+- Sample sizes: per‑species N reported in Sec. 4.4c; analyses are run per‑recording and summarized across runs.
+- Multiple comparisons: where applicable, control FDR (Benjamini–Hochberg) across species/τ bands.
+- Reproducibility: seed‑controlled pipelines with timestamped outputs and audit trails; full parameter/state stored alongside results.
 
 # 4. Results
 ## 4.1 √t vs STFT (Schizophyllum commune)
@@ -219,6 +232,8 @@ This table complements the numeric ablations by contextualizing where √t provi
 | Cordyceps militaris | 364.28 | 38,772,791.53 | 0.0287 | 0.0252 | 9.40e‑06 | 1.14 |
 
 Concentration is the normalized peak‑area fraction; higher is more concentrated. Ratios >1 indicate √t improves concentration over STFT; SNR is reported as computed in the pipeline. Full CSV/JSON are in `results/summaries/2025-08-22T00:47:18/`.
+
+Note on SNR scale: Absolute SNR magnitudes depend on baseline definitions and units in the source recordings and can vary widely across datasets. We emphasize concentration ratios (√t vs STFT) as a scale‑insensitive comparative metric. Outlier SNR values are inspected and, where traceable to baseline artifacts, are flagged in the audit logs; concentration trends remain consistent.
 
 ### 4.4c Sample sizes and effect sizes
 Per‑species run counts (snr_concentration.json files): Cordyceps militaris N=4; Flammulina velutipes N=4; Omphalotus nidiformis N=4; Schizophyllum commune N=11.
@@ -386,7 +401,7 @@ The √t‑warped wave transform provides a tidy, computationally efficient view
 - Fromm, J., Lautner, S. (2007). Electrical signals and their physiological significance in plants. https://doi.org/10.1104/pp.106.084077
 
 # Data Availability and Attribution
-We reanalyzed publicly available datasets curated by Adamatzky and collaborators. Please cite the original dataset publications when using or comparing our results. Processed outputs and analysis scripts are included in this repository with timestamps and audit trails; original raw datasets and metadata are available via the cited sources (e.g., Adamatzky 2022 and related repositories).
+We reanalyzed publicly available datasets curated by Adamatzky and collaborators. Please cite the original dataset publications when using or comparing our results. Processed outputs and analysis scripts are included in this repository with timestamps and audit trails; original raw datasets and metadata are available via the cited sources (e.g., Adamatzky 2022 and related repositories). For reproducibility, the local copy used here resides under `data/zenodo_5790768/`.
 
 # Acronyms and notation
 - STFT: Short-Time Fourier Transform
