@@ -212,7 +212,7 @@ We summarize √t versus STFT performance across species using a numeric table b
 
 ### 4.4a Comparative methods (qualitative summary)
 
-\begin{longtable}{p{0.24\linewidth} p{0.18\linewidth} p{0.18\linewidth} p{0.12\linewidth} p{0.22\linewidth}}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.10\linewidth} >{\raggedright\arraybackslash}p{0.20\linewidth}}
 \toprule
 Method & Spectral concentration & Drift robustness & Runtime & Notes \\
 \midrule
@@ -230,16 +230,16 @@ This table complements the numeric ablations by contextualizing where $\sqrt{t}$
 
 ### 4.4b Cross‑species SNR and spectral concentration (table)
 
-\begin{longtable}{p{0.30\linewidth} r r r r r r}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.26\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.14\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.11\linewidth} >{\raggedleft\arraybackslash}p{0.12\linewidth} >{\raggedleft\arraybackslash}p{0.12\linewidth}}
 \toprule
 Species & SNR ($\sqrt{t}$) & SNR (STFT) & Conc. ($\sqrt{t}$) & Conc. (STFT) & SNR ratio & Conc. ratio \\
 \midrule
 \endhead
 
-Schizophyllum commune & 689.49 & 22,019,410.73 & 0.0567 & 0.0273 & 3.13e\,\text{--}05 & 2.08 \\
-Flammulina velutipes (Enoki) & 18.71 & 56,971,757.62 & 0.0260 & 0.0138 & 3.28e\,\text{--}07 & 1.88 \\
-Omphalotus nidiformis (Ghost) & 315.77 & 10,873,317.48 & 0.0226 & 0.0165 & 2.90e\,\text{--}05 & 1.37 \\
-Cordyceps militaris & 364.28 & 38,772,791.53 & 0.0287 & 0.0252 & 9.40e\,\text{--}06 & 1.14 \\
+Schizophyllum commune & 689.49 & 22,019,410.73 & 0.0567 & 0.0273 & $3.13\times 10^{-5}$ & 2.08 \\
+Flammulina velutipes (Enoki) & 18.71 & 56,971,757.62 & 0.0260 & 0.0138 & $3.28\times 10^{-7}$ & 1.88 \\
+Omphalotus nidiformis (Ghost) & 315.77 & 10,873,317.48 & 0.0226 & 0.0165 & $2.90\times 10^{-5}$ & 1.37 \\
+Cordyceps militaris & 364.28 & 38,772,791.53 & 0.0287 & 0.0252 & $9.40\times 10^{-6}$ & 1.14 \\
 \bottomrule
 \end{longtable}
 
