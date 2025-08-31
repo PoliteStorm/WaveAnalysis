@@ -245,19 +245,19 @@ Per‑species run counts (snr_concentration.json files): Cordyceps militaris N=4
 Effect sizes (concentration improvement) are summarized by the $\sqrt{t}$/STFT concentration ratios in Sec. 4.4b (e.g., 2.08, 1.88, 1.37, 1.14 respectively). Bootstrap 95% CIs are reported where indicated, and permutation tests (≥200 per species) assess significance across matched windows.
 
 ## 4.5 Transform parameter ablation study
-To assess robustness and guide defaults, we systematically varied window type (Gaussian, Morlet), detrending in the u domain, and related settings across species. Performance was summarized by SNR, spectral concentration, peak width, and trajectory stability. Table 1 reports representative results.
+To assess robustness and guide defaults, we systematically varied window type (Gaussian, Morlet), detrending in the u domain, and related settings across species. Performance was summarized by spectral concentration, peak width, trajectory stability, and SNR (contextual). Table 1 reports representative results.
 
 **Table 1: Transform Parameter Ablation Results**
 
-| Setting | SNR | Concentration | Peak Width | Stability |
-|---|---:|---:|---:|:---|
-| √t gaussian detrend=False | 1167.62 | 0.0525 | Medium | High |
-| √t gaussian detrend=True | **74839.51** | **0.7873** | **Narrow** | **Very High** |
-| √t morlet detrend=False | 76.94 | 0.0265 | Wide | Medium |
-| √t morlet detrend=True | 3571.96 | 0.4205 | Medium | High |
-| STFT | 22019410.73 | 0.0273 | Very Wide | Low |
+| Setting | Concentration | Peak Width | Stability | SNR (context) |
+|---|---:|:---|:---|---:|
+| √t gaussian detrend=False | 0.0525 | Medium | High | 1.17×10^3 |
+| √t gaussian detrend=True | **0.7873** | **Narrow** | **Very High** | **7.48×10^4** |
+| √t morlet detrend=False | 0.0265 | Wide | Medium | 7.69×10^1 |
+| √t morlet detrend=True | 0.4205 | Medium | High | 3.57×10^3 |
+| STFT | 0.0273 | Very Wide | Low | 2.20×10^7 |
 
-In short: (i) u‑domain detrending consistently improves concentration and SNR; (ii) Gaussian windows are the most reliable across species; and (iii) the √t transform with Gaussian+detrend yields the sharpest peaks and most stable trajectories for long recordings.
+Note: Absolute SNR magnitudes depend on baseline and units and are not directly comparable across sources; concentration and peak width are the primary comparative metrics.
 
 ## 4.6 Pipeline architecture and computational efficiency
 Figure 4. Analysis Pipeline Schematic.
@@ -357,6 +357,7 @@ To aid fast between‑species comparison, we provide a supplementary "spiral fin
 - Species-specific parameter optimization reveals biologically meaningful differences: Cordyceps militaris shows highest spiking frequency (5 Hz sampling required), while Omphalotus nidiformis exhibits pronounced very-slow rhythms.
 - √t provides a compact, reproducible readout for sensing; band dominance patterns serve as species "fingerprints" for identification and monitoring.
 - Validation framework ensures parameters are grounded in research literature, with Nyquist compliance and performance benchmarking.
+- Despite small N (4–11 runs/species), √t features (band concentration, τ‑trajectory stability) were consistent across recordings; larger datasets are in progress to quantify generalizability and increase statistical power.
 
 ### 5.2 Validation methods and biological grounding
 Our comprehensive validation approach includes:
@@ -440,3 +441,8 @@ Scope expansion and interpretation
 - Cross‑species: broaden taxa and growth stages; phylogenetic comparisons; field validation under environmental variation.
 - Biological interpretation: link √t features to metabolic/network hypotheses; integrate with systems biology readouts.
 - Applications: demonstrate sensing/biocomputing use‑cases and cost‑effectiveness in realistic settings.
+
+# Supplementary Materials
+- Figures S1–S3 (static PNGs) included in `docs/paper/figs/`.
+- Spiral fingerprint PNGs (static) included; interactive spheres provided separately in `results/fingerprints/<species>/<timestamp>/sphere.html`.
+- CSV/JSON summaries (e.g., SNR/concentration tables) available under `results/summaries/` with timestamps.
