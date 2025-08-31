@@ -410,9 +410,10 @@ The √t‑warped wave transform provides a tidy, computationally efficient view
 - Adamatzky et al. (2018). On spiking behaviour of Pleurotus djamor. https://doi.org/10.1038/s41598-018-26007-1
 - Volkov, A.G. (ed.). Plant Electrophysiology: Theory & Methods. https://doi.org/10.1007/978-3-540-73547-2
 - Fromm, J., Lautner, S. (2007). Electrical signals and their physiological significance in plants. https://doi.org/10.1104/pp.106.084077
+- Adamatzky, A. (2021). Recordings of electrical activity of four species of fungi. Zenodo. https://doi.org/10.5281/zenodo.5790768
 
 # Data Availability and Attribution
-We reanalyzed publicly available datasets curated by Adamatzky and collaborators. Please cite the original dataset publications when using or comparing our results. Processed outputs and analysis scripts are included in this repository with timestamps and audit trails; original raw datasets and metadata are available via the cited sources (e.g., Adamatzky 2022 and related repositories). For reproducibility, the local copy used here resides under `data/zenodo_5790768/`.
+We reanalyzed publicly available datasets curated by Adamatzky and collaborators. Please cite the original dataset publications when using or comparing our results. Processed outputs and analysis scripts are included in this repository with timestamps and audit trails; original raw datasets and metadata are available via Zenodo: DOI 10.5281/zenodo.5790768 (https://zenodo.org/record/5790768). For reproducibility, the local copy used here resides under `data/zenodo_5790768/`.
 
 # Acronyms and notation
 - STFT: Short-Time Fourier Transform
