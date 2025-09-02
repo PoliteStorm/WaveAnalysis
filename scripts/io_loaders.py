@@ -109,3 +109,4 @@ def load_bands_df(root: str | Path = ".") -> pd.DataFrame:
 		"band_slow": 0.7 + 0.1*np.sin(2*np.pi*t/3600 + 1.1) + noise(),
 	})
 
+
